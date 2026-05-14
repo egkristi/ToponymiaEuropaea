@@ -2,7 +2,7 @@
 
 > *Where Names Become Knowledge, and Memory Becomes Evidence.*
 
-**An open, data-driven, AI-assisted research framework for the systematic analysis of place names across linguistic, historical, geographical, ecological, and cultural dimensions.**
+**An open, data-driven research framework for the systematic analysis of place names across linguistic, historical, geographical, ecological, and cultural dimensions.**
 
 [![License: CC BY-NC-SA 4.0](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey.svg)](LICENSE)
 [![Python 3.12+](https://img.shields.io/badge/Python-3.12+-green.svg)](https://python.org)
