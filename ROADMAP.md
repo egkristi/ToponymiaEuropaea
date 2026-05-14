@@ -92,10 +92,10 @@ Expand the statistical toolkit for all test families.
 | 3.4 | Political renaming detection | ✅ | Temporal clustering (max-proportion-in-window), permutation test. 8 tests. |
 | 3.5 | Bayesian etymology comparison | ✅ | Implemented in statistics/bayesian.py (BayesianComparisonTest). Log Bayes factor, entropy reduction. |
 | 3.6 | Astronomical alignment test | ✅ | Rayleigh test, mean direction, 11 tests |
-| 3.7 | Sacred geometry alignment test | ⬚ | Ley-line hypothesis as statistical test |
+| 3.7 | Sacred geometry alignment test | ✅ | Ley-line hypothesis as statistical test |
 | 3.8 | Sensory correspondence test | ⬚ | Colour names vs. spectral data |
 | 3.9 | Religious stratigraphy test | ✅ | Proximity co-occurrence permutation test, 7 tests |
-| 3.10 | Catastrophe clustering test | ⬚ | Disaster names vs. hazard maps |
+| 3.10 | Catastrophe clustering test | ✅ | Disaster names vs. hazard maps |
 | 3.11 | Ripley's K spatial analysis | ✅ | RipleysKTest: multi-scale L(r)-r function + permutation envelope. 11 tests. |
 | 3.12 | Name change rate test | ✅ | NameChangeRateTest: Poisson rate ratio + permutation test. 11 tests. |
 
@@ -319,7 +319,7 @@ The litmus test (May 2025) proved the pipeline works mechanically. Data populati
 **Milestone 11.4.3 COMPLETE** — Phonetic index field on all records.
 **Issues #10–13 closed** — mypy fixed, Danish/Swedish modules added, data populated.
 
-**Status: 620 tests passing, mypy strict clean, 3018 databank records.**
+**Status: 642 tests passing, mypy strict clean, 3018 databank records.**
 
 ### Immediate priorities (current sprint)
 
@@ -349,7 +349,7 @@ The litmus test (May 2025) proved the pipeline works mechanically. Data populati
 
 - **v0.1.0** — Framework foundation, architecture, proof-of-concept.
 - **v0.2.0** — Expanded dictionaries (120+ ON entries), attestation analysis, analysis bridge, end-to-end workflow command, dependency trim. Pipeline runs from CLI.
-- **v0.3.0** (current) — 3018 records (5 Nordic countries, 2 sources), 14 language modules, H3 spatial indexing, phonetic dedup, diachronic linking, Bayesian etymology framework + comparison test, language contact/political renaming tests, Ripley's K spatial + name change rate tests, Kartverket SSR import. 620 tests, mypy strict clean.
+- **v0.3.0** (current) — 3018 records (5 Nordic countries, 2 sources), 14 language modules, H3 spatial indexing, phonetic dedup, diachronic linking, Bayesian etymology framework + comparison test, language contact/political renaming tests, Ripley's K spatial + name change rate + sacred geometry + catastrophe clustering tests, Kartverket SSR import. 642 tests, mypy strict clean.
 - **v0.4.0** — Cross-source deduplication, three-layer persistence, Bayesian etymology framework.
 - **v0.5.0** — Historical sources (Norske Gaardnavne, Diplomatarium Norvegicum), Celtic/Latin modules.
 - **v0.6.0** — API and visualization layer, 6+ perspective modules
