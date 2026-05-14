@@ -1,0 +1,54 @@
+# Byte-compiled
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Distribution
+dist/
+build/
+*.egg-info/
+
+# Virtual environments
+.venv/
+venv/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+
+# Data (large files tracked separately)
+data/
+.cache/
+*.parquet
+*.zip
+*.gz
+
+# Database
+*.db
+*.sqlite
+
+# Environment
+.env
+.env.local
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Config (user-specific)
+config/settings.toml
+
+# Notebooks checkpoints
+.ipynb_checkpoints/
+
+# DVC
+/dvc.lock

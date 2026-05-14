@@ -1,0 +1,24 @@
+cff-version: 1.2.0
+message: "If you use this software in your research, please cite it as below."
+type: software
+title: "Toponymia Europaea: An Open Research Framework for Place Name Analysis"
+authors:
+  - family-names: Kristiansen
+    given-names: Erling
+version: 0.1.0
+date-released: 2025-05-14
+url: "https://github.com/egkristi/ToponymiaEuropaea"
+repository-code: "https://github.com/egkristi/ToponymiaEuropaea"
+license: MIT
+keywords:
+  - toponymy
+  - place-names
+  - onomastics
+  - geospatial
+  - computational-linguistics
+  - digital-humanities
+abstract: >-
+  An open, data-driven, AI-assisted research framework for the systematic
+  analysis of place names across linguistic, historical, geographical,
+  ecological, and cultural dimensions. Designed to start small and scale
+  to continental coverage without compromising research integrity.

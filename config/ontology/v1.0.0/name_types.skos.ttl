@@ -1,0 +1,276 @@
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix te: <https://toponymia-europaea.org/ontology/> .
+@prefix dct: <http://purl.org/dc/terms/> .
+
+# Toponymia Europaea Name Types Ontology v1.0.0
+# Defines the controlled vocabulary for classifying toponymic elements.
+# Versioned with semver; older analyses reference their ontology version.
+
+te:NameTypes a skos:ConceptScheme ;
+    dct:title "Toponymia Europaea Name Type Classification"@en ;
+    dct:version "1.0.0" ;
+    dct:created "2025-05-14" .
+
+# === Top-level categories ===
+
+te:Settlement a skos:Concept ;
+    skos:inScheme te:NameTypes ;
+    skos:prefLabel "Settlement name"@en ;
+    skos:definition "Names denoting human habitation or dwelling places"@en .
+
+te:Nature a skos:Concept ;
+    skos:inScheme te:NameTypes ;
+    skos:prefLabel "Nature name"@en ;
+    skos:definition "Names derived from natural landscape features"@en .
+
+te:Cultural a skos:Concept ;
+    skos:inScheme te:NameTypes ;
+    skos:prefLabel "Cultural name"@en ;
+    skos:definition "Names reflecting human cultural, religious, or social activity"@en .
+
+te:Personal a skos:Concept ;
+    skos:inScheme te:NameTypes ;
+    skos:prefLabel "Personal name"@en ;
+    skos:definition "Names containing or derived from personal names"@en .
+
+# === Settlement subtypes ===
+
+te:Farm a skos:Concept ;
+    skos:inScheme te:NameTypes ;
+    skos:broader te:Settlement ;
+    skos:prefLabel "Farm name"@en ;
+    skos:example "-staðir, -by, -bø, -gård"@no .
+
+te:Village a skos:Concept ;
+    skos:inScheme te:NameTypes ;
+    skos:broader te:Settlement ;
+    skos:prefLabel "Village/hamlet name"@en .
+
+te:Town a skos:Concept ;
+    skos:inScheme te:NameTypes ;
+    skos:broader te:Settlement ;
+    skos:prefLabel "Town/city name"@en .
+
+te:Clearing a skos:Concept ;
+    skos:inScheme te:NameTypes ;
+    skos:broader te:Settlement ;
+    skos:prefLabel "Clearing name"@en ;
+    skos:definition "Names indicating land cleared for settlement"@en ;
+    skos:example "-rud, -rød, -tveit, -þveit"@no .
+
+# === Nature subtypes ===
+
+te:Topographic a skos:Concept ;
+    skos:inScheme te:NameTypes ;
+    skos:broader te:Nature ;
+    skos:prefLabel "Topographic name"@en ;
+    skos:definition "Names derived from terrain features (hills, valleys, ridges)"@en ;
+    skos:example "-berg, -dal, -ås, -haug"@no .
+
+te:Hydrographic a skos:Concept ;
+    skos:inScheme te:NameTypes ;
+    skos:broader te:Nature ;
+    skos:prefLabel "Hydrographic name"@en ;
+    skos:definition "Names derived from water features"@en ;
+    skos:example "-å, -elv, -vatn, -vik, -fjord, -sund"@no .
+
+te:Vegetation a skos:Concept ;
+    skos:inScheme te:NameTypes ;
+    skos:broader te:Nature ;
+    skos:prefLabel "Vegetation name"@en ;
+    skos:definition "Names derived from plant species or vegetation types"@en ;
+    skos:example "-lund, -holt, -skog, Bjørk-, Eik-, Lind-"@no .
+
+te:Fauna a skos:Concept ;
+    skos:inScheme te:NameTypes ;
+    skos:broader te:Nature ;
+    skos:prefLabel "Fauna name"@en ;
+    skos:definition "Names derived from animal species"@en ;
+    skos:example "Bjørn-, Ulv-, Ørn-, Elg-"@no .
+
+# === Cultural subtypes ===
+
+te:Religious a skos:Concept ;
+    skos:inScheme te:NameTypes ;
+    skos:broader te:Cultural ;
+    skos:prefLabel "Religious/cultic name"@en ;
+    skos:definition "Names reflecting religious practice or sacred sites"@en .
+
+te:PreChristian a skos:Concept ;
+    skos:inScheme te:NameTypes ;
+    skos:broader te:Religious ;
+    skos:prefLabel "Pre-Christian cultic name"@en ;
+    skos:example "Tor-, Odin-, -hov, -vé, -horg, sieidi"@no .
+
+te:Christian a skos:Concept ;
+    skos:inScheme te:NameTypes ;
+    skos:broader te:Religious ;
+    skos:prefLabel "Christian name"@en ;
+    skos:example "Kors-, Kirke-, St.-, Helg-"@no .
+
+te:Legal a skos:Concept ;
+    skos:inScheme te:NameTypes ;
+    skos:broader te:Cultural ;
+    skos:prefLabel "Legal/administrative name"@en ;
+    skos:definition "Names reflecting legal or administrative function"@en ;
+    skos:example "Ting-, -thing, Lagman-"@no .
+
+te:Economic a skos:Concept ;
+    skos:inScheme te:NameTypes ;
+    skos:broader te:Cultural ;
+    skos:prefLabel "Economic/trade name"@en ;
+    skos:definition "Names reflecting economic activity or trade"@en ;
+    skos:example "Kaupang-, Torg-, Smed-"@no .
+
+te:Military a skos:Concept ;
+    skos:inScheme te:NameTypes ;
+    skos:broader te:Cultural ;
+    skos:prefLabel "Military/defensive name"@en ;
+    skos:example "-borg, -varde, -skanser"@no .
+
+# === Celestial/Astrological subtypes ===
+
+te:Celestial a skos:Concept ;
+    skos:inScheme te:NameTypes ;
+    skos:prefLabel "Celestial/astronomical name"@en ;
+    skos:definition "Names derived from celestial bodies, astronomical phenomena, or cosmological concepts"@en .
+
+te:Solar a skos:Concept ;
+    skos:inScheme te:NameTypes ;
+    skos:broader te:Celestial ;
+    skos:prefLabel "Solar name"@en ;
+    skos:definition "Names related to the sun, solstices, or solar phenomena"@en ;
+    skos:example "Sol-, Sonn-, Sun-, Solberg, Solstrand"@no .
+
+te:Lunar a skos:Concept ;
+    skos:inScheme te:NameTypes ;
+    skos:broader te:Celestial ;
+    skos:prefLabel "Lunar name"@en ;
+    skos:definition "Names related to the moon or lunar cycles"@en ;
+    skos:example "Mån-, Mond-, Luna-, Nymåne-"@no .
+
+te:Stellar a skos:Concept ;
+    skos:inScheme te:NameTypes ;
+    skos:broader te:Celestial ;
+    skos:prefLabel "Stellar/constellation name"@en ;
+    skos:definition "Names related to stars, constellations, or the Milky Way"@en ;
+    skos:example "Stjerne-, Stern-, Stella-"@no .
+
+te:Cosmological a skos:Concept ;
+    skos:inScheme te:NameTypes ;
+    skos:broader te:Celestial ;
+    skos:prefLabel "Cosmological/world-order name"@en ;
+    skos:definition "Names reflecting cosmological worldviews (axis mundi, world tree, underworld entries)"@en ;
+    skos:example "Midgard, Hel-, Yggdrasil-"@no .
+
+# === Esoteric/Geomantic subtypes ===
+
+te:Esoteric a skos:Concept ;
+    skos:inScheme te:NameTypes ;
+    skos:prefLabel "Esoteric/occult name"@en ;
+    skos:definition "Names reflecting esoteric, alchemical, or geomantic traditions"@en .
+
+te:Alchemical a skos:Concept ;
+    skos:inScheme te:NameTypes ;
+    skos:broader te:Esoteric ;
+    skos:prefLabel "Alchemical name"@en ;
+    skos:definition "Names with alchemical or transformative associations"@en ;
+    skos:example "Gold-, Silber-, Quecksilber-"@no .
+
+te:Apotropaic a skos:Concept ;
+    skos:inScheme te:NameTypes ;
+    skos:broader te:Esoteric ;
+    skos:prefLabel "Apotropaic/protective name"@en ;
+    skos:definition "Names given to protect against evil or as euphemisms for dangerous places"@en .
+
+te:Numerological a skos:Concept ;
+    skos:inScheme te:NameTypes ;
+    skos:broader te:Esoteric ;
+    skos:prefLabel "Numerological/sacred number name"@en ;
+    skos:definition "Names incorporating sacred or symbolically significant numbers"@en ;
+    skos:example "Tre-, Syv-, Ni-, Tolv-"@no .
+
+# === Sensory subtypes ===
+
+te:Sensory a skos:Concept ;
+    skos:inScheme te:NameTypes ;
+    skos:prefLabel "Sensory/perceptual name"@en ;
+    skos:definition "Names derived from non-visual sensory experience of landscape"@en .
+
+te:Acoustic a skos:Concept ;
+    skos:inScheme te:NameTypes ;
+    skos:broader te:Sensory ;
+    skos:prefLabel "Acoustic/sound name"@en ;
+    skos:definition "Names based on sounds heard at a location"@en ;
+    skos:example "Torden-, Ekko-, Vindhyl-"@no .
+
+te:Thermal a skos:Concept ;
+    skos:inScheme te:NameTypes ;
+    skos:broader te:Sensory ;
+    skos:prefLabel "Thermal name"@en ;
+    skos:definition "Names based on temperature or thermal phenomena"@en ;
+    skos:example "Varm-, Kald-, Hot-, Eis-"@no .
+
+te:Colour a skos:Concept ;
+    skos:inScheme te:NameTypes ;
+    skos:broader te:Sensory ;
+    skos:prefLabel "Colour name"@en ;
+    skos:definition "Names based on perceived colour of landscape features"@en ;
+    skos:example "Hvit-, Svart-, Raud-, Grøn-, Blå-"@no .
+
+# === Mortality/Catastrophe subtypes ===
+
+te:Mortality a skos:Concept ;
+    skos:inScheme te:NameTypes ;
+    skos:prefLabel "Mortality/catastrophe name"@en ;
+    skos:definition "Names recording death, disease, disaster, or violence"@en .
+
+te:Plague a skos:Concept ;
+    skos:inScheme te:NameTypes ;
+    skos:broader te:Mortality ;
+    skos:prefLabel "Plague/epidemic name"@en ;
+    skos:example "Pest-, ødegård, Lazaretto"@no .
+
+te:Battle a skos:Concept ;
+    skos:inScheme te:NameTypes ;
+    skos:broader te:Mortality ;
+    skos:prefLabel "Battle/violence name"@en ;
+    skos:example "Blod-, Galge-, Sverd-"@no .
+
+te:Disaster a skos:Concept ;
+    skos:inScheme te:NameTypes ;
+    skos:broader te:Mortality ;
+    skos:prefLabel "Natural disaster name"@en ;
+    skos:example "Ras-, Flom-, Lavine-"@no .
+
+# === Healing/Therapeutic subtypes ===
+
+te:Healing a skos:Concept ;
+    skos:inScheme te:NameTypes ;
+    skos:prefLabel "Healing/therapeutic name"@en ;
+    skos:definition "Names associated with healing, medicine, or therapeutic landscape"@en .
+
+te:HealingWater a skos:Concept ;
+    skos:inScheme te:NameTypes ;
+    skos:broader te:Healing ;
+    skos:prefLabel "Healing water name"@en ;
+    skos:example "Bad-, Bath-, Spa-, hellig kilde"@no .
+
+# === Calendar/Temporal subtypes ===
+
+te:Calendar a skos:Concept ;
+    skos:inScheme te:NameTypes ;
+    skos:prefLabel "Calendar/temporal cycle name"@en ;
+    skos:definition "Names tied to seasonal festivals, market days, or ritual calendar"@en .
+
+te:Festival a skos:Concept ;
+    skos:inScheme te:NameTypes ;
+    skos:broader te:Calendar ;
+    skos:prefLabel "Festival/celebration site name"@en ;
+    skos:example "Jonsok-, Jul-, Mikkels-, Olsok-"@no .
+
+te:Seasonal a skos:Concept ;
+    skos:inScheme te:NameTypes ;
+    skos:broader te:Calendar ;
+    skos:prefLabel "Seasonal name"@en ;
+    skos:example "Vår-, Sommar-, Høst-, Vinter-"@no .

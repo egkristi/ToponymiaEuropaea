@@ -1,0 +1,35 @@
+# Toponymia Europaea Configuration
+# Copy to config/settings.toml and adjust values
+
+[database]
+# PostgreSQL connection URL (with PostGIS)
+url = "postgresql://localhost:5432/toponymia"
+
+[geonames]
+# GeoNames username (register at https://www.geonames.org/login)
+username = ""
+dump_url = "https://download.geonames.org/export/dump"
+
+[wikidata]
+endpoint = "https://query.wikidata.org/sparql"
+
+[analysis]
+# Default spatial reference system
+default_srid = 4326
+# Default number of permutations for statistical tests
+default_n_permutations = 10000
+# Significance level (alpha)
+significance_level = 0.05
+
+[ontology]
+# Current ontology version (semver)
+version = "1.0.0"
+
+[paths]
+# Directory for downloaded/cached data
+data_dir = "data"
+cache_dir = ".cache"
+
+[api]
+host = "0.0.0.0"
+port = 8000
