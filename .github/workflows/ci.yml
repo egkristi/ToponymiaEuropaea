@@ -34,6 +34,10 @@ jobs:
       - name: Run Ruff formatter check
         run: uv run ruff format --check src/ tests/
 
+      - name: Run mypy type checker
+        run: uv run mypy src/ --ignore-missing-imports
+        continue-on-error: true
+
   test:
     runs-on: ubuntu-latest
     strategy:

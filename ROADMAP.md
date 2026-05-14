@@ -198,7 +198,7 @@ Address structural debt accumulated during rapid development.
 | 9.4 | Connector → databank ingest pipeline | ✅ | **HIGH** | `toponymia ingest geonames --country NO --output databank/ --limit 100` writes JSONL directly. |
 | 9.5 | Fix PytestCollectionWarning | ✅ | LOW | Renamed TestData→PlaceData, TestFamily→StatFamily, TestStatus→StatStatus. 0 warnings (was 15). |
 | 9.6 | Fix pydantic-settings toml_file warning | ✅ | LOW | Removed unused `toml_file` from SettingsConfigDict. 0 warnings (was 1). |
-| 9.7 | Add mypy to CI | ⬚ | MEDIUM | mypy is configured in pyproject.toml but never run in CI |
+| 9.7 | Add mypy to CI | ✅ | MEDIUM | Added as informational step (continue-on-error). 56 errors in strict mode — non-blocking until resolved. |
 | 9.8 | End-to-end workflow command | ✅ | **HIGH** | `toponymia analyze element <elem> --country XX --test spatial`. Discover mode: `toponymia analyze discover`. |
 | 9.9 | Test untested connectors | ⬚ | MEDIUM | OSM (0%), Wikidata (0%) have no tests — add mocked unit tests |
 | 9.10 | Commit uv.lock for reproducibility | ✅ | MEDIUM | uv.lock tracked in git (3549 lines). Ensures exact dependency versions. |
