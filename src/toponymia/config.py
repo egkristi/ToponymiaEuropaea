@@ -14,7 +14,6 @@ class Settings(BaseSettings):
     model_config = SettingsConfigDict(
         env_prefix="TOPONYMIA_",
         env_file=".env",
-        toml_file="config/settings.toml",
     )
 
     # Database
