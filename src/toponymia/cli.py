@@ -59,9 +59,7 @@ def ingest_geonames(
     output: Path | None = typer.Option(
         None, "--output", "-o", help="Output to databank directory (e.g., databank/)"
     ),
-    limit: int | None = typer.Option(
-        None, "--limit", "-l", help="Max records to ingest"
-    ),
+    limit: int | None = typer.Option(None, "--limit", "-l", help="Max records to ingest"),
 ):
     """Ingest place names from GeoNames for a country."""
     import json
@@ -83,19 +81,21 @@ def ingest_geonames(
         count += 1
 
         if output is not None:
-            records_out.append({
-                "name_form": record.name_form,
-                "name_normalized": record.name_normalized,
-                "latitude": record.latitude,
-                "longitude": record.longitude,
-                "elevation": record.elevation_m,
-                "source_id": record.source_id,
-                "language_code": record.language_code,
-                "place_type": record.place_type,
-                "source_url": record.source_url,
-                "is_current": record.is_current,
-                "alternative_names": record.alternative_names or {},
-            })
+            records_out.append(
+                {
+                    "name_form": record.name_form,
+                    "name_normalized": record.name_normalized,
+                    "latitude": record.latitude,
+                    "longitude": record.longitude,
+                    "elevation": record.elevation_m,
+                    "source_id": record.source_id,
+                    "language_code": record.language_code,
+                    "place_type": record.place_type,
+                    "source_url": record.source_url,
+                    "is_current": record.is_current,
+                    "alternative_names": record.alternative_names or {},
+                }
+            )
 
         if count % 10000 == 0:
             console.print(f"  Processed {count:,} records...")
@@ -109,9 +109,7 @@ def ingest_geonames(
         with outfile.open("w", encoding="utf-8") as f:
             for rec in records_out:
                 f.write(json.dumps(rec, ensure_ascii=False) + "\n")
-        console.print(
-            f"[green]Wrote {count:,} records to {outfile}[/green]"
-        )
+        console.print(f"[green]Wrote {count:,} records to {outfile}[/green]")
     else:
         console.print(f"[green]Done:[/green] {count:,} valid records, {errors:,} skipped")
 

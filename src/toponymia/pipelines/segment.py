@@ -159,16 +159,13 @@ class SegmentationPipeline:
             if hyps:
                 top_hyp = hyps[0]
                 # Prefer compound segmentation over stem-only
-                has_compound = any(
-                    c.morph_type == "compound_head" for c in top_hyp.components
-                )
+                has_compound = any(c.morph_type == "compound_head" for c in top_hyp.components)
                 if best_hypothesis is None:
                     best_hypothesis = top_hyp
                     best_form = form
                 elif has_compound:
                     best_has_compound = any(
-                        c.morph_type == "compound_head"
-                        for c in best_hypothesis.components
+                        c.morph_type == "compound_head" for c in best_hypothesis.components
                     )
                     if (
                         not best_has_compound
