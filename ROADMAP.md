@@ -292,7 +292,7 @@ Current `interpretations` table stores flat probabilities. For proper Bayesian h
 | 11.5.1 | `hypothesis_set` model (competing etymologies) | ✅ | **HIGH** | HypothesisSet with validation, entropy, most_likely |
 | 11.5.2 | `evidence` model (what updates which hypothesis) | ✅ | **HIGH** | Evidence with likelihood_ratios, weight, evidence_type |
 | 11.5.3 | Prior vs. posterior tracking | ✅ | **HIGH** | EvidenceRecord log, sequential_update, serialization |
-| 11.5.4 | Bayesian comparison test using hypothesis sets | ⬚ | MEDIUM | Replaces flat probability storage |
+| 11.5.4 | Bayesian comparison test using hypothesis sets | ✅ | **MEDIUM** | BayesianComparisonTest (log Bayes factor, Kass-Raftery scale, synthetic validation) |
 
 ### 11.6 — Coordinate Conflict Resolution & Legal
 
@@ -319,14 +319,14 @@ The litmus test (May 2025) proved the pipeline works mechanically. Data populati
 **Milestone 11.4.3 COMPLETE** — Phonetic index field on all records.
 **Issues #10–13 closed** — mypy fixed, Danish/Swedish modules added, data populated.
 
-**Status: 451 tests passing, mypy strict clean, 3018 databank records.**
+**Status: 458 tests passing, mypy strict clean, 3018 databank records.**
 
 ### Immediate priorities (current sprint)
 
 1. ~~**Milestone 11.4.4** — Cross-source deduplication pipeline~~ ✅
 2. ~~**Milestone 11.4.5** — Diachronic attestation linking~~ ✅
 3. ~~**Milestone 11.5.1–11.5.3** — Bayesian etymology framework~~ ✅
-4. **Milestone 11.5.4** — Bayesian comparison test using hypothesis sets
+4. ~~**Milestone 11.5.4** — Bayesian comparison test~~ ✅
 5. **Milestone 11.2.5** — Local 3-layer dev setup (simulate production)
 
 ### Next phase
@@ -349,7 +349,7 @@ The litmus test (May 2025) proved the pipeline works mechanically. Data populati
 
 - **v0.1.0** — Framework foundation, architecture, proof-of-concept.
 - **v0.2.0** — Expanded dictionaries (120+ ON entries), attestation analysis, analysis bridge, end-to-end workflow command, dependency trim. Pipeline runs from CLI.
-- **v0.3.0** (current) — 3018 records (5 Nordic countries, 2 sources), 7 language modules, H3 spatial indexing, phonetic dedup keys, cross-source dedup, diachronic linking, Bayesian etymology framework, Kartverket SSR import. 451 tests, mypy strict clean.
+- **v0.3.0** (current) — 3018 records (5 Nordic countries, 2 sources), 7 language modules, H3 spatial indexing, phonetic dedup, diachronic linking, Bayesian etymology framework + comparison test, Kartverket SSR import. 458 tests, mypy strict clean.
 - **v0.4.0** — Cross-source deduplication, three-layer persistence, Bayesian etymology framework.
 - **v0.5.0** — Historical sources (Norske Gaardnavne, Diplomatarium Norvegicum), Celtic/Latin modules.
 - **v0.6.0** — API and visualization layer, 6+ perspective modules
