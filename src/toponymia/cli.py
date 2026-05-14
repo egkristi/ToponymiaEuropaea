@@ -2,8 +2,9 @@
 
 from __future__ import annotations
 
+import json
 from pathlib import Path
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 import typer
 from rich.console import Console
@@ -547,6 +548,26 @@ def quality_tests() -> None:
 # === Databank commands ===
 
 
+def _enrich_file_phonetic(filepath: Path, normalizer: Any) -> None:
+    """Add _phonetic_key to all records in a JSONL file."""
+    lines: list[str] = []
+    with filepath.open(encoding="utf-8") as f:
+        for line in f:
+            stripped = line.strip()
+            if not stripped:
+                continue
+            record = json.loads(stripped)
+            name = record.get("name_form", "")
+            if name:
+                key = normalizer.phonetic_key(name)
+                record["_phonetic_key"] = key.key
+            lines.append(json.dumps(record, ensure_ascii=False, sort_keys=True))
+
+    with filepath.open("w", encoding="utf-8") as f:
+        for line in lines:
+            f.write(line + "\n")
+
+
 @databank_app.command("validate")
 def databank_validate(
     path: Path | None = typer.Option(None, "--path", "-p", help="Validate a specific JSONL file"),
@@ -629,20 +650,28 @@ def databank_validate(
 @databank_app.command("sign")
 def databank_sign(
     path: Path | None = typer.Option(None, "--path", "-p", help="Sign a specific JSONL file"),
+    enrich: bool = typer.Option(
+        True, "--enrich/--no-enrich", help="Add phonetic keys before signing"
+    ),
 ) -> None:
     """Sign databank records with SHA-256 integrity hashes.
 
     Each record gets a _sha256 field computed from its canonical JSON.
     Also regenerates MANIFEST.sha256 for file-level integrity.
+    By default, also enriches records with _phonetic_key.
     """
     from toponymia.pipelines.integrity import sign_jsonl_file, write_manifest
+    from toponymia.pipelines.phonetic import NordicPhoneticNormalizer
 
     databank_path = Path(__file__).parent.parent.parent / "databank"
+    normalizer = NordicPhoneticNormalizer() if enrich else None
 
     if path is not None:
         if not path.exists():
             console.print(f"[red]File not found: {path}[/red]")
             raise typer.Exit(1)
+        if normalizer:
+            _enrich_file_phonetic(path, normalizer)
         count = sign_jsonl_file(path)
         console.print(f"[green]✓ Signed {count} records in {path.name}[/green]")
     else:
@@ -653,11 +682,15 @@ def databank_sign(
 
         total = 0
         for jsonl_file in sorted(places_dir.rglob("*.jsonl")):
+            if normalizer:
+                _enrich_file_phonetic(jsonl_file, normalizer)
             count = sign_jsonl_file(jsonl_file)
             console.print(f"  Signed {count} records in {jsonl_file.relative_to(databank_path)}")
             total += count
 
         console.print(f"\n[green]✓ Signed {total} records total[/green]")
+        if normalizer:
+            console.print("[green]✓ Enriched with _phonetic_key[/green]")
 
     # Regenerate manifest
     manifest_path = write_manifest(databank_path)

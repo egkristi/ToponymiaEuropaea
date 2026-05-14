@@ -206,6 +206,10 @@
     "_lemma_semantic_field": {
       "type": ["string", "null"],
       "description": "Semantic field of the lemma (e.g. 'settlement', 'topography.coast')"
+    },
+    "_phonetic_key": {
+      "type": ["string", "null"],
+      "description": "Phonetic normalization key for cross-source deduplication and fuzzy matching. Computed by NordicPhoneticNormalizer from name_form."
     }
   },
   "additionalProperties": true

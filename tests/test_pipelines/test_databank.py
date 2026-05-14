@@ -192,3 +192,108 @@ class TestValidateDatabank:
         assert result.total_files >= 2
         assert result.total_records >= 10
         assert result.is_valid, f"Databank has errors: {result.errors[:3]}"
+
+
+class TestPhoneticKeyEnrichment:
+    """Test that _phonetic_key enrichment works on JSONL files."""
+
+    def test_enrich_adds_phonetic_key(self):
+        """_enrich_file_phonetic adds _phonetic_key to all records."""
+        # Import the helper from CLI module
+        import toponymia.cli as cli_mod
+        from toponymia.pipelines.phonetic import NordicPhoneticNormalizer
+
+        normalizer = NordicPhoneticNormalizer()
+
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".jsonl", delete=False) as f:
+            f.write(
+                json.dumps(
+                    {"name_form": "Bergen", "latitude": 60.39, "longitude": 5.32, "source_id": "1"}
+                )
+                + "\n"
+            )
+            f.write(
+                json.dumps(
+                    {
+                        "name_form": "Helsingborg",
+                        "latitude": 56.05,
+                        "longitude": 12.69,
+                        "source_id": "2",
+                    }
+                )
+                + "\n"
+            )
+            path = Path(f.name)
+
+        cli_mod._enrich_file_phonetic(path, normalizer)
+
+        # Read back
+        records = []
+        with path.open() as f:
+            for line in f:
+                records.append(json.loads(line))
+
+        assert len(records) == 2
+        assert "_phonetic_key" in records[0]
+        assert "_phonetic_key" in records[1]
+        # Bergen normalizes to "berg" (suffix norm berget→berg won't apply,
+        # but the key should at least be lowercase)
+        assert records[0]["_phonetic_key"] == normalizer.phonetic_key("Bergen").key
+        assert records[1]["_phonetic_key"] == normalizer.phonetic_key("Helsingborg").key
+        path.unlink()
+
+    def test_enrich_preserves_existing_fields(self):
+        """Enrichment preserves all existing record fields."""
+        import toponymia.cli as cli_mod
+        from toponymia.pipelines.phonetic import NordicPhoneticNormalizer
+
+        normalizer = NordicPhoneticNormalizer()
+
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".jsonl", delete=False) as f:
+            f.write(
+                json.dumps(
+                    {
+                        "name_form": "Oslo",
+                        "latitude": 59.91,
+                        "longitude": 10.75,
+                        "source_id": "99",
+                        "country_code": "NO",
+                        "extra_field": "keep_me",
+                    }
+                )
+                + "\n"
+            )
+            path = Path(f.name)
+
+        cli_mod._enrich_file_phonetic(path, normalizer)
+
+        with path.open() as f:
+            record = json.loads(f.readline())
+
+        assert record["name_form"] == "Oslo"
+        assert record["country_code"] == "NO"
+        assert record["extra_field"] == "keep_me"
+        assert "_phonetic_key" in record
+        path.unlink()
+
+    def test_enrich_empty_name_form_skips(self):
+        """Records with empty name_form don't get a phonetic key."""
+        import toponymia.cli as cli_mod
+        from toponymia.pipelines.phonetic import NordicPhoneticNormalizer
+
+        normalizer = NordicPhoneticNormalizer()
+
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".jsonl", delete=False) as f:
+            f.write(
+                json.dumps({"name_form": "", "latitude": 60.0, "longitude": 5.0, "source_id": "x"})
+                + "\n"
+            )
+            path = Path(f.name)
+
+        cli_mod._enrich_file_phonetic(path, normalizer)
+
+        with path.open() as f:
+            record = json.loads(f.readline())
+
+        assert "_phonetic_key" not in record
+        path.unlink()
