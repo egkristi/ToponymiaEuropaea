@@ -4,7 +4,7 @@ This roadmap tracks the project's development from initial framework to producti
 
 **Legend:** ✅ Done | 🔄 In Progress | ⬚ Not Started
 
-**Current status:** 365 tests passing, 0 warnings, CI green (lint + mypy strict + test py3.12/3.13 + ontology + databank validation). 2500 GeoNames records (5 Nordic countries × 500). 7 language modules. End-to-end: `toponymia analyze element nes --country NO` runs databank → segmentation → statistical test → results.
+**Current status:** 393 tests passing, 0 warnings, CI green (lint + mypy strict + test py3.12/3.13 + ontology + databank validation). 2500 GeoNames records (5 Nordic countries × 500). 7 language modules. End-to-end: `toponymia analyze element nes --country NO` runs databank → segmentation → statistical test → results.
 
 ---
 
@@ -278,7 +278,7 @@ Soundex/Metaphone are English-centric. For cross-source deduplication (Þórshof
 | # | Item | Status | Priority | Notes |
 |---|------|--------|----------|-------|
 | 11.4.1 | Evaluate Beider-Morse Phonetic Matching | ⬚ | HIGH | Best for multi-language, but complex |
-| 11.4.2 | Nordic phonetic normalizer (ON→modern) | ⬚ | **HIGH** | þ→t, ð→d, ǫ→o, etc. — sound change rules |
+| 11.4.2 | Nordic phonetic normalizer (ON→modern) | ✅ | **HIGH** | þ→t, ð→d, ǫ→o, hv→kv, ö→ø, -hem→-heim; find_duplicates() |
 | 11.4.3 | Phonetic index field on attestations | ⬚ | HIGH | `_phonetic_key` for duplicate detection |
 | 11.4.4 | Cross-source deduplication pipeline | ⬚ | HIGH | GeoNames + Kartverket + Wikidata → merged records |
 | 11.4.5 | Diachronic attestation linking | ⬚ | HIGH | 1340 *Þorshofuum* → 2024 *Torshov* = same name history |
@@ -312,14 +312,16 @@ The litmus test (May 2025) proved the pipeline works mechanically. Data populati
 
 **Milestone 9 is COMPLETE** — all 13 items done.
 **Milestone 10 partially complete** — GeoNames bulk import done (2500 records). Kartverket + historical sources remain.
+**Milestone 11.1 COMPLETE** — Name lemma entity, JSONL schema, CLI commands.
+**Milestone 11.4.2 COMPLETE** — Nordic phonetic normalizer with sound change rules.
 **Issues #10–13 closed** — mypy fixed, Danish/Swedish modules added, data populated.
 
 ### Immediate priorities (current sprint)
 
-1. **Milestone 11.1** — Name lemma entity (prerequisite for distributional analysis at scale)
-2. **Milestone 10.2** — Kartverket SSR bulk import (authoritative Norwegian data)
-3. **Milestone 11.4.2** — Nordic phonetic normalizer (deduplication blocker)
-4. **Milestone 11.2.5** — Local 3-layer dev setup (simulate production)
+1. **Milestone 10.2** — Kartverket SSR bulk import (authoritative Norwegian data)
+2. **Milestone 11.2.5** — Local 3-layer dev setup (simulate production)
+3. **Milestone 11.4.3** — Phonetic index field on attestations
+4. **Milestone 11.3** — H3 spatial indexing
 
 ### Next phase
 
