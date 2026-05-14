@@ -19,9 +19,11 @@ console = Console()
 ingest_app = typer.Typer(help="Data ingestion commands")
 test_app = typer.Typer(help="Statistical testing commands")
 data_app = typer.Typer(help="Data onboarding lifecycle commands")
+quality_app = typer.Typer(help="Data quality metrics and reporting")
 app.add_typer(ingest_app, name="ingest")
 app.add_typer(test_app, name="test")
 app.add_typer(data_app, name="data")
+app.add_typer(quality_app, name="quality")
 
 
 @app.command()
@@ -304,6 +306,195 @@ def data_retract(
     console.print(f"  Actor: {transition.actor}")
     console.print(f"  Reason: {transition.reason}")
     console.print(f"  Time: {transition.timestamp.isoformat()}")
+
+
+# === Quality metrics commands ===
+
+
+@quality_app.command("summary")
+def quality_summary():
+    """Show overall data quality summary and metrics."""
+    from toponymia.pipelines.validate import ValidationConfig
+
+    config = ValidationConfig()
+
+    table = Table(title="Data Quality Configuration")
+    table.add_column("Parameter", style="cyan")
+    table.add_column("Value", style="green")
+    table.add_row("Min latitude", str(config.min_lat))
+    table.add_row("Max latitude", str(config.max_lat))
+    table.add_row("Min longitude", str(config.min_lon))
+    table.add_row("Max longitude", str(config.max_lon))
+    table.add_row("Max name length", str(config.max_name_length))
+    table.add_row("Require source_id", str(config.require_source_id))
+    console.print(table)
+
+    # Framework statistics
+    stats_table = Table(title="Framework Statistics")
+    stats_table.add_column("Component", style="cyan")
+    stats_table.add_column("Count", style="green")
+
+    # Count language modules
+    from toponymia.languages import finnish, northern_sami, old_norse, proto_germanic
+
+    modules = [old_norse.OldNorseModule, proto_germanic.ProtoGermanicModule]
+    modules += [northern_sami.NorthernSamiModule, finnish.FinnishModule]
+    stats_table.add_row("Language modules", str(len(modules)))
+
+    # Count statistical tests
+    from toponymia.statistics import (
+        astronomical,
+        correspondence,
+        migration,
+        religious,
+        spatial,
+        temporal,
+    )
+
+    tests = [
+        correspondence.ElementSignalCorrespondenceTest,
+        spatial.SpatialClusteringTest,
+        astronomical.AstronomicalAlignmentTest,
+        religious.ReligiousStratigraphyTest,
+        temporal.TemporalLayerConsistencyTest,
+        migration.MigrationOverfrequencyTest,
+    ]
+    stats_table.add_row("Statistical tests", str(len(tests)))
+
+    # Count connectors
+    from toponymia.connectors import geonames, kartverket, osm, wikidata
+
+    connectors = [
+        geonames.GeoNamesConnector,
+        wikidata.WikidataConnector,
+        osm.OSMConnector,
+        kartverket.KartverketConnector,
+    ]
+    stats_table.add_row("Data connectors", str(len(connectors)))
+
+    # Onboarding stages
+    from toponymia.core import RecordStatus
+
+    stats_table.add_row("Onboarding stages", str(len(RecordStatus)))
+
+    console.print(stats_table)
+
+
+@quality_app.command("validate-file")
+def quality_validate_file(
+    filepath: Path = typer.Argument(..., help="Path to data file (JSON lines)"),
+    strict: bool = typer.Option(False, "--strict", help="Fail on first error"),
+):
+    """Validate a data file against quality rules."""
+    import json
+
+    from toponymia.connectors.base import ConnectorResult
+    from toponymia.pipelines.validate import validate_record
+
+    if not filepath.exists():
+        console.print(f"[red]File not found: {filepath}[/red]")
+        raise typer.Exit(1)
+
+    total = 0
+    valid = 0
+    errors: dict[str, int] = {}
+
+    with filepath.open() as f:
+        for line in f:
+            line = line.strip()
+            if not line:
+                continue
+            total += 1
+            try:
+                data = json.loads(line)
+            except json.JSONDecodeError as e:
+                errors["json_parse_error"] = errors.get("json_parse_error", 0) + 1
+                if strict:
+                    console.print(f"[red]JSON error line {total}: {e}[/red]")
+                    raise typer.Exit(1) from None
+                continue
+
+            try:
+                record = ConnectorResult(
+                    latitude=float(data.get("latitude", 0)),
+                    longitude=float(data.get("longitude", 0)),
+                    name_form=data.get("name_form", ""),
+                    language_code=data.get("language_code", "und"),
+                    source_id=data.get("source_id", ""),
+                )
+            except (TypeError, ValueError) as e:
+                errors["record_parse_error"] = errors.get("record_parse_error", 0) + 1
+                if strict:
+                    console.print(f"[red]Record parse error line {total}: {e}[/red]")
+                    raise typer.Exit(1) from None
+                continue
+
+            validation_errors = validate_record(record)
+            if not validation_errors:
+                valid += 1
+            else:
+                for err in validation_errors:
+                    errors[err.field] = errors.get(err.field, 0) + 1
+                    if strict:
+                        console.print(f"[red]Validation error: {err.field} - {err.message}[/red]")
+                        raise typer.Exit(1) from None
+
+    # Summary
+    table = Table(title=f"Validation Results: {filepath.name}")
+    table.add_column("Metric", style="cyan")
+    table.add_column("Value", style="green")
+    table.add_row("Total records", str(total))
+    table.add_row("Valid records", str(valid))
+    table.add_row("Invalid records", str(total - valid))
+    table.add_row("Pass rate", f"{valid / total * 100:.1f}%" if total > 0 else "N/A")
+    console.print(table)
+
+    if errors:
+        err_table = Table(title="Error Distribution")
+        err_table.add_column("Rule", style="cyan")
+        err_table.add_column("Count", style="red")
+        for rule, count in sorted(errors.items(), key=lambda x: -x[1]):
+            err_table.add_row(rule, str(count))
+        console.print(err_table)
+
+
+@quality_app.command("tests")
+def quality_tests():
+    """List all available statistical tests with validation status."""
+    from toponymia.statistics.astronomical import AstronomicalAlignmentTest
+    from toponymia.statistics.correspondence import ElementSignalCorrespondenceTest
+    from toponymia.statistics.migration import MigrationOverfrequencyTest
+    from toponymia.statistics.religious import ReligiousStratigraphyTest
+    from toponymia.statistics.spatial import SpatialClusteringTest
+    from toponymia.statistics.temporal import TemporalLayerConsistencyTest
+
+    tests = [
+        ElementSignalCorrespondenceTest(),
+        SpatialClusteringTest(),
+        AstronomicalAlignmentTest(),
+        ReligiousStratigraphyTest(),
+        TemporalLayerConsistencyTest(),
+        MigrationOverfrequencyTest(),
+    ]
+
+    table = Table(title="Available Statistical Tests")
+    table.add_column("ID", style="cyan")
+    table.add_column("Family", style="magenta")
+    table.add_column("Description", style="white")
+    table.add_column("Null Hypothesis", style="dim")
+
+    for test in tests:
+        table.add_row(
+            test.test_id,
+            test.test_family.value,
+            test.description[:60] + "..." if len(test.description) > 60 else test.description,
+            test.null_hypothesis[:50] + "..."
+            if len(test.null_hypothesis) > 50
+            else test.null_hypothesis,
+        )
+
+    console.print(table)
+    console.print(f"\n[dim]{len(tests)} tests registered[/dim]")
 
 
 if __name__ == "__main__":
