@@ -87,9 +87,9 @@ Expand the statistical toolkit for all test families.
 | # | Item | Status | Notes |
 |---|------|--------|-------|
 | 3.1 | Temporal layer consistency test | ✅ | Mean NND vs. permutation null, 7 tests |
-| 3.2 | Language contact boundary detection | ⬚ | Substrate signal vs. topographic barriers |
+| 3.2 | Language contact boundary detection | ✅ | kNN segregation index, permutation test. 8 tests. |
 | 3.3 | Migration overfrequency test | ✅ | Proportion difference permutation test, 7 tests |
-| 3.4 | Political renaming detection | ⬚ | Statistical assimilation signal |
+| 3.4 | Political renaming detection | ✅ | Temporal clustering (max-proportion-in-window), permutation test. 8 tests. |
 | 3.5 | Bayesian etymology comparison | ⬚ | Posterior over competing interpretations |
 | 3.6 | Astronomical alignment test | ✅ | Rayleigh test, mean direction, 11 tests |
 | 3.7 | Sacred geometry alignment test | ⬚ | Ley-line hypothesis as statistical test |
@@ -319,7 +319,7 @@ The litmus test (May 2025) proved the pipeline works mechanically. Data populati
 **Milestone 11.4.3 COMPLETE** — Phonetic index field on all records.
 **Issues #10–13 closed** — mypy fixed, Danish/Swedish modules added, data populated.
 
-**Status: 508 tests passing, mypy strict clean, 3018 databank records.**
+**Status: 524 tests passing, mypy strict clean, 3018 databank records.**
 
 ### Immediate priorities (current sprint)
 
@@ -327,14 +327,14 @@ The litmus test (May 2025) proved the pipeline works mechanically. Data populati
 2. ~~**Milestone 11.4.5** — Diachronic attestation linking~~ ✅
 3. ~~**Milestone 11.5.1–11.5.3** — Bayesian etymology framework~~ ✅
 4. ~~**Milestone 11.5.4** — Bayesian comparison test~~ ✅
-5. **Milestone 11.2.5** — Local 3-layer dev setup (simulate production)
+5. ~~**Milestone 3.2, 3.4** — Language contact and political renaming tests~~ ✅
 
 ### Next phase
 
-4. **Milestone 11.2.1–11.2.3** — Layered persistence (JSONL kernel + Postgres + Parquet)
-5. **Milestone 2.5–2.7** — Celtic/Latin language modules (for UK/France analysis)
+4. **Milestone 11.2.5** — Local 3-layer dev setup (simulate production)
+5. **Milestone 11.2.1–11.2.3** — Layered persistence (JSONL kernel + Postgres + Parquet)
 6. **Milestone 10.5/10.7** — Historical sources (Norske Gaardnavne, Diplomatarium Norvegicum)
-7. **Milestone 3.2, 3.4** — Language contact and political renaming tests
+7. **Milestone 2.8–2.11** — Additional language modules (Old Slavic, Basque, OHG, Arabic)
 
 ### Later
 
