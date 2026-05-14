@@ -21,11 +21,13 @@ test_app = typer.Typer(help="Statistical testing commands")
 data_app = typer.Typer(help="Data onboarding lifecycle commands")
 quality_app = typer.Typer(help="Data quality metrics and reporting")
 databank_app = typer.Typer(help="Databank management and validation")
+analyze_app = typer.Typer(help="Run statistical analyses on databank data")
 app.add_typer(ingest_app, name="ingest")
 app.add_typer(test_app, name="test")
 app.add_typer(data_app, name="data")
 app.add_typer(quality_app, name="quality")
 app.add_typer(databank_app, name="databank")
+app.add_typer(analyze_app, name="analyze")
 
 
 @app.command()
@@ -570,6 +572,164 @@ def databank_stats():
 
     console.print(table)
     console.print(f"\n[bold]{total}[/bold] total records in databank")
+
+
+# --- Analyze commands ---
+
+
+@analyze_app.command("element")
+def analyze_element(
+    element: str = typer.Argument(
+        ..., help="Toponymic element to test (e.g., 'heim', 'vik', 'nes')"
+    ),
+    country: str | None = typer.Option(None, "--country", "-c", help="Filter by ISO country code"),
+    test_type: str = typer.Option(
+        "spatial", "--test", "-t", help="Test type: spatial, correspondence, temporal, migration"
+    ),
+    signal_field: str | None = typer.Option(
+        None, "--signal", "-s", help="Signal field for correspondence test (e.g., 'elevation')"
+    ),
+    no_attestations: bool = typer.Option(
+        False, "--no-attestations", help="Skip attestation form analysis"
+    ),
+):
+    """Run a statistical test for a toponymic element on databank data."""
+    from toponymia.languages.old_norse import OldNorseModule
+    from toponymia.pipelines.analyze import build_test_data, load_databank
+    from toponymia.pipelines.segment import SegmentationPipeline
+
+    # Set up pipeline
+    pipeline = SegmentationPipeline()
+    pipeline.register_module(OldNorseModule())
+
+    # Load data
+    console.print("[bold]Loading databank records...[/bold]")
+    records = load_databank(country=country)
+    if not records:
+        console.print("[red]No records found in databank[/red]")
+        raise typer.Exit(1)
+    console.print(f"  Loaded {len(records)} records" + (f" (country={country})" if country else ""))
+
+    # Build TestData
+    console.print(f"[bold]Building test data for element '{element}'...[/bold]")
+    data = build_test_data(
+        records,
+        element,
+        pipeline=pipeline,
+        signal_field=signal_field,
+        analyze_attestations=not no_attestations,
+    )
+    n_present = int(data.element_present.sum())
+    console.print(f"  {n_present}/{data.n_places} places contain element '{element}'")
+
+    if n_present == 0:
+        console.print(
+            f"[yellow]No places with element '{element}'."
+            " Try 'toponymia analyze discover'.[/yellow]"
+        )
+        raise typer.Exit(1)
+
+    # Run the appropriate test
+    console.print(f"[bold]Running {test_type} test...[/bold]")
+    result = _run_test(test_type, data, signal_field)
+
+    # Display results
+    result_table = Table(title=f"Test Result: {test_type} for '{element}'")
+    result_table.add_column("Metric", style="cyan")
+    result_table.add_column("Value", style="green")
+
+    result_table.add_row("Test ID", result.test_id)
+    result_table.add_row("Null hypothesis", result.null_hypothesis)
+    result_table.add_row("Test statistic", f"{result.test_statistic:.4f}")
+    result_table.add_row("p-value", f"{result.p_value:.6f}")
+    result_table.add_row("Effect size", f"{result.effect_size:.4f}")
+    result_table.add_row("Status", result.status.value)
+    result_table.add_row("N places", str(data.n_places))
+    result_table.add_row("N with element", str(n_present))
+
+    console.print(result_table)
+
+    if result.p_value < 0.05:
+        console.print(f"[green]✓ Significant at α=0.05 (p={result.p_value:.6f})[/green]")
+    else:
+        console.print(f"[dim]Not significant at α=0.05 (p={result.p_value:.6f})[/dim]")
+
+
+@analyze_app.command("discover")
+def analyze_discover(
+    country: str | None = typer.Option(None, "--country", "-c", help="Filter by ISO country code"),
+    min_count: int = typer.Option(2, "--min-count", "-m", help="Minimum element count to show"),
+):
+    """Discover toponymic elements present in the databank."""
+    from toponymia.languages.old_norse import OldNorseModule
+    from toponymia.pipelines.analyze import get_element_summary, load_databank
+    from toponymia.pipelines.segment import SegmentationPipeline
+
+    pipeline = SegmentationPipeline()
+    pipeline.register_module(OldNorseModule())
+
+    records = load_databank(country=country)
+    if not records:
+        console.print("[red]No records found in databank[/red]")
+        raise typer.Exit(1)
+
+    console.print(f"[bold]Discovering elements in {len(records)} records...[/bold]")
+    summary = get_element_summary(records, pipeline)
+
+    table = Table(title="Detected Toponymic Elements")
+    table.add_column("Element", style="cyan")
+    table.add_column("Count", style="green", justify="right")
+    table.add_column("Testable", style="yellow")
+
+    for elem, count in summary.items():
+        if count >= min_count:
+            testable = "✓" if count >= 5 else "~"
+            table.add_row(elem, str(count), testable)
+
+    console.print(table)
+    console.print("\n[dim]Elements with ≥5 occurrences are marked testable (✓)[/dim]")
+    console.print(
+        f"[dim]Use: toponymia analyze element <element> --country {country or 'XX'}[/dim]"
+    )
+
+
+def _run_test(test_type: str, data, signal_field: str | None):
+    """Run a statistical test and return the result."""
+    from toponymia.statistics.base import TestFamily, TestResult, TestStatus
+
+    if test_type == "spatial":
+        from toponymia.statistics.spatial import SpatialClusteringTest
+
+        test = SpatialClusteringTest()
+        return test.run(data)
+
+    if test_type == "correspondence":
+        from toponymia.statistics.correspondence import ElementSignalCorrespondenceTest
+
+        if not signal_field:
+            return TestResult(
+                test_id="correspondence-no-signal",
+                test_family=TestFamily.CORRESPONDENCE,
+                status=TestStatus.PROPOSED,
+                null_hypothesis="N/A",
+                alternative_hypothesis="N/A",
+            )
+        test = ElementSignalCorrespondenceTest()
+        return test.run(data)
+
+    if test_type == "temporal":
+        from toponymia.statistics.temporal import TemporalLayerConsistencyTest
+
+        test = TemporalLayerConsistencyTest()
+        return test.run(data)
+
+    if test_type == "migration":
+        from toponymia.statistics.migration import MigrationOverfrequencyTest
+
+        test = MigrationOverfrequencyTest()
+        return test.run(data)
+
+    raise typer.Exit(code=1)
 
 
 if __name__ == "__main__":
