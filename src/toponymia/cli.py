@@ -56,8 +56,16 @@ def ingest_geonames(
     cache_dir: Path | None = typer.Option(
         None, "--cache-dir", help="Cache directory for downloads"
     ),
+    output: Path | None = typer.Option(
+        None, "--output", "-o", help="Output to databank directory (e.g., databank/)"
+    ),
+    limit: int | None = typer.Option(
+        None, "--limit", "-l", help="Max records to ingest"
+    ),
 ):
     """Ingest place names from GeoNames for a country."""
+    import json
+
     from toponymia.connectors.geonames import GeoNamesConnector
 
     connector = GeoNamesConnector(cache_dir=cache_dir)
@@ -65,16 +73,47 @@ def ingest_geonames(
 
     count = 0
     errors = 0
+    records_out: list[dict] = []
+
     for record in connector.fetch(country=country):
         validation_errors = connector.validate(record)
         if validation_errors:
             errors += 1
             continue
         count += 1
+
+        if output is not None:
+            records_out.append({
+                "name_form": record.name_form,
+                "name_normalized": record.name_normalized,
+                "latitude": record.latitude,
+                "longitude": record.longitude,
+                "elevation": record.elevation_m,
+                "source_id": record.source_id,
+                "language_code": record.language_code,
+                "place_type": record.place_type,
+                "source_url": record.source_url,
+                "is_current": record.is_current,
+                "alternative_names": record.alternative_names or {},
+            })
+
         if count % 10000 == 0:
             console.print(f"  Processed {count:,} records...")
+        if limit and count >= limit:
+            break
 
-    console.print(f"[green]Done:[/green] {count:,} valid records, {errors:,} skipped")
+    if output is not None:
+        outdir = output / "places" / country.upper()
+        outdir.mkdir(parents=True, exist_ok=True)
+        outfile = outdir / "geonames.jsonl"
+        with outfile.open("w", encoding="utf-8") as f:
+            for rec in records_out:
+                f.write(json.dumps(rec, ensure_ascii=False) + "\n")
+        console.print(
+            f"[green]Wrote {count:,} records to {outfile}[/green]"
+        )
+    else:
+        console.print(f"[green]Done:[/green] {count:,} valid records, {errors:,} skipped")
 
 
 @ingest_app.command("wikidata")
