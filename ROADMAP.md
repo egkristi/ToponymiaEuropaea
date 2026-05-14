@@ -73,8 +73,8 @@ Add language modules for major European toponymic traditions.
 | 2.7 | Latin module | ✅ | LatinModule: 11 prefixes, 24 suffixes, 34 elements; Roman-era with reflexes |
 | 2.8 | Old Slavic module | ✅ | OldSlavicModule: 16 prefixes, 25 suffixes, 36 elements; possessive/locative patterns. 17 tests. |
 | 2.9 | Basque module | ✅ | BasqueModule: 16 prefixes, 20 suffixes, 40 elements; pre-IE isolate. 20 tests. |
-| 2.10 | Old High German module | ⬚ | Germanic continental (-heim, -burg, -wald) |
-| 2.11 | Arabic/Moorish module | ⬚ | Iberian substrate layer (al-, wadi-, qal'a-) |
+| 2.10 | Old High German module | ✅ | OHGModule: 12 prefixes, 30 suffixes, 42 elements; habitative/topographic patterns. 19 tests. |
+| 2.11 | Arabic/Moorish module | ✅ | ArabicMoorishModule: 13 prefixes, 7 suffixes, 31 elements; al-Andalus substrate. 18 tests. |
 | 2.12 | Danish module | ✅ | -by, -torp/-drup, -toft, -lev, -løse. Segment, classify, etymologize. 22 tests. |
 | 2.13 | Swedish module | ✅ | -torp, -rud, -ås, -tuna, -köping. Segment, classify, etymologize. 23 tests. |
 
@@ -319,7 +319,7 @@ The litmus test (May 2025) proved the pipeline works mechanically. Data populati
 **Milestone 11.4.3 COMPLETE** — Phonetic index field on all records.
 **Issues #10–13 closed** — mypy fixed, Danish/Swedish modules added, data populated.
 
-**Status: 561 tests passing, mypy strict clean, 3018 databank records.**
+**Status: 598 tests passing, mypy strict clean, 3018 databank records.**
 
 ### Immediate priorities (current sprint)
 
@@ -349,7 +349,7 @@ The litmus test (May 2025) proved the pipeline works mechanically. Data populati
 
 - **v0.1.0** — Framework foundation, architecture, proof-of-concept.
 - **v0.2.0** — Expanded dictionaries (120+ ON entries), attestation analysis, analysis bridge, end-to-end workflow command, dependency trim. Pipeline runs from CLI.
-- **v0.3.0** (current) — 3018 records (5 Nordic countries, 2 sources), 12 language modules, H3 spatial indexing, phonetic dedup, diachronic linking, Bayesian etymology framework + comparison test, language contact/political renaming tests, Kartverket SSR import. 561 tests, mypy strict clean.
+- **v0.3.0** (current) — 3018 records (5 Nordic countries, 2 sources), 14 language modules, H3 spatial indexing, phonetic dedup, diachronic linking, Bayesian etymology framework + comparison test, language contact/political renaming tests, Kartverket SSR import. 598 tests, mypy strict clean.
 - **v0.4.0** — Cross-source deduplication, three-layer persistence, Bayesian etymology framework.
 - **v0.5.0** — Historical sources (Norske Gaardnavne, Diplomatarium Norvegicum), Celtic/Latin modules.
 - **v0.6.0** — API and visualization layer, 6+ perspective modules
