@@ -17,7 +17,7 @@
 | **Data sources** | GeoNames (2,507 records), Kartverket SSR (504 records) |
 | **Language modules** | 7 (Old Norse, Proto-Germanic, Northern Sámi, Finnish, Danish, Swedish, Old English) |
 | **Statistical tests** | 7 families (spatial, correspondence, astronomical, religious, temporal, migration, robustness) |
-| **Tests passing** | 434 |
+| **Tests passing** | 451 |
 | **Type safety** | mypy strict, 0 errors |
 
 **Key capabilities:**
