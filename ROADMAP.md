@@ -177,10 +177,10 @@ Building the research community.
 
 | # | Item | Status | Notes |
 |---|------|--------|-------|
-| 8.1 | Project website | ⬚ | GitHub Pages or similar |
+| 8.1 | Project website | ✅ | GitHub Pages or similar |
 | 8.2 | Academic advisory board | ⬚ | Onomastics, linguistics, archaeology |
 | 8.3 | First published research paper | ⬚ | Using the framework |
-| 8.4 | Community forum/discussion | ⬚ | GitHub Discussions |
+| 8.4 | Community forum/discussion | ✅ | GitHub Discussions |
 | 8.5 | Conference presentation | ⬚ | ICOS, NORNa, or similar |
 | 8.6 | Collaboration with national registries | ⬚ | Data sharing agreements |
 
