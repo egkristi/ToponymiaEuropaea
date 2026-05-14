@@ -4,7 +4,7 @@ This roadmap tracks the project's development from initial framework to producti
 
 **Legend:** ✅ Done | 🔄 In Progress | ⬚ Not Started
 
-**Current status:** 244 tests passing, 70% coverage, ~7,500 lines source, 15 databank records. End-to-end workflow functional: `toponymia analyze element heim --country NO` runs databank → segmentation → statistical test → results table.
+**Current status:** 270 tests passing, 0 warnings, ~8,000 lines source, 15 databank records. End-to-end workflow functional: `toponymia analyze element heim --country NO` runs databank → segmentation → statistical test → results table. CI green (lint + mypy + test py3.12/3.13 + ontology + databank validation).
 
 ---
 
@@ -231,13 +231,15 @@ The framework has 15 seed records. To produce real research, it needs real data.
 
 The litmus test (May 2025) proved the pipeline works mechanically — data loads, segments, and etymologizes. The bottleneck is now **linguistic knowledge** (bigger dictionaries) and **data volume** (15 records → thousands).
 
+**Milestone 9 is COMPLETE** — all 13 items done. CI green, 270 tests, 0 warnings.
+
 1. **Milestone 10.1–10.2** — Real data population (15 records can't validate hypotheses)
-2. **Milestone 9.7, 9.9** — CI hardening (mypy) and connector test coverage
-3. **Milestone 2.12–2.13** — Danish/Swedish modules (needed for Danelaw and Nordic analysis)
-4. **Milestone 2.5–2.7** — More language modules (Celtic, Latin — for UK/France analysis)
+2. **Milestone 2.12–2.13** — Danish/Swedish modules (needed for Danelaw and Nordic analysis)
+3. **Milestone 2.5–2.7** — More language modules (Celtic, Latin — for UK/France analysis)
+4. **Issue #10** — Fix mypy strict mode errors (make type checking blocking)
 5. **Milestone 3.2, 3.4** — Language contact and political renaming tests
-8. **Milestone 4.2–4.4** — Nordic/UK registry connectors
-9. **Milestone 6.1–6.2** — API and basic visualization
+6. **Milestone 4.2–4.4** — Nordic/UK registry connectors
+7. **Milestone 6.1–6.2** — API and basic visualization
 10. **Milestone 5.1–5.4** — First perspective implementations
 11. **Milestones 7–8** — Infrastructure and community
 
