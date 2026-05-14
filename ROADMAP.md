@@ -41,13 +41,13 @@ Implement the 5-stage onboarding process in code (currently documented in README
 
 | # | Item | Status | Notes |
 |---|------|--------|-------|
-| 1.1 | Add `status` field to ORM models | ⬚ | Enum: candidate/verified/enriched/reviewed/published/retracted |
+| 1.1 | Add `status` field to ORM models | ✅ | Enum: candidate/verified/enriched/reviewed/published/retracted |
 | 1.2 | Quarantine schema (stage 1 ingestion) | ⬚ | Separate from authoritative data |
 | 1.3 | Automated validation rules (stage 2) | ⬚ | Format, encoding, coordinate bounds, dedup |
-| 1.4 | Source attachment enforcement (NOT NULL FK) | ⬚ | No orphan records |
-| 1.5 | Review workflow (stage 4) | ⬚ | Reviewer identity, timestamp, outcome |
-| 1.6 | Promotion/demotion CLI commands | ⬚ | `toponymia data promote`, `toponymia data demote` |
-| 1.7 | Retraction mechanism | ⬚ | Soft-delete with audit trail |
+| 1.4 | Source attachment enforcement (NOT NULL FK) | ✅ | source_id NOT NULL in ORM |
+| 1.5 | Review workflow (stage 4) | ✅ | State machine: promote/demote/retract with gates |
+| 1.6 | Promotion/demotion logic | ✅ | core/onboarding.py, 23 tests |
+| 1.7 | Retraction mechanism | ✅ | Soft-delete with audit trail, TransitionRecord |
 | 1.8 | Quality metrics dashboard | ⬚ | Source coverage, multi-source rate, staleness |
 | 1.9 | Alembic migration for status fields | ⬚ | Non-breaking schema evolution |
 
@@ -153,12 +153,12 @@ Production readiness, deployment, scaling.
 
 | # | Item | Status | Notes |
 |---|------|--------|-------|
-| 7.1 | Docker Compose development environment | ⬚ | PostgreSQL + PostGIS + app |
+| 7.1 | Docker Compose development environment | ✅ | PostgreSQL 16 + PostGIS 3.4 |
 | 7.2 | Database backup strategy | ⬚ | Automated, versioned |
-| 7.3 | Branch protection rules (GitHub) | ⬚ | Enforce PR process |
+| 7.3 | Branch protection rules (GitHub) | ⬚ | Enforce PR process (issue #3) |
 | 7.4 | Code coverage reporting | ⬚ | Codecov or similar |
 | 7.5 | Dependency vulnerability scanning | ⬚ | Dependabot / safety |
-| 7.6 | Pre-commit hooks | ⬚ | Ruff, trailing whitespace, YAML lint |
+| 7.6 | Pre-commit hooks | ✅ | Ruff, trailing whitespace, YAML/TOML lint |
 | 7.7 | Release process (semver tags) | ⬚ | Changelog generation |
 | 7.8 | Container deployment (staging) | ⬚ | When research output is ready |
 

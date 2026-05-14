@@ -758,8 +758,8 @@ class MySourceConnector(BaseConnector):
 ### Prerequisites
 
 - Python 3.12+
-- PostgreSQL 16+ with PostGIS
 - [UV](https://docs.astral.sh/uv/) (Python package manager)
+- Docker & Docker Compose (for database)
 - Make
 
 ### Installation
@@ -771,8 +771,10 @@ cd ToponymiaEuropaea
 # Install dependencies
 uv sync
 
-# Set up database
-make db-create
+# Start PostgreSQL + PostGIS (via Docker)
+make docker-up
+
+# Run database migrations
 make db-migrate
 
 # Verify installation
@@ -801,6 +803,7 @@ Copy the example configuration:
 
 ```bash
 cp config/settings.example.toml config/settings.toml
+cp .env.example .env  # Database credentials
 ```
 
 Edit `config/settings.toml` to configure database connection, API keys, and analysis parameters.
