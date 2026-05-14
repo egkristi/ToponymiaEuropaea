@@ -4,9 +4,11 @@ This roadmap tracks the project's development from initial framework to producti
 
 **Legend:** ✅ Done | 🔄 In Progress | ⬚ Not Started
 
+**Current status:** 214 tests passing, 70% coverage, 6,900 lines source, 15 databank records.
+
 ---
 
-## Milestone 0 — Foundation (Current)
+## Milestone 0 — Foundation (Complete)
 
 Core framework, architecture, and development infrastructure.
 
@@ -35,21 +37,24 @@ Core framework, architecture, and development infrastructure.
 
 ---
 
-## Milestone 1 — Data Onboarding Pipeline (Code Implementation)
+## Milestone 1 — Data Onboarding Pipeline (Complete)
 
-Implement the 5-stage onboarding process in code (currently documented in README only).
+Implement the 5-stage onboarding process in code.
 
 | # | Item | Status | Notes |
 |---|------|--------|-------|
 | 1.1 | Add `status` field to ORM models | ✅ | Enum: candidate/verified/enriched/reviewed/published/retracted |
-| 1.2 | Quarantine schema (stage 1 ingestion) | ⬚ | Separate from authoritative data |
+| 1.2 | Quarantine schema (stage 1 ingestion) | ✅ | databank/ is the quarantine; records start as candidate |
 | 1.3 | Automated validation rules (stage 2) | ✅ | Format, encoding, coordinate bounds, language code, source |
 | 1.4 | Source attachment enforcement (NOT NULL FK) | ✅ | source_id NOT NULL in ORM |
 | 1.5 | Review workflow (stage 4) | ✅ | State machine: promote/demote/retract with gates |
 | 1.6 | Promotion/demotion logic | ✅ | core/onboarding.py, 23 tests |
 | 1.7 | Retraction mechanism | ✅ | Soft-delete with audit trail, TransitionRecord |
 | 1.8 | Quality metrics dashboard | ✅ | CLI: quality summary/validate-file/tests |
-| 1.9 | Alembic migration for status fields | ✅ | migration 002, committed 6c2c84a |
+| 1.9 | Alembic migration for status fields | ✅ | migration 002 |
+| 1.10 | Git-native databank persistence | ✅ | JSONL format, fork→PR workflow |
+| 1.11 | Historical name attestations | ✅ | attestations[] array, diachronic support |
+| 1.12 | Databank validation CI job | ✅ | validate-databank in CI |
 
 ---
 
@@ -60,16 +65,18 @@ Add language modules for major European toponymic traditions.
 | # | Item | Status | Notes |
 |---|------|--------|-------|
 | 2.1 | Proto-Germanic reconstructions | ✅ | ProtoGermanicModule, 19 tests |
-| 2.2 | Old English module | ✅ | OldEnglishModule, 40+ suffixes, compounds |
+| 2.2 | Old English module | ✅ | 40+ suffixes, compounds |
 | 2.3 | Sámi (Northern) module | ✅ | NorthernSamiModule, 24 elements, 33 modifiers |
 | 2.4 | Finnish module | ✅ | FinnishModule: compounds, -la/-lä, vowel harmony, 26 tests |
-| 2.5 | Irish/Scottish Gaelic module | ⬚ | Celtic elements |
-| 2.6 | Welsh module | ⬚ | Celtic P-branch |
-| 2.7 | Latin module | ⬚ | Roman-era names |
-| 2.8 | Old Slavic module | ⬚ | Pan-Slavic toponymic suffixes |
-| 2.9 | Basque module | ⬚ | Pre-IE isolate |
-| 2.10 | Old High German module | ⬚ | Germanic continental |
-| 2.11 | Arabic/Moorish module | ⬚ | Iberian substrate layer |
+| 2.5 | Irish/Scottish Gaelic module | ⬚ | Celtic elements (baile-, druim-, ard-, loch-, cill-) |
+| 2.6 | Welsh module | ⬚ | Celtic P-branch (llan-, aber-, pen-, cwm-, bedd-) |
+| 2.7 | Latin module | ⬚ | Roman-era names (-castra, -dunum, via-, aquae-) |
+| 2.8 | Old Slavic module | ⬚ | Pan-Slavic toponymic suffixes (-ov, -itz, -grad) |
+| 2.9 | Basque module | ⬚ | Pre-IE isolate (harri-, mendi-, ibai-) |
+| 2.10 | Old High German module | ⬚ | Germanic continental (-heim, -burg, -wald) |
+| 2.11 | Arabic/Moorish module | ⬚ | Iberian substrate layer (al-, wadi-, qal'a-) |
+| 2.12 | Danish module | ⬚ | Critical for Danelaw analysis (-by, -thorp, -toft) |
+| 2.13 | Swedish module | ⬚ | -torp, -rud, -ås, -holm |
 
 ---
 
@@ -90,7 +97,7 @@ Expand the statistical toolkit for all test families.
 | 3.9 | Religious stratigraphy test | ✅ | Proximity co-occurrence permutation test, 7 tests |
 | 3.10 | Catastrophe clustering test | ⬚ | Disaster names vs. hazard maps |
 | 3.11 | Ripley's K spatial analysis | ⬚ | Multi-scale clustering |
-| 3.12 | Rayleigh directional test | ⬚ | Non-uniform orientation distributions |
+| 3.12 | Name change rate test | ⬚ | Temporal frequency of renamings by region/period |
 
 ---
 
@@ -179,24 +186,65 @@ Building the research community.
 
 ---
 
-## Priority Order
+## NEW: Milestone 9 — Architecture Consolidation (Critical)
 
-1. **Milestone 1** — Data onboarding code (the foundation of trust)
-2. **Milestone 7.3, 7.6** — Branch protection and pre-commit (process enforcement)
-3. **Milestone 2.1–2.3** — First additional language modules
-4. **Milestone 4.1** — First national registry connector
-5. **Milestone 3.1–3.5** — Core statistical test expansion
-6. **Milestone 5.1–5.4** — First perspective implementations
+Address structural debt accumulated during rapid development.
+
+| # | Item | Status | Priority | Notes |
+|---|------|--------|----------|-------|
+| 9.1 | Unify persistence model | ⬚ | **HIGH** | Resolve dual PostgreSQL/JSONL confusion. Document the databank as primary persistence; PostgreSQL becomes optional analysis cache. |
+| 9.2 | Databank → analysis bridge | ⬚ | **HIGH** | Code to load JSONL databank records into TestData numpy arrays for statistical tests. `toponymia analyze <test-id> --element <element>` |
+| 9.3 | Trim unused dependencies | ⬚ | **HIGH** | Remove or make optional: geopandas, rasterio, spacy, duckdb, pyarrow, statsmodels (none imported in code). Reduce install from ~2GB to ~200MB. |
+| 9.4 | Connector → databank ingest pipeline | ⬚ | **HIGH** | `toponymia ingest geonames --country NO --output databank/` writes JSONL directly to the databank. Currently connectors fetch but don't persist. |
+| 9.5 | Fix PytestCollectionWarning | ⬚ | LOW | Rename TestData→StatTestData, TestFamily→StatTestFamily, TestStatus→StatTestStatus; or add `__test__ = False` |
+| 9.6 | Fix pydantic-settings toml_file warning | ⬚ | LOW | Either add `tomli` extra or remove `toml_file` from Settings |
+| 9.7 | Add mypy to CI | ⬚ | MEDIUM | mypy is configured in pyproject.toml but never run in CI |
+| 9.8 | End-to-end workflow command | ⬚ | **HIGH** | Single command: load data → filter by element → run test → output results table. The scientific workflow. |
+| 9.9 | Test untested connectors | ⬚ | MEDIUM | OSM (0%), Wikidata (0%) have no tests — add mocked unit tests |
+| 9.10 | Commit uv.lock for reproducibility | ⬚ | MEDIUM | Ensures exact dependency versions across collaborators |
+| 9.11 | Clarify Docker vs. databank architecture in README | ⬚ | MEDIUM | PostgreSQL is optional analysis DB; databank is source of truth |
+
+---
+
+## NEW: Milestone 10 — Data Population (Critical for Research Value)
+
+The framework has 15 seed records. To produce real research, it needs real data.
+
+| # | Item | Status | Priority | Notes |
+|---|------|--------|----------|-------|
+| 10.1 | Bulk GeoNames import (Norway) | ⬚ | **HIGH** | ~50,000 Norwegian place names from GeoNames dump |
+| 10.2 | Kartverket SSR bulk import | ⬚ | **HIGH** | ~800,000 official Norwegian names (primary authority) |
+| 10.3 | Bulk GeoNames import (Nordic) | ⬚ | HIGH | Sweden, Finland, Denmark, Iceland |
+| 10.4 | Wikidata etymology extraction | ⬚ | MEDIUM | P138 (named after) for all European settlements |
+| 10.5 | Norske Gaardnavne (Rygh) digitized | ⬚ | HIGH | 19th-century authoritative Norwegian farm-name corpus |
+| 10.6 | EPNS volumes (England) | ⬚ | MEDIUM | English Place-Name Society historical records |
+| 10.7 | Attestations from Diplomatarium Norvegicum | ⬚ | HIGH | Medieval charter attestations with dates |
+| 10.8 | Seed data for UK/Ireland | ⬚ | MEDIUM | GeoNames + OS data for Celtic language analysis |
+| 10.9 | Seed data for Iberia | ⬚ | MEDIUM | Arabic/Moorish substrate layer validation |
+| 10.10 | Historical attestation curation workflow | ⬚ | HIGH | How contributors add dated attestations from primary sources |
+
+---
+
+## Priority Order (Revised)
+
+1. **Milestone 9.1–9.4** — Architecture consolidation (the framework can't produce research without these)
+2. **Milestone 10.1–10.2** — Real data population (15 records can't validate hypotheses)
+3. **Milestone 9.8** — End-to-end workflow (the scientific use case)
+4. **Milestone 2.5–2.7** — More language modules (Celtic, Latin — for UK/France analysis)
+5. **Milestone 3.2, 3.4** — Language contact and political renaming tests
+6. **Milestone 4.2–4.4** — Nordic/UK registry connectors
 7. **Milestone 6.1–6.2** — API and basic visualization
-8. **Milestones 6–8** — Production and community
+8. **Milestone 5.1–5.4** — First perspective implementations
+9. **Milestones 7–8** — Infrastructure and community
 
 ---
 
 ## Versioning
 
 - **v0.1.0** (current) — Framework foundation, architecture, proof-of-concept
-- **v0.2.0** — Data onboarding pipeline implemented in code
-- **v0.3.0** — 3+ language modules, 5+ statistical tests
-- **v0.4.0** — First national registry connector, perspective modules
+- **v0.2.0** — Architecture consolidation + first real data (Milestones 9 + 10.1)
+- **v0.3.0** — End-to-end research workflow functional (can run and report a statistical test on real data)
+- **v0.4.0** — Multi-country data, 6+ language modules, first perspective modules
+- **v1.0.0** — First publishable research result produced using the framework
 - **v0.5.0** — API and visualization layer
 - **v1.0.0** — First complete research cycle (ingest → analyse → publish results)
