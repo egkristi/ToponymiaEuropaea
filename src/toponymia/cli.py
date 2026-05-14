@@ -919,6 +919,65 @@ def databank_stats() -> None:
     console.print(f"\n[bold]{total}[/bold] total records in databank")
 
 
+@databank_app.command("dedup")
+def databank_dedup(
+    country: str | None = typer.Option(None, "--country", "-c", help="Filter by ISO country code"),
+    max_distance: int = typer.Option(3, "--max-distance", "-d", help="Max H3 R9 grid distance"),
+    min_confidence: float = typer.Option(
+        0.0, "--min-confidence", help="Minimum confidence threshold"
+    ),
+) -> None:
+    """Find cross-source duplicate records in the databank."""
+    from toponymia.pipelines.dedup import find_cross_source_duplicates, load_all_records
+
+    databank_path = Path(__file__).parent.parent.parent / "databank"
+
+    if not (databank_path / "places").exists():
+        console.print("[yellow]No databank/places directory found[/yellow]")
+        raise typer.Exit(1)
+
+    records = load_all_records(str(databank_path))
+
+    if country:
+        records = [r for r in records if r.get("country_code", "").upper() == country.upper()]
+
+    if not records:
+        console.print("[yellow]No records found[/yellow]")
+        raise typer.Exit(1)
+
+    console.print(f"Analyzing [bold]{len(records)}[/bold] records for cross-source duplicates...")
+    report = find_cross_source_duplicates(records, max_h3_distance=max_distance)
+
+    filtered = [m for m in report.matches if m.confidence >= min_confidence]
+
+    if not filtered:
+        console.print("[green]No cross-source duplicates found.[/green]")
+        return
+
+    table = Table(title=f"Cross-Source Duplicates ({len(filtered)} matches)")
+    table.add_column("Name A", style="cyan")
+    table.add_column("Source A", style="magenta")
+    table.add_column("Name B", style="cyan")
+    table.add_column("Source B", style="magenta")
+    table.add_column("Key", style="dim")
+    table.add_column("H3 Dist", justify="right")
+    table.add_column("Conf.", justify="right", style="green")
+
+    for match in sorted(filtered, key=lambda m: m.confidence, reverse=True):
+        table.add_row(
+            match.record_a.get("name_form", "?"),
+            match.source_a.split("/")[-1] if "/" in match.source_a else match.source_a,
+            match.record_b.get("name_form", "?"),
+            match.source_b.split("/")[-1] if "/" in match.source_b else match.source_b,
+            match.phonetic_key,
+            str(match.h3_distance) if match.h3_distance >= 0 else "?",
+            f"{match.confidence:.0%}",
+        )
+
+    console.print(table)
+    console.print(f"\n[bold]{report.high_confidence_count}[/bold] high-confidence matches (≥80%)")
+
+
 # --- Analyze commands ---
 
 
