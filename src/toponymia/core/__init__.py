@@ -314,9 +314,7 @@ class PlaceRelation(Base):
     extra: Mapped[dict | None] = mapped_column(JSONB, nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 
-    place: Mapped[Place] = relationship(
-        foreign_keys=[place_id], back_populates="relations_from"
-    )
+    place: Mapped[Place] = relationship(foreign_keys=[place_id], back_populates="relations_from")
     related_place: Mapped[Place] = relationship(
         foreign_keys=[related_place_id], back_populates="relations_to"
     )
