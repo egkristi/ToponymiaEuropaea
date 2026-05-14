@@ -43,12 +43,12 @@ Implement the 5-stage onboarding process in code (currently documented in README
 |---|------|--------|-------|
 | 1.1 | Add `status` field to ORM models | ✅ | Enum: candidate/verified/enriched/reviewed/published/retracted |
 | 1.2 | Quarantine schema (stage 1 ingestion) | ⬚ | Separate from authoritative data |
-| 1.3 | Automated validation rules (stage 2) | ⬚ | Format, encoding, coordinate bounds, dedup |
+| 1.3 | Automated validation rules (stage 2) | ✅ | Format, encoding, coordinate bounds, language code, source |
 | 1.4 | Source attachment enforcement (NOT NULL FK) | ✅ | source_id NOT NULL in ORM |
 | 1.5 | Review workflow (stage 4) | ✅ | State machine: promote/demote/retract with gates |
 | 1.6 | Promotion/demotion logic | ✅ | core/onboarding.py, 23 tests |
 | 1.7 | Retraction mechanism | ✅ | Soft-delete with audit trail, TransitionRecord |
-| 1.8 | Quality metrics dashboard | ⬚ | Source coverage, multi-source rate, staleness |
+| 1.8 | Quality metrics dashboard | ✅ | CLI: quality summary/validate-file/tests |
 | 1.9 | Alembic migration for status fields | ✅ | migration 002, committed 6c2c84a |
 
 ---
@@ -62,7 +62,7 @@ Add language modules for major European toponymic traditions.
 | 2.1 | Proto-Germanic reconstructions | ✅ | ProtoGermanicModule, 19 tests |
 | 2.2 | Old English module | ✅ | OldEnglishModule, 40+ suffixes, compounds |
 | 2.3 | Sámi (Northern) module | ✅ | NorthernSamiModule, 24 elements, 33 modifiers |
-| 2.4 | Finnish module | ⬚ | Agglutinative morphology |
+| 2.4 | Finnish module | ✅ | FinnishModule: compounds, -la/-lä, vowel harmony, 26 tests |
 | 2.5 | Irish/Scottish Gaelic module | ⬚ | Celtic elements |
 | 2.6 | Welsh module | ⬚ | Celtic P-branch |
 | 2.7 | Latin module | ⬚ | Roman-era names |
@@ -79,9 +79,9 @@ Expand the statistical toolkit for all test families.
 
 | # | Item | Status | Notes |
 |---|------|--------|-------|
-| 3.1 | Temporal layer consistency test | ⬚ | Are dated layers geographically coherent? |
+| 3.1 | Temporal layer consistency test | ✅ | Mean NND vs. permutation null, 7 tests |
 | 3.2 | Language contact boundary detection | ⬚ | Substrate signal vs. topographic barriers |
-| 3.3 | Migration overfrequency test | ⬚ | Diaspora elements in target areas |
+| 3.3 | Migration overfrequency test | ✅ | Proportion difference permutation test, 7 tests |
 | 3.4 | Political renaming detection | ⬚ | Statistical assimilation signal |
 | 3.5 | Bayesian etymology comparison | ⬚ | Posterior over competing interpretations |
 | 3.6 | Astronomical alignment test | ✅ | Rayleigh test, mean direction, 11 tests |
@@ -156,7 +156,7 @@ Production readiness, deployment, scaling.
 | 7.1 | Docker Compose development environment | ✅ | PostgreSQL 16 + PostGIS 3.4 |
 | 7.2 | Database backup strategy | ⬚ | Automated, versioned |
 | 7.3 | Branch protection rules (GitHub) | ⬚ | Enforce PR process (issue #3) |
-| 7.4 | Code coverage reporting | ⬚ | Codecov or similar |
+| 7.4 | Code coverage reporting | ✅ | pytest-cov in CI, XML artifact, 70% coverage |
 | 7.5 | Dependency vulnerability scanning | ⬚ | Dependabot / safety |
 | 7.6 | Pre-commit hooks | ✅ | Ruff, trailing whitespace, YAML/TOML lint |
 | 7.7 | Release process (semver tags) | ⬚ | Changelog generation |

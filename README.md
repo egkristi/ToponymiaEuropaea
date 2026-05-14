@@ -846,6 +846,7 @@ toponymia-europaea/
 │       │   ├── old_norse.py
 │       │   ├── proto_germanic.py    # Proto-Germanic + Old English
 │       │   ├── northern_sami.py     # Northern Sámi (sme)
+│       │   ├── finnish.py           # Finnish (suomi)
 │       │   └── sami.py
 │       ├── statistics/               # Statistical testing framework
 │       │   ├── __init__.py
@@ -854,7 +855,8 @@ toponymia-europaea/
 │       │   ├── spatial.py
 │       │   ├── astronomical.py      # Rayleigh alignment test
 │       │   ├── religious.py         # Religious stratigraphy test
-│       │   ├── temporal.py
+│       │   ├── temporal.py          # Temporal layer consistency test
+│       │   ├── migration.py         # Migration overfrequency test
 │       │   ├── robustness.py
 │       │   └── null_models.py
 │       └── perspectives/             # Perspective-specific analysis
