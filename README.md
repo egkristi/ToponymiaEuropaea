@@ -705,7 +705,7 @@ The project uses a **connector architecture** where each data source is a plugin
 | Wikidata | Global | CC0 | Implemented |
 | OpenStreetMap | Global | ODbL | Implemented |
 | Copernicus DEM | Global (30m) | Open | Implemented |
-| SSR (Norway) | Norway | NLOD | Planned |
+| Kartverket SSR (Norway) | Norway | NLOD | Implemented |
 | Lantmäteriet (Sweden) | Sweden | CC0 | Planned |
 | GST (Denmark) | Denmark | Open | Planned |
 | MML (Finland) | Finland | CC-BY | Planned |
@@ -825,6 +825,7 @@ toponymia-europaea/
 │       │   ├── __init__.py
 │       │   ├── base.py               # BaseConnector interface
 │       │   ├── geonames.py
+│       │   ├── kartverket.py         # Norwegian SSR connector
 │       │   ├── wikidata.py
 │       │   └── osm.py
 │       ├── core/                     # Core domain model
@@ -843,13 +844,16 @@ toponymia-europaea/
 │       │   ├── __init__.py
 │       │   ├── base.py              # BaseLanguageModule interface
 │       │   ├── old_norse.py
-│       │   ├── proto_germanic.py
+│       │   ├── proto_germanic.py    # Proto-Germanic + Old English
+│       │   ├── northern_sami.py     # Northern Sámi (sme)
 │       │   └── sami.py
 │       ├── statistics/               # Statistical testing framework
 │       │   ├── __init__.py
 │       │   ├── base.py              # BaseTest interface
 │       │   ├── correspondence.py
 │       │   ├── spatial.py
+│       │   ├── astronomical.py      # Rayleigh alignment test
+│       │   ├── religious.py         # Religious stratigraphy test
 │       │   ├── temporal.py
 │       │   ├── robustness.py
 │       │   └── null_models.py
@@ -862,7 +866,8 @@ toponymia-europaea/
 ├── migrations/                       # Database migrations (Alembic)
 │   ├── env.py
 │   └── versions/
-│       └── 001_initial_schema.py
+│       ├── 001_initial_schema.py
+│       └── 002_add_onboarding_and_enriched_fields.py
 ├── config/
 │   ├── settings.example.toml
 │   └── ontology/                    # Versioned ontology definitions

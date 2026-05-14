@@ -49,7 +49,7 @@ Implement the 5-stage onboarding process in code (currently documented in README
 | 1.6 | Promotion/demotion logic | ✅ | core/onboarding.py, 23 tests |
 | 1.7 | Retraction mechanism | ✅ | Soft-delete with audit trail, TransitionRecord |
 | 1.8 | Quality metrics dashboard | ⬚ | Source coverage, multi-source rate, staleness |
-| 1.9 | Alembic migration for status fields | ⬚ | Non-breaking schema evolution |
+| 1.9 | Alembic migration for status fields | ✅ | migration 002, committed 6c2c84a |
 
 ---
 
@@ -59,9 +59,9 @@ Add language modules for major European toponymic traditions.
 
 | # | Item | Status | Notes |
 |---|------|--------|-------|
-| 2.1 | Proto-Germanic reconstructions | ⬚ | PIE → PGmc sound laws |
-| 2.2 | Old English module | ⬚ | Anglo-Saxon place-name elements |
-| 2.3 | Sámi (Northern) module | ⬚ | Requires community consultation |
+| 2.1 | Proto-Germanic reconstructions | ✅ | ProtoGermanicModule, 19 tests |
+| 2.2 | Old English module | ✅ | OldEnglishModule, 40+ suffixes, compounds |
+| 2.3 | Sámi (Northern) module | ✅ | NorthernSamiModule, 24 elements, 33 modifiers |
 | 2.4 | Finnish module | ⬚ | Agglutinative morphology |
 | 2.5 | Irish/Scottish Gaelic module | ⬚ | Celtic elements |
 | 2.6 | Welsh module | ⬚ | Celtic P-branch |
@@ -84,10 +84,10 @@ Expand the statistical toolkit for all test families.
 | 3.3 | Migration overfrequency test | ⬚ | Diaspora elements in target areas |
 | 3.4 | Political renaming detection | ⬚ | Statistical assimilation signal |
 | 3.5 | Bayesian etymology comparison | ⬚ | Posterior over competing interpretations |
-| 3.6 | Astronomical alignment test | ⬚ | Azimuth correlation with celestial events |
+| 3.6 | Astronomical alignment test | ✅ | Rayleigh test, mean direction, 11 tests |
 | 3.7 | Sacred geometry alignment test | ⬚ | Ley-line hypothesis as statistical test |
 | 3.8 | Sensory correspondence test | ⬚ | Colour names vs. spectral data |
-| 3.9 | Religious stratigraphy test | ⬚ | Christian overlay on pre-Christian sites |
+| 3.9 | Religious stratigraphy test | ✅ | Proximity co-occurrence permutation test, 7 tests |
 | 3.10 | Catastrophe clustering test | ⬚ | Disaster names vs. hazard maps |
 | 3.11 | Ripley's K spatial analysis | ⬚ | Multi-scale clustering |
 | 3.12 | Rayleigh directional test | ⬚ | Non-uniform orientation distributions |
@@ -100,7 +100,7 @@ Connect to additional authoritative data sources.
 
 | # | Item | Status | Notes |
 |---|------|--------|-------|
-| 4.1 | Kartverket (Norway) connector | ⬚ | Norwegian national registry |
+| 4.1 | Kartverket (Norway) connector | ✅ | SSR API, pagination, rate limiting, 11 tests |
 | 4.2 | Lantmäteriet (Sweden) connector | ⬚ | Swedish national registry |
 | 4.3 | Maanmittauslaitos (Finland) connector | ⬚ | Finnish national registry |
 | 4.4 | Ordnance Survey (UK) connector | ⬚ | British national mapping |
