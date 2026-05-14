@@ -145,10 +145,10 @@ Research output, API, and public-facing tools.
 
 | # | Item | Status | Notes |
 |---|------|--------|-------|
-| 6.1 | REST API (FastAPI) | ⬚ | Query names, places, interpretations |
+| 6.1 | REST API (FastAPI) | ✅ | Query names, places, interpretations |
 | 6.2 | Interactive map visualization | ⬚ | Leaflet/MapLibre with name layers |
 | 6.3 | Statistical results dashboard | ⬚ | Effect sizes, distributions, maps |
-| 6.4 | Export formats (GeoJSON, CSV, RDF) | ⬚ | Interoperability |
+| 6.4 | Export formats (GeoJSON, CSV, RDF) | ✅ | Interoperability |
 | 6.5 | Research paper template/generator | ⬚ | Reproducible LaTeX output |
 | 6.6 | Public web interface | ⬚ | Browse and explore the databank |
 

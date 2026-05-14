@@ -843,6 +843,27 @@ uv run toponymia databank sign
 uv run toponymia databank verify
 ```
 
+### REST API
+
+The project includes a FastAPI-based REST API for querying the databank programmatically:
+
+```bash
+# Start the API server
+uv run uvicorn toponymia.api.app:app --reload
+
+# Endpoints:
+# GET /health                  - Health check
+# GET /api/v1/places           - List places (filter by country, source_id, name)
+# GET /api/v1/places/{sha256}  - Get single place by hash
+# GET /api/v1/sources          - List data sources
+# GET /api/v1/search?q=oslo    - Search by name
+# GET /api/v1/export/geojson   - Export as GeoJSON
+# GET /api/v1/export/csv       - Export as CSV
+# GET /api/v1/stats            - Databank statistics
+```
+
+Set `TOPONYMIA_DATABANK_PATH` to override the default databank directory.
+
 ### Optional: PostgreSQL for Analysis Cache
 
 For larger datasets and spatial queries, optionally set up PostgreSQL:
