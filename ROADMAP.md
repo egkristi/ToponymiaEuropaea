@@ -246,8 +246,8 @@ The current model links attestations to places, but **names as types** (e.g., "B
 | 11.1.1 | Design `name_lemmas` table/model | ✅ | **CRITICAL** | canonical_form, language_code, semantic_field, pie_root, cognates (JSONB) |
 | 11.1.2 | Add `lemma_id` FK to attestations | ✅ | **CRITICAL** | Links attestation → lemma (optional, backfilled) |
 | 11.1.3 | Lemma auto-detection from segmentation | ✅ | HIGH | LemmaRegistry + suffix detection from databank |
-| 11.1.4 | JSONL schema extension for lemma references | ⬚ | HIGH | `_lemma` field in databank records |
-| 11.1.5 | CLI: `toponymia lemma list/show/stats` | ⬚ | MEDIUM | Browse lemma distribution |
+| 11.1.4 | JSONL schema extension for lemma references | ✅ | HIGH | `_lemma`, `_lemma_language`, `_lemma_semantic_field` fields |
+| 11.1.5 | CLI: `toponymia lemma list/show/stats` | ✅ | MEDIUM | 15 lemmas, 138 attestations across 5 countries |
 
 ### 11.2 — Layered Persistence Architecture
 
