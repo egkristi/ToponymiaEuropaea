@@ -544,6 +544,9 @@ def quality_tests():
 @databank_app.command("validate")
 def databank_validate(
     path: Path | None = typer.Option(None, "--path", "-p", help="Validate a specific JSONL file"),
+    integrity: bool = typer.Option(
+        False, "--integrity", "-i", help="Also verify SHA-256 integrity hashes"
+    ),
 ):
     """Validate databank records against the place schema."""
     from toponymia.pipelines.databank import validate_databank, validate_jsonl_file
@@ -582,6 +585,169 @@ def databank_validate(
         if len(result.errors) > 20:
             console.print(f"[dim]... and {len(result.errors) - 20} more errors[/dim]")
         raise typer.Exit(1)
+
+    # Integrity verification (optional, runs after schema validation passes)
+    if integrity:
+        from toponymia.pipelines.integrity import verify_jsonl_file, verify_manifest
+
+        databank_path = Path(__file__).parent.parent.parent / "databank"
+        integrity_errors: list[str] = []
+
+        if path is not None:
+            total, errors = verify_jsonl_file(path)
+            for line_num, msg in errors:
+                integrity_errors.append(f"{path.name}:{line_num}: {msg}")
+        else:
+            places_dir = databank_path / "places"
+            if places_dir.exists():
+                for jsonl_file in sorted(places_dir.rglob("*.jsonl")):
+                    total, errors = verify_jsonl_file(jsonl_file)
+                    for line_num, msg in errors:
+                        rel = jsonl_file.relative_to(databank_path)
+                        integrity_errors.append(f"{rel}:{line_num}: {msg}")
+
+                manifest_ok, manifest_errs = verify_manifest(databank_path)
+                integrity_errors.extend(manifest_errs)
+
+        if integrity_errors:
+            n_errs = len(integrity_errors)
+            console.print(f"\n[red]✗ Integrity check failed ({n_errs} errors):[/red]")
+            for err in integrity_errors[:20]:
+                console.print(f"  [red]{err}[/red]")
+            if len(integrity_errors) > 20:
+                console.print(f"[dim]... and {len(integrity_errors) - 20} more[/dim]")
+            raise typer.Exit(1)
+        console.print("[green]✓ Integrity hashes verified[/green]")
+
+
+@databank_app.command("sign")
+def databank_sign(
+    path: Path | None = typer.Option(None, "--path", "-p", help="Sign a specific JSONL file"),
+):
+    """Sign databank records with SHA-256 integrity hashes.
+
+    Each record gets a _sha256 field computed from its canonical JSON.
+    Also regenerates MANIFEST.sha256 for file-level integrity.
+    """
+    from toponymia.pipelines.integrity import sign_jsonl_file, write_manifest
+
+    databank_path = Path(__file__).parent.parent.parent / "databank"
+
+    if path is not None:
+        if not path.exists():
+            console.print(f"[red]File not found: {path}[/red]")
+            raise typer.Exit(1)
+        count = sign_jsonl_file(path)
+        console.print(f"[green]✓ Signed {count} records in {path.name}[/green]")
+    else:
+        places_dir = databank_path / "places"
+        if not places_dir.exists():
+            console.print("[yellow]No databank/places directory found[/yellow]")
+            raise typer.Exit(1)
+
+        total = 0
+        for jsonl_file in sorted(places_dir.rglob("*.jsonl")):
+            count = sign_jsonl_file(jsonl_file)
+            console.print(f"  Signed {count} records in {jsonl_file.relative_to(databank_path)}")
+            total += count
+
+        console.print(f"\n[green]✓ Signed {total} records total[/green]")
+
+    # Regenerate manifest
+    manifest_path = write_manifest(databank_path)
+    console.print(f"[green]✓ Updated {manifest_path.name}[/green]")
+
+
+@databank_app.command("verify")
+def databank_verify(
+    path: Path | None = typer.Option(None, "--path", "-p", help="Verify a specific JSONL file"),
+):
+    """Verify integrity of databank records and manifest.
+
+    Checks that _sha256 hashes match record content (tamper detection)
+    and that MANIFEST.sha256 matches file contents.
+    """
+    from toponymia.pipelines.integrity import verify_jsonl_file, verify_manifest
+
+    databank_path = Path(__file__).parent.parent.parent / "databank"
+    has_errors = False
+
+    if path is not None:
+        if not path.exists():
+            console.print(f"[red]File not found: {path}[/red]")
+            raise typer.Exit(1)
+        total, errors = verify_jsonl_file(path)
+        if errors:
+            has_errors = True
+            for line_num, msg in errors:
+                console.print(f"  [red]Line {line_num}: {msg}[/red]")
+        else:
+            console.print(f"[green]✓ All {total} records verified in {path.name}[/green]")
+    else:
+        places_dir = databank_path / "places"
+        if not places_dir.exists():
+            console.print("[yellow]No databank/places directory found[/yellow]")
+            raise typer.Exit(1)
+
+        total_all = 0
+        for jsonl_file in sorted(places_dir.rglob("*.jsonl")):
+            total, errors = verify_jsonl_file(jsonl_file)
+            total_all += total
+            if errors:
+                has_errors = True
+                rel = jsonl_file.relative_to(databank_path)
+                for line_num, msg in errors:
+                    console.print(f"  [red]{rel}:{line_num}: {msg}[/red]")
+            else:
+                rel = jsonl_file.relative_to(databank_path)
+                console.print(f"  [green]✓ {rel} ({total} records)[/green]")
+
+        # Verify manifest
+        manifest_ok, manifest_errors = verify_manifest(databank_path)
+        if manifest_ok:
+            console.print("[green]✓ MANIFEST.sha256 verified[/green]")
+        else:
+            has_errors = True
+            for msg in manifest_errors:
+                console.print(f"  [red]{msg}[/red]")
+
+        if not has_errors:
+            console.print(f"\n[green]✓ All {total_all} records and manifest verified[/green]")
+
+    if has_errors:
+        raise typer.Exit(1)
+
+
+@databank_app.command("sort")
+def databank_sort(
+    path: Path | None = typer.Option(None, "--path", "-p", help="Sort a specific JSONL file"),
+    key: str = typer.Option("source_id", "--key", "-k", help="Sort key field"),
+):
+    """Sort databank JSONL files by source_id for deterministic diffs.
+
+    Canonical ordering enables clean git merges and rebases.
+    """
+    from toponymia.pipelines.integrity import sort_jsonl_file
+
+    databank_path = Path(__file__).parent.parent.parent / "databank" / "places"
+
+    if path is not None:
+        if not path.exists():
+            console.print(f"[red]File not found: {path}[/red]")
+            raise typer.Exit(1)
+        count = sort_jsonl_file(path, key=key)
+        console.print(f"[green]✓ Sorted {count} records in {path.name} by '{key}'[/green]")
+    else:
+        if not databank_path.exists():
+            console.print("[yellow]No databank/places directory found[/yellow]")
+            raise typer.Exit(1)
+
+        total = 0
+        for jsonl_file in sorted(databank_path.rglob("*.jsonl")):
+            count = sort_jsonl_file(jsonl_file, key=key)
+            console.print(f"  Sorted {count} records in {jsonl_file.name}")
+            total += count
+        console.print(f"\n[green]✓ Sorted {total} records by '{key}'[/green]")
 
 
 @databank_app.command("stats")

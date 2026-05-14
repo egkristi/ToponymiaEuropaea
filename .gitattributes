@@ -1,0 +1,17 @@
+# Git attributes for ToponymiaEuropaea
+#
+# JSONL files use union merge strategy: on conflict, keep lines from both
+# sides. This works because records are sorted by source_id and each line
+# is an independent record. After merge, run `toponymia databank sort`
+# to restore canonical order, then `toponymia databank sign` to
+# regenerate integrity hashes.
+
+# JSONL data files: union merge keeps both sides' lines on conflict
+databank/**/*.jsonl merge=union diff
+databank/sources.jsonl merge=union diff
+
+# Manifest must be regenerated after merge (not auto-merged)
+databank/MANIFEST.sha256 merge=ours
+
+# Lock file: binary, don't attempt text merge
+uv.lock -diff merge=binary

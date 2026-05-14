@@ -106,4 +106,4 @@ jobs:
         run: uv sync --extra dev
 
       - name: Validate databank records
-        run: uv run toponymia databank validate
+        run: uv run toponymia databank validate --integrity

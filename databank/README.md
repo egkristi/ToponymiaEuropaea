@@ -108,8 +108,9 @@ Each attestation object supports:
 1. **Fork** this repository
 2. Add `.jsonl` files under `databank/places/<COUNTRY_CODE>/`
 3. Ensure each line is valid JSON conforming to `schema/place.v1.json`
-4. Sort records by `source_id` for stable diffs
-5. Open a **Pull Request** — CI will validate your data automatically
+4. Sort records by `source_id` for stable diffs: `uv run toponymia databank sort`
+5. Sign all records: `uv run toponymia databank sign`
+6. Open a **Pull Request** — CI will validate your data automatically
 
 ### File naming
 
@@ -125,12 +126,77 @@ Each attestation object supports:
 | **Enriched** | + `place_type`, attestation dates, alternative names |
 | **Research-ready** | + cross-references (Wikidata QID), normalized form |
 
+## Data Integrity & Signing
+
+The databank uses a **content-addressable integrity system** to ensure data has not been tampered with and to maintain consistency across branches, forks, and rebases.
+
+### Record-Level Integrity (`_sha256`)
+
+Every record carries a `_sha256` field — a SHA-256 hash computed from the **canonical JSON** of the record (sorted keys, meta-fields excluded). This means:
+
+- Any modification to a record's data will invalidate its hash.
+- Two contributors producing identical records independently will get the same hash.
+- The hash is **deterministic** and **content-addressable**.
+
+```json
+{"name_form": "Bergen", "latitude": 60.39299, "longitude": 5.32415, "source_id": "3161732", "_sha256": "a1b2c3..."}
+```
+
+### File-Level Integrity (`MANIFEST.sha256`)
+
+A `MANIFEST.sha256` file at the databank root tracks the SHA-256 of every `.jsonl` file. Format is compatible with `sha256sum -c`:
+
+```
+e5f6a7b8...  places/NO/geonames.jsonl
+c3d4e5f6...  places/FI/geonames.jsonl
+```
+
+### Signing Workflow
+
+```bash
+# After adding/modifying data:
+uv run toponymia databank sort     # Canonical order (by source_id)
+uv run toponymia databank sign     # Compute _sha256 + regenerate MANIFEST
+
+# Before submitting PR:
+uv run toponymia databank verify   # Check all hashes are valid
+```
+
+### Git Collaboration Model
+
+The JSONL format is specifically chosen for git-based collaboration:
+
+| Feature | How it works |
+|---------|-------------|
+| **Branching** | Each record is one line → branch changes are per-record |
+| **Merging** | `.gitattributes` configures union merge for JSONL (keeps both sides' lines) |
+| **Rebasing** | Sorted by `source_id` → minimal conflicts during rebase |
+| **Fork & PR** | Fork → add data → sign → PR → CI validates → merge |
+| **Tamper detection** | `databank verify` catches modified records instantly |
+| **Conflict resolution** | After merge/rebase: `databank sort` then `databank sign` |
+
+### Post-Merge Checklist
+
+After merging a PR or rebasing:
+```bash
+uv run toponymia databank sort     # Re-sort (union merge may disorder)
+uv run toponymia databank sign     # Re-sign (hashes stale after reorder)
+uv run toponymia databank verify   # Confirm all green
+git add databank/ && git commit -m "chore: re-sign databank after merge"
+```
+
 ## Validation
 
 CI runs schema validation on every push/PR:
 
 ```bash
 uv run toponymia databank validate
+```
+
+To validate with integrity checking:
+
+```bash
+uv run toponymia databank validate --integrity
 ```
 
 To validate locally before committing:
