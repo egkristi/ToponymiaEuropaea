@@ -215,7 +215,7 @@ The framework has 15 seed records. To produce real research, it needs real data.
 | # | Item | Status | Priority | Notes |
 |---|------|--------|----------|-------|
 | 10.1 | Bulk GeoNames import (Norway) | ✅ | 500 records ingested, sorted, signed, verified |
-| 10.2 | Kartverket SSR bulk import | ⬚ | **HIGH** | ~800,000 official Norwegian names (primary authority) |
+| 10.2 | Kartverket SSR bulk import | ✅ | **HIGH** | Connector updated to new API, 500 Oslo records ingested. CLI: `toponymia ingest kartverket` |
 | 10.3 | Bulk GeoNames import (Nordic) | ✅ | 500 each for SE, FI, DK, IS — 2500 total records |
 | 10.4 | Wikidata etymology extraction | ⬚ | MEDIUM | P138 (named after) for all European settlements |
 | 10.5 | Norske Gaardnavne (Rygh) digitized | ⬚ | HIGH | 19th-century authoritative Norwegian farm-name corpus |
@@ -266,10 +266,10 @@ PostGIS GIST indexes work to ~10M points. Beyond that, hierarchical spatial inde
 
 | # | Item | Status | Priority | Notes |
 |---|------|--------|----------|-------|
-| 11.3.1 | Add `h3_index_r7`, `h3_index_r9`, `h3_index_r11` to places | ⬚ | **HIGH** | Computed from lat/lon on ingest |
-| 11.3.2 | H3 computation in ingest pipeline | ⬚ | HIGH | Auto-populated when coordinates present |
-| 11.3.3 | Spatial queries via H3 (neighbour lookup) | ⬚ | MEDIUM | "All X-names within N km" without full table scan |
-| 11.3.4 | H3 field in JSONL schema | ⬚ | MEDIUM | `h3_r7`, `h3_r9` fields in databank records |
+| 11.3.1 | Add `h3_index_r7`, `h3_index_r9`, `h3_index_r11` to places | ✅ | **HIGH** | `_h3_r7`, `_h3_r9`, `_h3_r11` on all 3000 records |
+| 11.3.2 | H3 computation in ingest pipeline | ✅ | **HIGH** | Auto-enriched during `databank sign --enrich` |
+| 11.3.3 | Spatial queries via H3 (neighbour lookup) | ✅ | **MEDIUM** | `find_neighbours()`, `h3_distance()` in spatial.py |
+| 11.3.4 | H3 field in JSONL schema | ✅ | **MEDIUM** | `_h3_r7`, `_h3_r9`, `_h3_r11` in place.v1.json |
 
 ### 11.4 — Phonetic Indexing & Fuzzy Matching
 
@@ -279,7 +279,7 @@ Soundex/Metaphone are English-centric. For cross-source deduplication (Þórshof
 |---|------|--------|----------|-------|
 | 11.4.1 | Evaluate Beider-Morse Phonetic Matching | ⬚ | HIGH | Best for multi-language, but complex |
 | 11.4.2 | Nordic phonetic normalizer (ON→modern) | ✅ | **HIGH** | þ→t, ð→d, ǫ→o, hv→kv, ö→ø, -hem→-heim; find_duplicates() |
-| 11.4.3 | Phonetic index field on attestations | ⬚ | HIGH | `_phonetic_key` for duplicate detection |
+| 11.4.3 | Phonetic index field on attestations | ✅ | **HIGH** | `_phonetic_key` on all 3000 records, enriched during `databank sign` |
 | 11.4.4 | Cross-source deduplication pipeline | ⬚ | HIGH | GeoNames + Kartverket + Wikidata → merged records |
 | 11.4.5 | Diachronic attestation linking | ⬚ | HIGH | 1340 *Þorshofuum* → 2024 *Torshov* = same name history |
 
@@ -308,35 +308,38 @@ Current `interpretations` table stores flat probabilities. For proper Bayesian h
 
 ## Priority Order (Revised)
 
-The litmus test (May 2025) proved the pipeline works mechanically. Data population (May 2026) delivered 2500 records across 5 countries with 7 language modules. The bottleneck is now **architectural scaling** and **data volume**.
+The litmus test (May 2025) proved the pipeline works mechanically. Data population (May 2026) delivered 3000 records across 5 countries with 7 language modules. The bottleneck is now **architectural scaling** and **data volume**.
 
 **Milestone 9 is COMPLETE** — all 13 items done.
-**Milestone 10 partially complete** — GeoNames bulk import done (2500 records). Kartverket + historical sources remain.
+**Milestone 10.2 COMPLETE** — Kartverket SSR import (500 Oslo records, connector updated to new API).
+**Milestone 10.1/10.3 COMPLETE** — GeoNames bulk import (2500 records, 5 Nordic countries).
 **Milestone 11.1 COMPLETE** — Name lemma entity, JSONL schema, CLI commands.
+**Milestone 11.3 COMPLETE** — H3 hierarchical spatial indexing (R7/R9/R11 on all records).
 **Milestone 11.4.2 COMPLETE** — Nordic phonetic normalizer with sound change rules.
+**Milestone 11.4.3 COMPLETE** — Phonetic index field on all records.
 **Issues #10–13 closed** — mypy fixed, Danish/Swedish modules added, data populated.
+
+**Status: 412 tests passing, mypy strict clean, 3000 databank records.**
 
 ### Immediate priorities (current sprint)
 
-1. **Milestone 10.2** — Kartverket SSR bulk import (authoritative Norwegian data)
+1. **Milestone 11.4.4** — Cross-source deduplication pipeline (GeoNames↔Kartverket matching)
 2. **Milestone 11.2.5** — Local 3-layer dev setup (simulate production)
-3. **Milestone 11.4.3** — Phonetic index field on attestations
-4. **Milestone 11.3** — H3 spatial indexing
+3. **Milestone 11.5** — Bayesian etymology framework
 
 ### Next phase
 
-5. **Milestone 11.2.1–11.2.3** — Layered persistence (JSONL kernel + Postgres + Parquet)
-6. **Milestone 11.3** — H3 spatial indexing
-7. **Milestone 2.5–2.7** — Celtic/Latin language modules (for UK/France analysis)
-8. **Milestone 11.5** — Bayesian etymology framework
-9. **Milestone 3.2, 3.4** — Language contact and political renaming tests
+4. **Milestone 11.2.1–11.2.3** — Layered persistence (JSONL kernel + Postgres + Parquet)
+5. **Milestone 2.5–2.7** — Celtic/Latin language modules (for UK/France analysis)
+6. **Milestone 10.5/10.7** — Historical sources (Norske Gaardnavne, Diplomatarium Norvegicum)
+7. **Milestone 3.2, 3.4** — Language contact and political renaming tests
 
 ### Later
 
-10. **Milestone 4.2–4.4** — Nordic/UK registry connectors
-11. **Milestone 6.1–6.2** — API and basic visualization
-12. **Milestone 5.1–5.4** — First perspective implementations
-13. **Milestones 7–8** — Infrastructure and community
+8. **Milestone 4.2–4.4** — Nordic/UK registry connectors
+9. **Milestone 6.1–6.2** — API and basic visualization
+10. **Milestone 5.1–5.4** — First perspective implementations
+11. **Milestones 7–8** — Infrastructure and community
 
 ---
 
@@ -344,9 +347,9 @@ The litmus test (May 2025) proved the pipeline works mechanically. Data populati
 
 - **v0.1.0** — Framework foundation, architecture, proof-of-concept.
 - **v0.2.0** — Expanded dictionaries (120+ ON entries), attestation analysis, analysis bridge, end-to-end workflow command, dependency trim. Pipeline runs from CLI.
-- **v0.3.0** (current) — 2500 records (5 Nordic countries), 7 language modules (ON, PGmc, OE, Sámi, Finnish, Danish, Swedish), mypy strict clean, 345 tests.
-- **v0.4.0** — Name lemma entity, phonetic indexing, Kartverket bulk import. First real distributional statistics.
-- **v0.5.0** — Three-layer persistence (JSONL + Postgres + Parquet), H3 spatial indexing, local dev simulates production.
-- **v0.6.0** — Celtic/Latin modules, Bayesian etymology, 6+ perspective modules
-- **v0.7.0** — API and visualization layer
+- **v0.3.0** (current) — 3000 records (5 Nordic countries, 2 sources), 7 language modules, H3 spatial indexing, phonetic dedup keys, Kartverket SSR import. 412 tests, mypy strict clean.
+- **v0.4.0** — Cross-source deduplication, three-layer persistence, Bayesian etymology framework.
+- **v0.5.0** — Historical sources (Norske Gaardnavne, Diplomatarium Norvegicum), Celtic/Latin modules.
+- **v0.6.0** — API and visualization layer, 6+ perspective modules
+- **v0.7.0** — Full Bayesian updating, publication-ready research outputs
 - **v1.0.0** — First publishable research result produced using the framework
