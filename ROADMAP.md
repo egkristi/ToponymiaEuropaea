@@ -113,8 +113,8 @@ Connect to additional authoritative data sources.
 | 4.4 | Ordnance Survey (UK) connector | ✅ | OGL-3.0, OS Names API, English/Welsh/Gaelic. 13 tests. |
 | 4.5 | IGN (France) connector | ✅ | Licence Ouverte 2.0, BD TOPO API, French/Breton/Basque/Occitan. 13 tests. |
 | 4.6 | Historical map OCR pipeline | ⬚ | Extract names from scanned maps |
-| 4.7 | Diplomatarium connector | ⬚ | Medieval charter databases |
-| 4.8 | Rundata connector | ⬚ | Scandinavian runic inscription DB |
+| 4.7 | Diplomatarium connector | ✅ | Medieval charter databases |
+| 4.8 | Rundata connector | ✅ | Scandinavian runic inscription DB |
 | 4.9 | DEM/terrain data connector | ⬚ | Elevation, slope, aspect from SRTM/Copernicus |
 | 4.10 | Climate data connector | ⬚ | Historical climate (CRU, PAGES2k) |
 
@@ -319,7 +319,7 @@ The litmus test (May 2025) proved the pipeline works mechanically. Data populati
 **Milestone 11.4.3 COMPLETE** — Phonetic index field on all records.
 **Issues #10–13 closed** — mypy fixed, Danish/Swedish modules added, data populated.
 
-**Status: 707 tests passing, mypy strict clean, 3018 databank records.**
+**Status: 732 tests passing, mypy strict clean, 3018 databank records.**
 
 ### Immediate priorities (current sprint)
 
