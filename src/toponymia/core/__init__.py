@@ -20,6 +20,7 @@ from sqlalchemy import (
     Uuid,
     func,
 )
+from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
 
@@ -77,21 +78,57 @@ class Place(Base):
     id: Mapped[uuid.UUID] = mapped_column(
         Uuid, primary_key=True, server_default=func.gen_random_uuid()
     )
+
+    # --- Location & geometry ---
     geometry: Mapped[str] = mapped_column(Geometry("POINT", srid=4326), nullable=False)
     elevation_m: Mapped[float | None] = mapped_column(Float, nullable=True)
+    depth_m: Mapped[float | None] = mapped_column(Float, nullable=True)
     uncertainty_m: Mapped[float | None] = mapped_column(Float, nullable=True)
+    area_km2: Mapped[float | None] = mapped_column(Float, nullable=True)
+
+    # --- Classification ---
     place_type: Mapped[str | None] = mapped_column(Text, nullable=True)
+    terrain_type: Mapped[str | None] = mapped_column(Text, nullable=True)
+    land_cover: Mapped[str | None] = mapped_column(Text, nullable=True)
+    geology: Mapped[str | None] = mapped_column(Text, nullable=True)
+    climate_zone: Mapped[str | None] = mapped_column(Text, nullable=True)
+
+    # --- Administrative ---
+    country_code: Mapped[str | None] = mapped_column(Text, nullable=True)
+    admin_level_1: Mapped[str | None] = mapped_column(Text, nullable=True)
+    admin_level_2: Mapped[str | None] = mapped_column(Text, nullable=True)
+    municipality_code: Mapped[str | None] = mapped_column(Text, nullable=True)
+    population: Mapped[int | None] = mapped_column(Integer, nullable=True)
+
+    # --- External identifiers ---
     wikidata_qid: Mapped[str | None] = mapped_column(Text, nullable=True)
     geonames_id: Mapped[int | None] = mapped_column(BigInteger, nullable=True)
     osm_id: Mapped[int | None] = mapped_column(BigInteger, nullable=True)
+    national_registry_id: Mapped[str | None] = mapped_column(Text, nullable=True)
+
+    # --- Temporal ---
+    first_attested_year: Mapped[int | None] = mapped_column(Integer, nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 
+    # --- Extensibility (arbitrary structured data) ---
+    extra: Mapped[dict | None] = mapped_column(JSONB, nullable=True)
+
+    # --- Relationships ---
     attestations: Mapped[list[NameAttestation]] = relationship(
         back_populates="place", cascade="all, delete-orphan"
     )
     interpretations: Mapped[list[Interpretation]] = relationship(
         back_populates="place", cascade="all, delete-orphan"
+    )
+    relations_from: Mapped[list[PlaceRelation]] = relationship(
+        foreign_keys="PlaceRelation.place_id",
+        back_populates="place",
+        cascade="all, delete-orphan",
+    )
+    relations_to: Mapped[list[PlaceRelation]] = relationship(
+        foreign_keys="PlaceRelation.related_place_id",
+        back_populates="related_place",
     )
 
 
@@ -104,15 +141,33 @@ class NameAttestation(Base):
     place_id: Mapped[uuid.UUID] = mapped_column(
         Uuid, ForeignKey("places.id", ondelete="CASCADE"), nullable=False
     )
+
+    # --- Name forms ---
     form: Mapped[str] = mapped_column(Text, nullable=False)
     normalized_form: Mapped[str] = mapped_column(Text, nullable=False)
+    phonetic_form: Mapped[str | None] = mapped_column(Text, nullable=True)
+    ascii_form: Mapped[str | None] = mapped_column(Text, nullable=True)
+
+    # --- Linguistic metadata ---
     language_code: Mapped[str] = mapped_column(
         Text, ForeignKey("languages.iso_code"), nullable=False
     )
     script: Mapped[str | None] = mapped_column(Text, nullable=True)
+    register: Mapped[str | None] = mapped_column(Text, nullable=True)
+    dialect: Mapped[str | None] = mapped_column(Text, nullable=True)
+
+    # --- Temporal attestation ---
     year_from: Mapped[int | None] = mapped_column(Integer, nullable=True)
     year_to: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    date_precision: Mapped[str | None] = mapped_column(Text, nullable=True)
+
+    # --- Provenance ---
     source_id: Mapped[uuid.UUID] = mapped_column(Uuid, ForeignKey("sources.id"), nullable=False)
+    source_page: Mapped[str | None] = mapped_column(Text, nullable=True)
+    collector: Mapped[str | None] = mapped_column(Text, nullable=True)
+    collection_method: Mapped[str | None] = mapped_column(Text, nullable=True)
+
+    # --- Quality ---
     confidence: Mapped[float | None] = mapped_column(Float, nullable=True)
     status: Mapped[RecordStatus] = mapped_column(
         Enum(RecordStatus, name="record_status"),
@@ -120,10 +175,19 @@ class NameAttestation(Base):
         nullable=False,
     )
     is_current: Mapped[bool] = mapped_column(Boolean, server_default="false")
+    is_official: Mapped[bool] = mapped_column(Boolean, server_default="false")
     reviewed_by: Mapped[str | None] = mapped_column(Text, nullable=True)
     reviewed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 
+    # --- Etymology notes ---
+    etymology_notes: Mapped[str | None] = mapped_column(Text, nullable=True)
+    historical_context: Mapped[str | None] = mapped_column(Text, nullable=True)
+
+    # --- Extensibility ---
+    extra: Mapped[dict | None] = mapped_column(JSONB, nullable=True)
+
+    # --- Relationships ---
     place: Mapped[Place] = relationship(back_populates="attestations")
     components: Mapped[list[NameComponent]] = relationship(
         back_populates="attestation", cascade="all, delete-orphan"
@@ -219,5 +283,55 @@ class Hypothesis(Base):
             "status IN ('proposed', 'preregistered', 'tested',"
             " 'confirmed', 'rejected', 'inconclusive')",
             name="ck_hypotheses_status",
+        ),
+    )
+
+
+class PlaceRelation(Base):
+    """Spatial and semantic relationships between places.
+
+    Tracks nearby places, containing water bodies, administrative containment,
+    and any other spatial relationship needed for analysis.
+    """
+
+    __tablename__ = "place_relations"
+
+    id: Mapped[uuid.UUID] = mapped_column(
+        Uuid, primary_key=True, server_default=func.gen_random_uuid()
+    )
+    place_id: Mapped[uuid.UUID] = mapped_column(
+        Uuid, ForeignKey("places.id", ondelete="CASCADE"), nullable=False
+    )
+    related_place_id: Mapped[uuid.UUID] = mapped_column(
+        Uuid, ForeignKey("places.id", ondelete="CASCADE"), nullable=False
+    )
+    relation_type: Mapped[str] = mapped_column(Text, nullable=False)
+    distance_m: Mapped[float | None] = mapped_column(Float, nullable=True)
+    bearing_deg: Mapped[float | None] = mapped_column(Float, nullable=True)
+    source_id: Mapped[uuid.UUID | None] = mapped_column(
+        Uuid, ForeignKey("sources.id"), nullable=True
+    )
+    extra: Mapped[dict | None] = mapped_column(JSONB, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
+    place: Mapped[Place] = relationship(
+        foreign_keys=[place_id], back_populates="relations_from"
+    )
+    related_place: Mapped[Place] = relationship(
+        foreign_keys=[related_place_id], back_populates="relations_to"
+    )
+
+    __table_args__ = (
+        CheckConstraint(
+            "relation_type IN ("
+            "'near', 'adjacent', 'within', 'contains', "
+            "'flows_through', 'on_shore_of', 'at_mouth_of', "
+            "'overlooks', 'upstream_of', 'downstream_of', "
+            "'island_in', 'tributary_of', 'drains_to')",
+            name="ck_place_relations_type",
+        ),
+        CheckConstraint(
+            "place_id != related_place_id",
+            name="ck_place_relations_no_self",
         ),
     )
