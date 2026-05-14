@@ -3,7 +3,7 @@
 import numpy as np
 import pytest
 
-from toponymia.statistics.base import TestData, TestFamily, TestStatus
+from toponymia.statistics.base import PlaceData, StatFamily, StatStatus
 from toponymia.statistics.religious import ReligiousStratigraphyTest
 
 
@@ -15,7 +15,7 @@ class TestReligiousStratigraphyTest:
 
     def test_metadata(self):
         assert self.test.test_id == "religious_stratigraphy"
-        assert self.test.test_family == TestFamily.RELIGIOUS_STRATIGRAPHY
+        assert self.test.test_family == StatFamily.RELIGIOUS_STRATIGRAPHY
         assert "Christian" in self.test.null_hypothesis
 
     def test_significant_cooccurrence_detected(self):
@@ -40,7 +40,7 @@ class TestReligiousStratigraphyTest:
         for i in range(35, 45):
             signal[i] = 1.0
 
-        data = TestData(
+        data = PlaceData(
             coordinates=coords,
             element_present=element_present,
             signal_values=signal,
@@ -68,7 +68,7 @@ class TestReligiousStratigraphyTest:
         christian_idx = rng.choice(range(20, n), size=25, replace=False)
         signal[christian_idx] = 1.0
 
-        data = TestData(
+        data = PlaceData(
             coordinates=coords,
             element_present=element_present,
             signal_values=signal,
@@ -87,7 +87,7 @@ class TestReligiousStratigraphyTest:
         element_present = np.array([True, True, False, False, False])
         signal = np.array([0.0, 0.0, 1.0, 0.0, 0.0])
 
-        data = TestData(
+        data = PlaceData(
             coordinates=coords,
             element_present=element_present,
             signal_values=signal,
@@ -96,14 +96,14 @@ class TestReligiousStratigraphyTest:
         )
 
         result = self.test.run(data, n_permutations=99, proximity_threshold_km=200)
-        assert result.status == TestStatus.INCONCLUSIVE
+        assert result.status == StatStatus.INCONCLUSIVE
 
     def test_missing_signal_values(self):
         """Should raise ValueError without signal_values."""
         coords = np.array([[0, 0], [1, 1]])
         element_present = np.array([True, False])
 
-        data = TestData(
+        data = PlaceData(
             coordinates=coords,
             element_present=element_present,
             signal_values=None,
@@ -123,7 +123,7 @@ class TestReligiousStratigraphyTest:
         signal = np.zeros(n, dtype=float)
         signal[10:20] = 1.0
 
-        data = TestData(
+        data = PlaceData(
             coordinates=coords,
             element_present=element_present,
             signal_values=signal,

@@ -3,7 +3,7 @@
 import numpy as np
 import pytest
 
-from toponymia.statistics.base import TestData, TestFamily, TestStatus
+from toponymia.statistics.base import PlaceData, StatFamily, StatStatus
 from toponymia.statistics.temporal import TemporalLayerConsistencyTest
 
 
@@ -15,7 +15,7 @@ class TestTemporalLayerConsistencyTest:
 
     def test_metadata(self):
         assert self.test.test_id == "temporal_layer_consistency"
-        assert self.test.test_family == TestFamily.TEMPORAL
+        assert self.test.test_family == StatFamily.TEMPORAL
         assert "temporal layer" in self.test.null_hypothesis
 
     def test_clustered_layer_detected(self):
@@ -34,7 +34,7 @@ class TestTemporalLayerConsistencyTest:
         element_present = np.zeros(n, dtype=bool)
         element_present[layer_idx] = True
 
-        data = TestData(
+        data = PlaceData(
             coordinates=coords,
             element_present=element_present,
             region="test_region",
@@ -62,7 +62,7 @@ class TestTemporalLayerConsistencyTest:
         element_present = np.zeros(n, dtype=bool)
         element_present[layer_idx] = True
 
-        data = TestData(
+        data = PlaceData(
             coordinates=coords,
             element_present=element_present,
             region="test_region",
@@ -83,7 +83,7 @@ class TestTemporalLayerConsistencyTest:
         element_present = np.zeros(n, dtype=bool)
         element_present[:3] = True  # Only 3 members (need ≥5)
 
-        data = TestData(
+        data = PlaceData(
             coordinates=coords,
             element_present=element_present,
             region="test",
@@ -91,7 +91,7 @@ class TestTemporalLayerConsistencyTest:
         )
 
         result = self.test.run(data, n_permutations=99)
-        assert result.status == TestStatus.INCONCLUSIVE
+        assert result.status == StatStatus.INCONCLUSIVE
         assert "Insufficient" in result.notes
 
     def test_layer_covers_all_sites(self):
@@ -102,7 +102,7 @@ class TestTemporalLayerConsistencyTest:
 
         element_present = np.ones(n, dtype=bool)  # All sites in layer
 
-        data = TestData(
+        data = PlaceData(
             coordinates=coords,
             element_present=element_present,
             region="test",
@@ -110,7 +110,7 @@ class TestTemporalLayerConsistencyTest:
         )
 
         result = self.test.run(data, n_permutations=99)
-        assert result.status == TestStatus.INCONCLUSIVE
+        assert result.status == StatStatus.INCONCLUSIVE
 
     def test_result_contains_parameters(self):
         """Result should contain expected parameter keys."""
@@ -120,7 +120,7 @@ class TestTemporalLayerConsistencyTest:
         element_present = np.zeros(n, dtype=bool)
         element_present[:15] = True
 
-        data = TestData(
+        data = PlaceData(
             coordinates=coords,
             element_present=element_present,
             region="test",
@@ -147,7 +147,7 @@ class TestTemporalLayerConsistencyTest:
         element_present = np.zeros(n, dtype=bool)
         element_present[layer_idx] = True
 
-        data = TestData(
+        data = PlaceData(
             coordinates=coords,
             element_present=element_present,
             region="test",

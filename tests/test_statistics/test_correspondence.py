@@ -3,7 +3,7 @@
 import numpy as np
 import pytest
 
-from toponymia.statistics.base import TestData, TestFamily, TestStatus
+from toponymia.statistics.base import PlaceData, StatFamily, StatStatus
 from toponymia.statistics.correspondence import ElementSignalCorrespondenceTest
 from toponymia.statistics.spatial import SpatialClusteringTest
 
@@ -25,7 +25,7 @@ class TestCorrespondence:
         signal = rng.normal(100, 20, size=n)
         signal[:n_pos] += 50  # Strong effect
 
-        data = TestData(
+        data = PlaceData(
             coordinates=coords,
             element_present=element,
             signal_values=signal,
@@ -38,7 +38,7 @@ class TestCorrespondence:
 
         assert result.p_value < 0.05
         assert result.effect_size > 0
-        assert result.test_family == TestFamily.CORRESPONDENCE
+        assert result.test_family == StatFamily.CORRESPONDENCE
 
     def test_no_signal_not_significant(self):
         """Test that pure noise is not significant."""
@@ -51,7 +51,7 @@ class TestCorrespondence:
         element[rng.choice(n, n_pos, replace=False)] = True
         signal = rng.normal(100, 20, size=n)  # No relationship
 
-        data = TestData(
+        data = PlaceData(
             coordinates=coords,
             element_present=element,
             signal_values=signal,
@@ -70,7 +70,7 @@ class TestCorrespondence:
         element = np.array([True, True, False, False, False, False])
         signal = np.array([1.0, 2.0, 3.0, 4.0, 5.0, 6.0])
 
-        data = TestData(
+        data = PlaceData(
             coordinates=coords,
             element_present=element,
             signal_values=signal,
@@ -79,7 +79,7 @@ class TestCorrespondence:
         test = ElementSignalCorrespondenceTest()
         result = test.run(data)
 
-        assert result.status == TestStatus.INCONCLUSIVE
+        assert result.status == StatStatus.INCONCLUSIVE
 
     @pytest.mark.slow
     def test_synthetic_validation(self):
@@ -107,13 +107,13 @@ class TestSpatialClustering:
         element = np.zeros(n, dtype=bool)
         element[:n_pos] = True
 
-        data = TestData(coordinates=coords, element_present=element)
+        data = PlaceData(coordinates=coords, element_present=element)
 
         test = SpatialClusteringTest()
         result = test.run(data, n_permutations=2000)
 
         assert result.p_value < 0.05
-        assert result.test_family == TestFamily.SPATIAL
+        assert result.test_family == StatFamily.SPATIAL
 
     def test_random_placement_not_clustered(self):
         """Test that random placement is not detected as clustered."""
@@ -125,7 +125,7 @@ class TestSpatialClustering:
         element = np.zeros(n, dtype=bool)
         element[rng.choice(n, n_pos, replace=False)] = True
 
-        data = TestData(coordinates=coords, element_present=element)
+        data = PlaceData(coordinates=coords, element_present=element)
 
         test = SpatialClusteringTest()
         result = test.run(data, n_permutations=2000)

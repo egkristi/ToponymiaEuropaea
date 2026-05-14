@@ -734,7 +734,7 @@ def analyze_discover(
 
 def _run_test(test_type: str, data, signal_field: str | None):
     """Run a statistical test and return the result."""
-    from toponymia.statistics.base import TestFamily, TestResult, TestStatus
+    from toponymia.statistics.base import StatFamily, StatStatus, TestResult
 
     if test_type == "spatial":
         from toponymia.statistics.spatial import SpatialClusteringTest
@@ -748,8 +748,8 @@ def _run_test(test_type: str, data, signal_field: str | None):
         if not signal_field:
             return TestResult(
                 test_id="correspondence-no-signal",
-                test_family=TestFamily.CORRESPONDENCE,
-                status=TestStatus.PROPOSED,
+                test_family=StatFamily.CORRESPONDENCE,
+                status=StatStatus.PROPOSED,
                 null_hypothesis="N/A",
                 alternative_hypothesis="N/A",
             )

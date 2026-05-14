@@ -3,7 +3,7 @@
 import numpy as np
 import pytest
 
-from toponymia.statistics.base import TestData, TestFamily, TestStatus
+from toponymia.statistics.base import PlaceData, StatFamily, StatStatus
 from toponymia.statistics.migration import MigrationOverfrequencyTest
 
 
@@ -15,7 +15,7 @@ class TestMigrationOverfrequencyTest:
 
     def test_metadata(self):
         assert self.test.test_id == "migration_overfrequency"
-        assert self.test.test_family == TestFamily.MIGRATION
+        assert self.test.test_family == StatFamily.MIGRATION
         assert "frequency" in self.test.null_hypothesis
 
     def test_enrichment_detected(self):
@@ -38,7 +38,7 @@ class TestMigrationOverfrequencyTest:
         bg_element_idx = rng.choice(range(60, n), size=7, replace=False)
         element_present[list(bg_element_idx)] = True
 
-        data = TestData(
+        data = PlaceData(
             coordinates=coords,
             element_present=element_present,
             signal_values=signal,
@@ -71,7 +71,7 @@ class TestMigrationOverfrequencyTest:
         elem_idx = rng.choice(n, size=30, replace=False)
         element_present[elem_idx] = True
 
-        data = TestData(
+        data = PlaceData(
             coordinates=coords,
             element_present=element_present,
             signal_values=signal,
@@ -95,7 +95,7 @@ class TestMigrationOverfrequencyTest:
         element_present = np.zeros(n, dtype=bool)
         element_present[:10] = True
 
-        data = TestData(
+        data = PlaceData(
             coordinates=coords,
             element_present=element_present,
             signal_values=signal,
@@ -104,7 +104,7 @@ class TestMigrationOverfrequencyTest:
         )
 
         result = self.test.run(data, n_permutations=99)
-        assert result.status == TestStatus.INCONCLUSIVE
+        assert result.status == StatStatus.INCONCLUSIVE
         assert "Insufficient" in result.notes
 
     def test_insufficient_elements(self):
@@ -119,7 +119,7 @@ class TestMigrationOverfrequencyTest:
         element_present = np.zeros(n, dtype=bool)
         element_present[:2] = True  # Only 2 elements (need ≥3)
 
-        data = TestData(
+        data = PlaceData(
             coordinates=coords,
             element_present=element_present,
             signal_values=signal,
@@ -128,7 +128,7 @@ class TestMigrationOverfrequencyTest:
         )
 
         result = self.test.run(data, n_permutations=99)
-        assert result.status == TestStatus.INCONCLUSIVE
+        assert result.status == StatStatus.INCONCLUSIVE
         assert "Too few" in result.notes
 
     def test_missing_signal_values_raises(self):
@@ -139,7 +139,7 @@ class TestMigrationOverfrequencyTest:
         element_present = np.zeros(n, dtype=bool)
         element_present[:10] = True
 
-        data = TestData(
+        data = PlaceData(
             coordinates=coords,
             element_present=element_present,
             signal_values=None,
@@ -162,7 +162,7 @@ class TestMigrationOverfrequencyTest:
         element_present = np.zeros(n, dtype=bool)
         element_present[:15] = True
 
-        data = TestData(
+        data = PlaceData(
             coordinates=coords,
             element_present=element_present,
             signal_values=signal,

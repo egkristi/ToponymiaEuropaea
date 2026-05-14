@@ -12,11 +12,11 @@ from scipy.spatial.distance import pdist, squareform
 
 from toponymia.statistics.base import (
     BaseTest,
+    PlaceData,
+    StatFamily,
+    StatStatus,
     SyntheticValidation,
-    TestData,
-    TestFamily,
     TestResult,
-    TestStatus,
 )
 
 
@@ -32,12 +32,12 @@ class SpatialClusteringTest(BaseTest):
     """
 
     test_id = "spatial_clustering"
-    test_family = TestFamily.SPATIAL
+    test_family = StatFamily.SPATIAL
     description = "Tests whether places with a given element cluster spatially"
     null_hypothesis = "Element-bearing places are a spatially random subset of all places"
     alternative_hypothesis = "Element-bearing places are more clustered than expected"
 
-    def run(self, data: TestData, n_permutations: int = 10000) -> TestResult:
+    def run(self, data: PlaceData, n_permutations: int = 10000) -> TestResult:
         """Run spatial clustering test via permutation of element labels."""
         mask = data.element_present.astype(bool)
         n_pos = mask.sum()
@@ -46,7 +46,7 @@ class SpatialClusteringTest(BaseTest):
             return TestResult(
                 test_id=self.test_id,
                 test_family=self.test_family,
-                status=TestStatus.INCONCLUSIVE,
+                status=StatStatus.INCONCLUSIVE,
                 null_hypothesis=self.null_hypothesis,
                 alternative_hypothesis=self.alternative_hypothesis,
                 n_observations=data.n_places,
@@ -81,7 +81,7 @@ class SpatialClusteringTest(BaseTest):
             (np.mean(perm_mnn) - observed_mnn) / np.std(perm_mnn) if np.std(perm_mnn) > 0 else 0.0
         )
 
-        status = TestStatus.CONFIRMED if p_value < 0.05 else TestStatus.EXECUTED
+        status = StatStatus.CONFIRMED if p_value < 0.05 else StatStatus.EXECUTED
 
         return TestResult(
             test_id=self.test_id,
@@ -122,7 +122,7 @@ class SpatialClusteringTest(BaseTest):
             element = np.zeros(n_places, dtype=bool)
             element[:n_positive] = True
 
-            data = TestData(coordinates=coords, element_present=element)
+            data = PlaceData(coordinates=coords, element_present=element)
             result = self.run(data, n_permutations=500)
             if result.p_value < 0.05:
                 detections += 1
@@ -136,7 +136,7 @@ class SpatialClusteringTest(BaseTest):
             element = np.zeros(n_places, dtype=bool)
             element[rng.choice(n_places, n_positive, replace=False)] = True
 
-            data = TestData(coordinates=coords, element_present=element)
+            data = PlaceData(coordinates=coords, element_present=element)
             result = self.run(data, n_permutations=500)
             if result.p_value < 0.05:
                 false_positives += 1

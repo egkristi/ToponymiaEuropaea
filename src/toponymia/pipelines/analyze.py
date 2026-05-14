@@ -15,7 +15,7 @@ import numpy as np
 
 from toponymia.languages.base import BaseLanguageModule
 from toponymia.pipelines.segment import SegmentationPipeline
-from toponymia.statistics.base import TestData
+from toponymia.statistics.base import PlaceData
 
 logger = logging.getLogger(__name__)
 
@@ -69,7 +69,7 @@ def build_test_data(
     pipeline: SegmentationPipeline | None = None,
     signal_field: str | None = None,
     analyze_attestations: bool = True,
-) -> TestData:
+) -> PlaceData:
     """Build TestData arrays from databank records for a given toponymic element.
 
     Determines element_present by checking if the segmentation pipeline
@@ -109,14 +109,14 @@ def build_test_data(
             signal_values.append(float(val) if val is not None else 0.0)
 
     if not coordinates:
-        return TestData(
+        return PlaceData(
             coordinates=np.empty((0, 2)),
             element_present=np.empty(0, dtype=bool),
             signal_values=np.empty(0) if signal_field else None,
             element_name=element,
         )
 
-    return TestData(
+    return PlaceData(
         coordinates=np.array(coordinates),
         element_present=np.array(element_present, dtype=bool),
         signal_values=np.array(signal_values) if signal_values is not None else None,

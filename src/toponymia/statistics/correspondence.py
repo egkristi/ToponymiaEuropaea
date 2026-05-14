@@ -11,11 +11,11 @@ import numpy as np
 
 from toponymia.statistics.base import (
     BaseTest,
+    PlaceData,
+    StatFamily,
+    StatStatus,
     SyntheticValidation,
-    TestData,
-    TestFamily,
     TestResult,
-    TestStatus,
 )
 
 
@@ -30,7 +30,7 @@ class ElementSignalCorrespondenceTest(BaseTest):
     """
 
     test_id = "element_signal_correspondence"
-    test_family = TestFamily.CORRESPONDENCE
+    test_family = StatFamily.CORRESPONDENCE
     description = (
         "Tests whether a toponymic element corresponds with a continuous environmental signal"
     )
@@ -42,7 +42,7 @@ class ElementSignalCorrespondenceTest(BaseTest):
         "Signal values differ significantly between element-bearing and non-element places"
     )
 
-    def run(self, data: TestData, n_permutations: int = 10000) -> TestResult:
+    def run(self, data: PlaceData, n_permutations: int = 10000) -> TestResult:
         """Run permutation test for element-signal correspondence."""
         if data.signal_values is None:
             raise ValueError("signal_values required for correspondence test")
@@ -55,7 +55,7 @@ class ElementSignalCorrespondenceTest(BaseTest):
             return TestResult(
                 test_id=self.test_id,
                 test_family=self.test_family,
-                status=TestStatus.INCONCLUSIVE,
+                status=StatStatus.INCONCLUSIVE,
                 null_hypothesis=self.null_hypothesis,
                 alternative_hypothesis=self.alternative_hypothesis,
                 n_observations=data.n_places,
@@ -104,11 +104,11 @@ class ElementSignalCorrespondenceTest(BaseTest):
 
         # Determine status
         if p_value < 0.05:
-            status = TestStatus.CONFIRMED
+            status = StatStatus.CONFIRMED
         elif p_value > 0.95:
-            status = TestStatus.REJECTED
+            status = StatStatus.REJECTED
         else:
-            status = TestStatus.EXECUTED
+            status = StatStatus.EXECUTED
 
         return TestResult(
             test_id=self.test_id,
@@ -151,7 +151,7 @@ class ElementSignalCorrespondenceTest(BaseTest):
             signal = rng.normal(0, 1, size=n_places)
             signal[:n_positive] += 1.0  # Plant signal
 
-            data = TestData(
+            data = PlaceData(
                 coordinates=coords,
                 element_present=element,
                 signal_values=signal,
@@ -172,7 +172,7 @@ class ElementSignalCorrespondenceTest(BaseTest):
             # Signal: pure noise, no relationship
             signal = rng.normal(0, 1, size=n_places)
 
-            data = TestData(
+            data = PlaceData(
                 coordinates=coords,
                 element_present=element,
                 signal_values=signal,

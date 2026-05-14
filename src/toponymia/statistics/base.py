@@ -21,7 +21,7 @@ from typing import Any
 import numpy as np
 
 
-class TestStatus(Enum):
+class StatStatus(Enum):
     """Status of a statistical test."""
 
     PROPOSED = "proposed"
@@ -33,7 +33,7 @@ class TestStatus(Enum):
     INCONCLUSIVE = "inconclusive"
 
 
-class TestFamily(Enum):
+class StatFamily(Enum):
     """Family/category of statistical test."""
 
     CORRESPONDENCE = "correspondence"
@@ -51,7 +51,7 @@ class TestFamily(Enum):
 
 
 @dataclass
-class TestData:
+class PlaceData:
     """Input data for a statistical test."""
 
     # Place coordinates (N x 2 array: lon, lat)
@@ -106,8 +106,8 @@ class TestResult:
 
     # Test identity
     test_id: str
-    test_family: TestFamily
-    status: TestStatus
+    test_family: StatFamily
+    status: StatStatus
 
     # Hypothesis
     null_hypothesis: str
@@ -164,13 +164,13 @@ class BaseTest(ABC):
 
     # Class-level metadata (override in subclass)
     test_id: str = ""
-    test_family: TestFamily = TestFamily.CORRESPONDENCE
+    test_family: StatFamily = StatFamily.CORRESPONDENCE
     description: str = ""
     null_hypothesis: str = ""
     alternative_hypothesis: str = ""
 
     @abstractmethod
-    def run(self, data: TestData, n_permutations: int = 10000) -> TestResult:
+    def run(self, data: PlaceData, n_permutations: int = 10000) -> TestResult:
         """Execute the statistical test.
 
         Args:
@@ -198,7 +198,7 @@ class BaseTest(ABC):
         """
         ...
 
-    def check_robustness(self, data: TestData, result: TestResult) -> list[RobustnessResult]:
+    def check_robustness(self, data: PlaceData, result: TestResult) -> list[RobustnessResult]:
         """Run standard robustness checks on a test result.
 
         Default implementation includes:
@@ -222,7 +222,7 @@ class BaseTest(ABC):
             mask = np.ones(len(data.coordinates), dtype=bool)
             mask[start:end] = False
 
-            subset_data = TestData(
+            subset_data = PlaceData(
                 coordinates=data.coordinates[mask],
                 element_present=data.element_present[mask],
                 signal_values=data.signal_values[mask] if data.signal_values is not None else None,

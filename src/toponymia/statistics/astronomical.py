@@ -14,11 +14,11 @@ import numpy as np
 
 from toponymia.statistics.base import (
     BaseTest,
+    PlaceData,
+    StatFamily,
+    StatStatus,
     SyntheticValidation,
-    TestData,
-    TestFamily,
     TestResult,
-    TestStatus,
 )
 
 
@@ -97,7 +97,7 @@ class AstronomicalAlignmentTest(BaseTest):
     """
 
     test_id = "astronomical_alignment"
-    test_family = TestFamily.ASTRONOMICAL_ALIGNMENT
+    test_family = StatFamily.ASTRONOMICAL_ALIGNMENT
     description = (
         "Tests whether places with astronomical name elements show"
         " significant orientation toward solstice/equinox axes"
@@ -111,7 +111,7 @@ class AstronomicalAlignmentTest(BaseTest):
         " around solstice/equinox azimuths"
     )
 
-    def run(self, data: TestData, n_permutations: int = 10000) -> TestResult:
+    def run(self, data: PlaceData, n_permutations: int = 10000) -> TestResult:
         """Run Rayleigh test comparing element-bearing vs. control sites.
 
         Uses signal_values as bearing/azimuth data (in degrees, 0-360).
@@ -135,7 +135,7 @@ class AstronomicalAlignmentTest(BaseTest):
             return TestResult(
                 test_id=self.test_id,
                 test_family=self.test_family,
-                status=TestStatus.INCONCLUSIVE,
+                status=StatStatus.INCONCLUSIVE,
                 null_hypothesis=self.null_hypothesis,
                 alternative_hypothesis=self.alternative_hypothesis,
                 n_observations=data.n_places,
@@ -176,11 +176,11 @@ class AstronomicalAlignmentTest(BaseTest):
 
         # Determine status
         if p_value < 0.05 and r_bar_positive > 0.3:
-            status = TestStatus.CONFIRMED
+            status = StatStatus.CONFIRMED
         elif p_value < 0.05:
-            status = TestStatus.EXECUTED
+            status = StatStatus.EXECUTED
         else:
-            status = TestStatus.EXECUTED
+            status = StatStatus.EXECUTED
 
         return TestResult(
             test_id=self.test_id,
@@ -231,7 +231,7 @@ class AstronomicalAlignmentTest(BaseTest):
                 np.rad2deg(rng.vonmises(np.deg2rad(90), 2.0, size=n_element)) % 360
             )
 
-            data_power = TestData(
+            data_power = PlaceData(
                 coordinates=coords,
                 element_present=element_present,
                 signal_values=bearings_power,
@@ -248,7 +248,7 @@ class AstronomicalAlignmentTest(BaseTest):
             null_indices = rng.choice(n_sites, size=n_element, replace=False)
             element_null[null_indices] = True
 
-            data_null = TestData(
+            data_null = PlaceData(
                 coordinates=coords,
                 element_present=element_null,
                 signal_values=bearings_null,

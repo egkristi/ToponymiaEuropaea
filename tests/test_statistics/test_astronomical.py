@@ -7,7 +7,7 @@ from toponymia.statistics.astronomical import (
     mean_direction,
     rayleigh_test,
 )
-from toponymia.statistics.base import TestData, TestFamily, TestStatus
+from toponymia.statistics.base import PlaceData, StatFamily, StatStatus
 
 
 class TestRayleighFunction:
@@ -59,7 +59,7 @@ class TestAstronomicalAlignmentTest:
 
     def test_metadata(self):
         assert self.test.test_id == "astronomical_alignment"
-        assert self.test.test_family == TestFamily.ASTRONOMICAL_ALIGNMENT
+        assert self.test.test_family == StatFamily.ASTRONOMICAL_ALIGNMENT
         assert (
             "solstice" in self.test.description.lower()
             or "astronomical" in self.test.description.lower()
@@ -79,7 +79,7 @@ class TestAstronomicalAlignmentTest:
         bearings = rng.uniform(0, 360, size=n)
         bearings[:n_elem] = np.rad2deg(rng.vonmises(np.deg2rad(90), 3.0, size=n_elem)) % 360
 
-        data = TestData(
+        data = PlaceData(
             coordinates=coords,
             element_present=element_present,
             signal_values=bearings,
@@ -105,7 +105,7 @@ class TestAstronomicalAlignmentTest:
         # All bearings uniform — no concentration
         bearings = rng.uniform(0, 360, size=n)
 
-        data = TestData(
+        data = PlaceData(
             coordinates=coords,
             element_present=element_present,
             signal_values=bearings,
@@ -122,7 +122,7 @@ class TestAstronomicalAlignmentTest:
         element_present = np.array([True, True, False, False])
         bearings = np.array([90.0, 91.0, 180.0, 270.0])
 
-        data = TestData(
+        data = PlaceData(
             coordinates=coords,
             element_present=element_present,
             signal_values=bearings,
@@ -131,7 +131,7 @@ class TestAstronomicalAlignmentTest:
         )
 
         result = self.test.run(data, n_permutations=99)
-        assert result.status == TestStatus.INCONCLUSIVE
+        assert result.status == StatStatus.INCONCLUSIVE
 
     def test_missing_signal_values(self):
         """Should raise ValueError without signal_values."""
@@ -140,7 +140,7 @@ class TestAstronomicalAlignmentTest:
         coords = np.array([[0, 0], [1, 1]])
         element_present = np.array([True, False])
 
-        data = TestData(
+        data = PlaceData(
             coordinates=coords,
             element_present=element_present,
             signal_values=None,

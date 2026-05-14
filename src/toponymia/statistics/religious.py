@@ -14,11 +14,11 @@ import numpy as np
 
 from toponymia.statistics.base import (
     BaseTest,
+    PlaceData,
+    StatFamily,
+    StatStatus,
     SyntheticValidation,
-    TestData,
-    TestFamily,
     TestResult,
-    TestStatus,
 )
 
 
@@ -38,7 +38,7 @@ class ReligiousStratigraphyTest(BaseTest):
     """
 
     test_id = "religious_stratigraphy"
-    test_family = TestFamily.RELIGIOUS_STRATIGRAPHY
+    test_family = StatFamily.RELIGIOUS_STRATIGRAPHY
     description = (
         "Tests whether Christian names co-occur with pre-Christian"
         " cult-site names more than expected by chance"
@@ -53,7 +53,7 @@ class ReligiousStratigraphyTest(BaseTest):
 
     def run(
         self,
-        data: TestData,
+        data: PlaceData,
         n_permutations: int = 10000,
         *,
         proximity_threshold_km: float = 2.0,
@@ -83,7 +83,7 @@ class ReligiousStratigraphyTest(BaseTest):
             return TestResult(
                 test_id=self.test_id,
                 test_family=self.test_family,
-                status=TestStatus.INCONCLUSIVE,
+                status=StatStatus.INCONCLUSIVE,
                 null_hypothesis=self.null_hypothesis,
                 alternative_hypothesis=self.alternative_hypothesis,
                 n_observations=data.n_places,
@@ -141,11 +141,11 @@ class ReligiousStratigraphyTest(BaseTest):
 
         # Status
         if p_value < 0.05 and effect_size > 0.5:
-            status = TestStatus.CONFIRMED
+            status = StatStatus.CONFIRMED
         elif p_value < 0.05:
-            status = TestStatus.EXECUTED
+            status = StatStatus.EXECUTED
         else:
-            status = TestStatus.EXECUTED
+            status = StatStatus.EXECUTED
 
         return TestResult(
             test_id=self.test_id,
@@ -235,7 +235,7 @@ class ReligiousStratigraphyTest(BaseTest):
             )
             signal_power[far_indices] = 1.0
 
-            data_power = TestData(
+            data_power = PlaceData(
                 coordinates=coords.copy(),
                 element_present=element_present.copy(),
                 signal_values=signal_power,
@@ -255,7 +255,7 @@ class ReligiousStratigraphyTest(BaseTest):
             element_null = np.zeros(n_sites, dtype=bool)
             element_null[rng.choice(n_sites, size=n_pre_christian, replace=False)] = True
 
-            data_null = TestData(
+            data_null = PlaceData(
                 coordinates=coords_null,
                 element_present=element_null,
                 signal_values=signal_null,

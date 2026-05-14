@@ -1,5 +1,5 @@
 """Statistical testing framework."""
 
-from toponymia.statistics.base import BaseTest, TestData, TestResult
+from toponymia.statistics.base import BaseTest, PlaceData, TestResult
 
-__all__ = ["BaseTest", "TestResult", "TestData"]
+__all__ = ["BaseTest", "TestResult", "PlaceData"]

@@ -18,11 +18,11 @@ import numpy as np
 
 from toponymia.statistics.base import (
     BaseTest,
+    PlaceData,
+    StatFamily,
+    StatStatus,
     SyntheticValidation,
-    TestData,
-    TestFamily,
     TestResult,
-    TestStatus,
 )
 
 
@@ -42,7 +42,7 @@ class MigrationOverfrequencyTest(BaseTest):
     """
 
     test_id = "migration_overfrequency"
-    test_family = TestFamily.MIGRATION
+    test_family = StatFamily.MIGRATION
     description = (
         "Tests whether a migration-associated name element is"
         " over-represented in the proposed target/diaspora area"
@@ -58,7 +58,7 @@ class MigrationOverfrequencyTest(BaseTest):
 
     def run(
         self,
-        data: TestData,
+        data: PlaceData,
         n_permutations: int = 10000,
     ) -> TestResult:
         """Run migration overfrequency test.
@@ -89,7 +89,7 @@ class MigrationOverfrequencyTest(BaseTest):
             return TestResult(
                 test_id=self.test_id,
                 test_family=self.test_family,
-                status=TestStatus.INCONCLUSIVE,
+                status=StatStatus.INCONCLUSIVE,
                 null_hypothesis=self.null_hypothesis,
                 alternative_hypothesis=self.alternative_hypothesis,
                 n_observations=n_total,
@@ -106,7 +106,7 @@ class MigrationOverfrequencyTest(BaseTest):
             return TestResult(
                 test_id=self.test_id,
                 test_family=self.test_family,
-                status=TestStatus.INCONCLUSIVE,
+                status=StatStatus.INCONCLUSIVE,
                 null_hypothesis=self.null_hypothesis,
                 alternative_hypothesis=self.alternative_hypothesis,
                 n_observations=n_total,
@@ -153,11 +153,11 @@ class MigrationOverfrequencyTest(BaseTest):
 
         # Status
         if p_value < 0.05 and effect_size > 0.5:
-            status = TestStatus.CONFIRMED
+            status = StatStatus.CONFIRMED
         elif p_value < 0.05:
-            status = TestStatus.EXECUTED
+            status = StatStatus.EXECUTED
         else:
-            status = TestStatus.EXECUTED
+            status = StatStatus.EXECUTED
 
         return TestResult(
             test_id=self.test_id,
@@ -220,7 +220,7 @@ class MigrationOverfrequencyTest(BaseTest):
             n_tgt_element = int(len(tgt_idx) * 0.40)
             element_power[rng.choice(tgt_idx, size=n_tgt_element, replace=False)] = True
 
-            data_power = TestData(
+            data_power = PlaceData(
                 coordinates=coords.copy(),
                 element_present=element_power,
                 signal_values=signal.copy(),
@@ -240,7 +240,7 @@ class MigrationOverfrequencyTest(BaseTest):
             null_target_idx = rng.choice(n_sites, size=n_target, replace=False)
             signal_null[null_target_idx] = 1.0
 
-            data_null = TestData(
+            data_null = PlaceData(
                 coordinates=rng.uniform(0, 2, size=(n_sites, 2)),
                 element_present=element_null,
                 signal_values=signal_null,

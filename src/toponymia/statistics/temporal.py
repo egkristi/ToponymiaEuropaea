@@ -20,11 +20,11 @@ from scipy.spatial.distance import cdist
 
 from toponymia.statistics.base import (
     BaseTest,
+    PlaceData,
+    StatFamily,
+    StatStatus,
     SyntheticValidation,
-    TestData,
-    TestFamily,
     TestResult,
-    TestStatus,
 )
 
 
@@ -45,7 +45,7 @@ class TemporalLayerConsistencyTest(BaseTest):
     """
 
     test_id = "temporal_layer_consistency"
-    test_family = TestFamily.TEMPORAL
+    test_family = StatFamily.TEMPORAL
     description = (
         "Tests whether a proposed temporal name layer shows"
         " geographic coherence (spatial clustering) beyond chance"
@@ -61,7 +61,7 @@ class TemporalLayerConsistencyTest(BaseTest):
 
     def run(
         self,
-        data: TestData,
+        data: PlaceData,
         n_permutations: int = 10000,
     ) -> TestResult:
         """Run temporal layer consistency test.
@@ -81,7 +81,7 @@ class TemporalLayerConsistencyTest(BaseTest):
             return TestResult(
                 test_id=self.test_id,
                 test_family=self.test_family,
-                status=TestStatus.INCONCLUSIVE,
+                status=StatStatus.INCONCLUSIVE,
                 null_hypothesis=self.null_hypothesis,
                 alternative_hypothesis=self.alternative_hypothesis,
                 n_observations=n_total,
@@ -95,7 +95,7 @@ class TemporalLayerConsistencyTest(BaseTest):
             return TestResult(
                 test_id=self.test_id,
                 test_family=self.test_family,
-                status=TestStatus.INCONCLUSIVE,
+                status=StatStatus.INCONCLUSIVE,
                 null_hypothesis=self.null_hypothesis,
                 alternative_hypothesis=self.alternative_hypothesis,
                 n_observations=n_total,
@@ -140,11 +140,11 @@ class TemporalLayerConsistencyTest(BaseTest):
 
         # Status
         if p_value < 0.05 and effect_size > 0.5:
-            status = TestStatus.CONFIRMED
+            status = StatStatus.CONFIRMED
         elif p_value < 0.05:
-            status = TestStatus.EXECUTED
+            status = StatStatus.EXECUTED
         else:
-            status = TestStatus.EXECUTED
+            status = StatStatus.EXECUTED
 
         return TestResult(
             test_id=self.test_id,
@@ -217,7 +217,7 @@ class TemporalLayerConsistencyTest(BaseTest):
             element_present = np.zeros(n_sites, dtype=bool)
             element_present[layer_idx] = True
 
-            data_power = TestData(
+            data_power = PlaceData(
                 coordinates=coords,
                 element_present=element_present,
                 region="synthetic",
@@ -233,7 +233,7 @@ class TemporalLayerConsistencyTest(BaseTest):
             null_idx = rng.choice(n_sites, size=n_layer, replace=False)
             element_null[null_idx] = True
 
-            data_null = TestData(
+            data_null = PlaceData(
                 coordinates=coords_null,
                 element_present=element_null,
                 region="synthetic",
