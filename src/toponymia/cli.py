@@ -26,12 +26,14 @@ data_app = typer.Typer(help="Data onboarding lifecycle commands")
 quality_app = typer.Typer(help="Data quality metrics and reporting")
 databank_app = typer.Typer(help="Databank management and validation")
 analyze_app = typer.Typer(help="Run statistical analyses on databank data")
+lemma_app = typer.Typer(help="Name lemma registry commands")
 app.add_typer(ingest_app, name="ingest")
 app.add_typer(test_app, name="test")
 app.add_typer(data_app, name="data")
 app.add_typer(quality_app, name="quality")
 app.add_typer(databank_app, name="databank")
 app.add_typer(analyze_app, name="analyze")
+app.add_typer(lemma_app, name="lemma")
 
 
 @app.command()
@@ -938,6 +940,103 @@ def _run_test(test_type: str, data: PlaceData, signal_field: str | None) -> Test
         return migration_test.run(data)
 
     raise typer.Exit(code=1)
+
+
+# ─── Lemma commands ──────────────────────────────────────────────────────────
+
+
+@lemma_app.command("list")
+def lemma_list(
+    country: str | None = typer.Option(None, "--country", "-c", help="Filter by country code"),
+    language: str | None = typer.Option(None, "--language", "-l", help="Filter by language code"),
+    limit: int = typer.Option(50, "--limit", "-n", help="Max lemmas to show"),
+) -> None:
+    """List detected lemmas from the databank, ranked by frequency."""
+    from toponymia.pipelines.lemma import build_lemma_registry_from_databank
+
+    databank_path = Path("databank")
+    registry = build_lemma_registry_from_databank(databank_path)
+    top = registry.top_lemmas(limit)
+
+    if language:
+        top = [e for e in top if e.language_code == language]
+    if country:
+        top = [e for e in top if country in e.countries]
+
+    table = Table(title="Name Lemmas")
+    table.add_column("Lemma", style="bold")
+    table.add_column("Language")
+    table.add_column("Count", justify="right")
+    table.add_column("Semantic Field")
+    table.add_column("Meaning")
+    table.add_column("Countries")
+
+    for entry in top:
+        table.add_row(
+            entry.canonical_form,
+            entry.language_code,
+            str(entry.attestation_count),
+            entry.semantic_field or "",
+            entry.meaning or "",
+            ", ".join(sorted(entry.countries)),
+        )
+
+    console.print(table)
+
+
+@lemma_app.command("show")
+def lemma_show(
+    form: str = typer.Argument(help="Lemma canonical form to look up"),
+    language: str = typer.Option("non", "--language", "-l", help="Language code"),
+) -> None:
+    """Show details for a specific lemma."""
+    from toponymia.pipelines.lemma import build_lemma_registry_from_databank
+
+    databank_path = Path("databank")
+    registry = build_lemma_registry_from_databank(databank_path)
+    entry = registry.get(form, language)
+
+    if entry is None:
+        console.print(f"[red]Lemma '{form}' ({language}) not found[/red]")
+        raise typer.Exit(code=1)
+
+    console.print(f"[bold]{entry.canonical_form}[/bold] ({entry.language_code})")
+    console.print(f"  Attestations: {entry.attestation_count}")
+    if entry.meaning:
+        console.print(f"  Meaning: {entry.meaning}")
+    if entry.semantic_field:
+        console.print(f"  Semantic field: {entry.semantic_field}")
+    if entry.pie_root:
+        console.print(f"  PIE root: {entry.pie_root}")
+    if entry.cognates:
+        console.print(f"  Cognates: {', '.join(entry.cognates)}")
+    if entry.countries:
+        console.print(f"  Countries: {', '.join(sorted(entry.countries))}")
+
+
+@lemma_app.command("stats")
+def lemma_stats() -> None:
+    """Show summary statistics for the lemma registry."""
+    from toponymia.pipelines.lemma import build_lemma_registry_from_databank
+
+    databank_path = Path("databank")
+    registry = build_lemma_registry_from_databank(databank_path)
+    stats = registry.stats()
+
+    table = Table(title="Lemma Registry Statistics")
+    table.add_column("Metric")
+    table.add_column("Value", justify="right")
+
+    table.add_row("Total lemmas", str(stats["total_lemmas"]))
+    table.add_row("Total attestations", str(stats["total_attestations"]))
+    if stats.get("max_frequency"):
+        table.add_row("Max frequency", str(stats["max_frequency"]))
+    if stats.get("languages"):
+        table.add_row("Languages", ", ".join(sorted(stats["languages"])))
+    if stats.get("countries"):
+        table.add_row("Countries", ", ".join(sorted(stats["countries"])))
+
+    console.print(table)
 
 
 if __name__ == "__main__":

@@ -126,6 +126,15 @@
             "minimum": 0,
             "maximum": 1,
             "description": "Confidence in the attestation (0.0–1.0)"
+          },
+          "lemma": {
+            "type": ["string", "null"],
+            "description": "Canonical lemma form extracted from this attestation (e.g. 'heim', 'berg'). Links to the name_lemmas registry."
+          },
+          "lemma_language": {
+            "type": ["string", "null"],
+            "pattern": "^[a-z]{3}$",
+            "description": "Language code of the lemma (ISO 639-3). May differ from attestation language."
           }
         },
         "additionalProperties": true
@@ -184,6 +193,19 @@
       "enum": ["candidate", "verified", "enriched", "reviewed", "published"],
       "default": "candidate",
       "description": "Data quality / onboarding stage"
+    },
+    "_lemma": {
+      "type": ["string", "null"],
+      "description": "Canonical lemma (suffix/head element) for the primary name_form. Auto-detected from segmentation."
+    },
+    "_lemma_language": {
+      "type": ["string", "null"],
+      "pattern": "^[a-z]{3}$",
+      "description": "Language code of the detected lemma (ISO 639-3)"
+    },
+    "_lemma_semantic_field": {
+      "type": ["string", "null"],
+      "description": "Semantic field of the lemma (e.g. 'settlement', 'topography.coast')"
     }
   },
   "additionalProperties": true
