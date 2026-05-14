@@ -2,14 +2,18 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://github.com/egkristi/ToponymiaEuropaea/databank/schema/place.v1.json",
   "title": "Toponymia Europaea Place Record",
-  "description": "A single place name record in the databank. Schema is extensible: additional properties are preserved and passed through.",
+  "description": "A single place record in the databank. Supports full name history via the 'attestations' array. Schema is extensible: additional properties are preserved and passed through.",
   "type": "object",
   "required": ["name_form", "latitude", "longitude", "source_id"],
   "properties": {
+    "place_id": {
+      "type": "string",
+      "description": "Stable identifier linking multiple records/attestations to the same physical place. Use Wikidata QID or source-specific ID."
+    },
     "name_form": {
       "type": "string",
       "minLength": 1,
-      "description": "Primary attested name form (Unicode, NFC-normalized)"
+      "description": "Primary attested name form (Unicode, NFC-normalized). For places with name history, this is the current/most recent name."
     },
     "name_normalized": {
       "type": "string",
@@ -39,7 +43,7 @@
     "language_code": {
       "type": "string",
       "pattern": "^[a-z]{3}$",
-      "description": "ISO 639-3 language code (3 lowercase letters)"
+      "description": "ISO 639-3 language code of the primary name_form"
     },
     "script": {
       "type": ["string", "null"],
@@ -56,16 +60,76 @@
     },
     "year_from": {
       "type": ["integer", "null"],
-      "description": "Earliest attestation year (CE; negative for BCE)"
+      "description": "Earliest attestation year for this name_form (CE; negative for BCE)"
     },
     "year_to": {
       "type": ["integer", "null"],
-      "description": "Latest attestation year (CE; null = still current)"
+      "description": "Latest attestation year for this name_form (CE; null = still current)"
     },
     "is_current": {
       "type": "boolean",
       "default": true,
       "description": "Whether this name is currently in use"
+    },
+    "attestations": {
+      "type": "array",
+      "description": "Ordered list of historical name attestations for this place. Enables full diachronic analysis of name changes over time.",
+      "items": {
+        "type": "object",
+        "required": ["form"],
+        "properties": {
+          "form": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The attested name form"
+          },
+          "normalized": {
+            "type": "string",
+            "description": "Normalized form for matching"
+          },
+          "language_code": {
+            "type": "string",
+            "pattern": "^[a-z]{3}$",
+            "description": "ISO 639-3 language code of this attestation"
+          },
+          "year_from": {
+            "type": ["integer", "null"],
+            "description": "Earliest year this form is attested (CE; negative for BCE)"
+          },
+          "year_to": {
+            "type": ["integer", "null"],
+            "description": "Latest year this form is attested (CE; null = still in use)"
+          },
+          "is_current": {
+            "type": "boolean",
+            "default": false,
+            "description": "Whether this form is currently in use"
+          },
+          "source": {
+            "type": ["string", "null"],
+            "description": "Source citation for this specific attestation (e.g. 'DN I 23, 1234')"
+          },
+          "context": {
+            "type": ["string", "null"],
+            "description": "Historical context or reason for name change"
+          },
+          "script": {
+            "type": ["string", "null"],
+            "description": "ISO 15924 script code for this form"
+          },
+          "phonetic": {
+            "type": ["string", "null"],
+            "description": "IPA or phonetic transcription"
+          },
+          "confidence": {
+            "type": ["number", "null"],
+            "minimum": 0,
+            "maximum": 1,
+            "description": "Confidence in the attestation (0.0–1.0)"
+          }
+        },
+        "additionalProperties": true
+      }
     },
     "source_id": {
       "type": "string",
@@ -109,7 +173,7 @@
         "type": "array",
         "items": { "type": "string" }
       },
-      "description": "Alternative names keyed by language code"
+      "description": "Synchronic alternative names keyed by language code (for names used simultaneously, e.g. official bilingual names). For diachronic (historical) changes, use the 'attestations' array instead."
     },
     "admin_region": {
       "type": ["string", "null"],

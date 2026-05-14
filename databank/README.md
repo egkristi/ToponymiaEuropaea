@@ -58,10 +58,50 @@ Each `.jsonl` file contains one JSON object per line conforming to `schema/place
 Any additional fields are allowed and preserved. Examples:
 
 ```json
-{"name_form": "Bjørgvin", "latitude": 60.39, "longitude": 5.32, "source_id": "3161732", "language_code": "nno", "country_code": "NO", "source_dataset": "geonames", "etymology_notes": "Old Norse Bjǫrgvin 'mountain meadow'", "medieval_form": "Bjǫrgvin"}
+{"name_form": "Bjørgvin", "latitude": 60.39, "longitude": 5.32, "source_id": "3161732", "language_code": "nno", "country_code": "NO", "source_dataset": "geonames", "etymology_notes": "Old Norse Bjǫrgvin 'mountain meadow'"}
 ```
 
-The `etymology_notes` and `medieval_form` fields are not in the core schema but are perfectly valid. They will be preserved through all pipelines.
+The `etymology_notes` field is not in the core schema but is perfectly valid. It will be preserved through all pipelines.
+
+### Historical Name Attestations
+
+For historical/diachronic analysis, use the `attestations` array to record how a place's name has changed over time. This is distinct from `alternative_names` which captures *synchronic* variants (e.g., bilingual names used simultaneously).
+
+```json
+{
+  "name_form": "Trondheim",
+  "latitude": 63.43049,
+  "longitude": 10.39506,
+  "source_id": "3133880",
+  "place_id": "Q25804",
+  "attestations": [
+    {"form": "Niðaróss", "language_code": "non", "year_from": 997, "year_to": 1217, "source": "Heimskringla", "context": "Original Norse name, 'mouth of river Nid'"},
+    {"form": "Trondhjem", "language_code": "dan", "year_from": 1537, "year_to": 1930, "context": "Danish period name"},
+    {"form": "Trondheim", "language_code": "nob", "year_from": 1930, "year_to": null, "is_current": true, "context": "Norwegianized spelling"}
+  ]
+}
+```
+
+Each attestation object supports:
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `form` | string | **Required.** The attested name form |
+| `language_code` | string | ISO 639-3 code |
+| `year_from` | int/null | First known use (CE; negative for BCE) |
+| `year_to` | int/null | Last use (`null` = still current) |
+| `is_current` | bool | Whether this form is in use today |
+| `source` | string | Citation (e.g. "DN I 23, 1234") |
+| `context` | string | Reason for name change |
+| `confidence` | number | 0.0–1.0 confidence level |
+| `script` | string | ISO 15924 script code |
+| `phonetic` | string | IPA transcription |
+
+**Guidelines:**
+- Order attestations chronologically (earliest first)
+- Use `alternative_names` for concurrent/bilingual names (e.g., Sámi alongside Norwegian)
+- Use `attestations` for sequential name changes over time
+- Set `place_id` (preferably Wikidata QID) to link records referring to the same physical place across datasets
 
 ## Contributing Data
 
