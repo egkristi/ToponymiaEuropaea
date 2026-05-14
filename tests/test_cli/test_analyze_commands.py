@@ -20,11 +20,11 @@ class TestAnalyzeDiscover:
 
 
 class TestAnalyzeElement:
-    def test_element_heim(self):
-        result = runner.invoke(app, ["analyze", "element", "heim", "--country", "NO"])
+    def test_element_nes(self):
+        result = runner.invoke(app, ["analyze", "element", "nes", "--country", "NO"])
         assert result.exit_code == 0
         assert "Test Result" in result.output
-        assert "heim" in result.output
+        assert "nes" in result.output
 
     def test_element_nonexistent(self):
         result = runner.invoke(app, ["analyze", "element", "zzzzz", "--country", "NO"])

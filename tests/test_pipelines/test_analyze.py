@@ -30,13 +30,13 @@ def _make_temp_databank(records: list[dict], country: str = "NO") -> Path:
 class TestLoadDatabank:
     def test_load_from_real_databank(self):
         records = load_databank()
-        assert len(records) >= 15  # NO (10) + FI (5)
+        assert len(records) >= 2500  # 500 per country x 5
         assert all("name_form" in r for r in records)
         assert all("_country" in r for r in records)
 
     def test_load_filter_by_country(self):
         records = load_databank(country="NO")
-        assert len(records) == 10
+        assert len(records) >= 500
         assert all(r["_country"] == "NO" for r in records)
 
     def test_load_nonexistent_path(self):
