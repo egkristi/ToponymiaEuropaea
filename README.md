@@ -743,15 +743,14 @@ class MySourceConnector(BaseConnector):
 | Layer | Technology | Rationale |
 |-------|-----------|-----------|
 | Language | Python 3.12+ | Ecosystem for NLP, geo, statistics |
-| Database | PostgreSQL 16 + PostGIS | Spatial queries, mature, extensible |
-| Analytics | DuckDB + Parquet | Columnar analysis without ETL |
-| NLP | spaCy, Transformers | Morphological analysis, classification |
-| Geospatial | GeoPandas, Rasterio, Shapely | Terrain, hydrology, spatial ops |
-| Statistics | SciPy, statsmodels, PyMC | Frequentist + Bayesian |
-| Build | UV + Make | Fast dependency resolution, reproducibility |
-| Versioning | Git + DVC | Code + data versioning |
-| API | FastAPI | Lightweight, async, OpenAPI docs |
-| Standards | SKOS, GeoSPARQL, ISO 639-3, ISO 15924 | Interoperability |
+| Databank | JSONL (git-native) | Diff-friendly, merge-friendly, extensible schema |
+| Database | PostgreSQL 16 + PostGIS (optional) | Spatial queries for analysis cache |
+| Statistics | NumPy, SciPy | Permutation tests, spatial analysis |
+| Connectors | httpx | Async HTTP for GeoNames, Wikidata, OSM, Kartverket |
+| CLI | Typer + Rich | Type-safe commands with beautiful tables |
+| Build | UV | Fast dependency resolution, reproducibility |
+| CI | GitHub Actions | Lint + test (py3.12/3.13) + ontology + databank validation |
+| Standards | SKOS, ISO 639-3, ISO 15924 | Interoperability |
 
 ---
 
@@ -761,8 +760,6 @@ class MySourceConnector(BaseConnector):
 
 - Python 3.12+
 - [UV](https://docs.astral.sh/uv/) (Python package manager)
-- Docker & Docker Compose (for database)
-- Make
 
 ### Installation
 
@@ -770,33 +767,42 @@ class MySourceConnector(BaseConnector):
 git clone https://github.com/egkristi/ToponymiaEuropaea.git
 cd ToponymiaEuropaea
 
-# Install dependencies
+# Install dependencies (core only)
 uv sync
 
-# Start PostgreSQL + PostGIS (via Docker)
-make docker-up
-
-# Run database migrations
-make db-migrate
+# For development (includes pytest, ruff, etc.)
+uv sync --extra dev
 
 # Verify installation
-make test
+uv run pytest
 ```
 
 ### First Analysis (Quick Start)
 
 ```bash
-# Ingest GeoNames data for a single country (e.g., Norway)
-uv run toponymia ingest geonames --country NO
+# Discover which elements appear in the databank
+uv run toponymia analyze discover --country NO
 
-# Run morphological segmentation
-uv run toponymia segment --region NO
+# Analyze a specific element (e.g., -heim)
+uv run toponymia analyze element heim --country NO
 
-# Run a single statistical test (e.g., -berg vs. elevation)
-uv run toponymia test correspondence --element "berg" --signal elevation --region NO
+# Run with a specific statistical test
+uv run toponymia analyze element heim --country NO --test spatial
 
-# View results
-uv run toponymia results --format table
+# Ingest more data from GeoNames into the databank
+uv run toponymia ingest geonames --country NO --output databank/places/NO/source.jsonl --limit 100
+```
+
+### Optional: PostgreSQL for Analysis Cache
+
+For larger datasets and spatial queries, optionally set up PostgreSQL:
+
+```bash
+# Start PostgreSQL + PostGIS (via Docker)
+make docker-up
+
+# Run database migrations
+make db-migrate
 ```
 
 ### Configuration
@@ -805,10 +811,9 @@ Copy the example configuration:
 
 ```bash
 cp config/settings.example.toml config/settings.toml
-cp .env.example .env  # Database credentials
 ```
 
-Edit `config/settings.toml` to configure database connection, API keys, and analysis parameters.
+Edit `config/settings.toml` to configure API keys and analysis parameters.
 
 ---
 
@@ -819,7 +824,7 @@ toponymia-europaea/
 ├── src/
 │   └── toponymia/
 │       ├── __init__.py
-│       ├── cli.py                    # Command-line interface
+│       ├── cli.py                    # Command-line interface (info, ingest, analyze, test, data, quality, databank)
 │       ├── config.py                 # Configuration management
 │       ├── connectors/               # Data source plugins
 │       │   ├── __init__.py
@@ -832,25 +837,26 @@ toponymia-europaea/
 │       │   ├── __init__.py
 │       │   ├── models.py             # Pydantic models
 │       │   ├── database.py           # Database connection
+│       │   ├── onboarding.py         # Data promotion/demotion workflow
 │       │   └── repository.py         # Data access layer
 │       ├── pipelines/                # Analysis pipeline stages
 │       │   ├── __init__.py
 │       │   ├── normalize.py
-│       │   ├── segment.py
+│       │   ├── segment.py            # Segmentation pipeline (segment_record with attestation support)
+│       │   ├── analyze.py            # Databank → analysis bridge (load, build PlaceData, run tests)
 │       │   ├── classify.py
 │       │   ├── etymologize.py
 │       │   └── link.py
 │       ├── languages/                # Language-specific modules
 │       │   ├── __init__.py
 │       │   ├── base.py              # BaseLanguageModule interface
-│       │   ├── old_norse.py
+│       │   ├── old_norse.py         # 120+ elements, compound analysis
 │       │   ├── proto_germanic.py    # Proto-Germanic + Old English
 │       │   ├── northern_sami.py     # Northern Sámi (sme)
-│       │   ├── finnish.py           # Finnish (suomi)
-│       │   └── sami.py
+│       │   └── finnish.py           # Finnish (suomi), vowel harmony
 │       ├── statistics/               # Statistical testing framework
 │       │   ├── __init__.py
-│       │   ├── base.py              # BaseTest interface
+│       │   ├── base.py              # BaseTest, PlaceData, StatFamily, StatStatus
 │       │   ├── correspondence.py
 │       │   ├── spatial.py
 │       │   ├── astronomical.py      # Rayleigh alignment test
@@ -865,7 +871,11 @@ toponymia-europaea/
 │           ├── linguistics.py
 │           ├── geography.py
 │           └── ecology.py
-├── migrations/                       # Database migrations (Alembic)
+├── databank/                         # Git-native JSONL persistence (source of truth)
+│   └── places/
+│       ├── NO/source.jsonl           # Norwegian seed records
+│       └── FI/source.jsonl           # Finnish seed records
+├── migrations/                       # Database migrations (Alembic, optional)
 │   ├── env.py
 │   └── versions/
 │       ├── 001_initial_schema.py
@@ -878,8 +888,9 @@ toponymia-europaea/
 │           └── perspectives.skos.ttl
 ├── tests/
 │   ├── conftest.py
+│   ├── test_cli/                    # CLI command tests (including analyze)
 │   ├── test_connectors/
-│   ├── test_pipelines/
+│   ├── test_pipelines/              # Pipeline tests (including analyze bridge)
 │   ├── test_statistics/
 │   └── test_languages/
 ├── docs/
@@ -890,9 +901,8 @@ toponymia-europaea/
 │   ├── adding_a_perspective.md
 │   ├── statistical_tests.md
 │   └── ethics.md
-├── notebooks/                        # Research notebooks
-│   └── examples/
 ├── pyproject.toml
+├── ROADMAP.md
 ├── Makefile
 ├── CONTRIBUTING.md
 ├── CITATION.cff

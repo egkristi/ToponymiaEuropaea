@@ -4,7 +4,7 @@ This roadmap tracks the project's development from initial framework to producti
 
 **Legend:** ✅ Done | 🔄 In Progress | ⬚ Not Started
 
-**Current status:** 214 tests passing, 70% coverage, 6,900 lines source, 15 databank records. End-to-end pipeline validated (litmus test: databank → segmentation → etymology).
+**Current status:** 244 tests passing, 70% coverage, ~7,500 lines source, 15 databank records. End-to-end workflow functional: `toponymia analyze element heim --country NO` runs databank → segmentation → statistical test → results table.
 
 ---
 
@@ -193,18 +193,18 @@ Address structural debt accumulated during rapid development.
 | # | Item | Status | Priority | Notes |
 |---|------|--------|----------|-------|
 | 9.1 | Unify persistence model | ⬚ | **HIGH** | Resolve dual PostgreSQL/JSONL confusion. Document the databank as primary persistence; PostgreSQL becomes optional analysis cache. |
-| 9.2 | Databank → analysis bridge | 🔄 | **HIGH** | Load JSONL records into TestData numpy arrays. Litmus test proved manual bridge works; needs `toponymia analyze <test-id> --element <element>` command. |
-| 9.3 | Trim unused dependencies | ⬚ | **HIGH** | Remove or make optional: geopandas, rasterio, spacy, duckdb, pyarrow, statsmodels (none imported in code). Reduce install from ~2GB to ~200MB. |
-| 9.4 | Connector → databank ingest pipeline | ⬚ | **HIGH** | `toponymia ingest geonames --country NO --output databank/` writes JSONL directly to the databank. Currently connectors fetch but don't persist. |
-| 9.5 | Fix PytestCollectionWarning | ⬚ | LOW | Rename TestData→StatTestData, TestFamily→StatTestFamily, TestStatus→StatTestStatus; or add `__test__ = False` |
+| 9.2 | Databank → analysis bridge | ✅ | **HIGH** | `load_databank()` → `build_test_data()` → PlaceData arrays. Pipeline-based element detection with attestation support. |
+| 9.3 | Trim unused dependencies | ✅ | **HIGH** | Moved geopandas, rasterio, spacy, duckdb, pyarrow, statsmodels to optional extras [geospatial], [nlp], [warehouse]. |
+| 9.4 | Connector → databank ingest pipeline | ✅ | **HIGH** | `toponymia ingest geonames --country NO --output databank/ --limit 100` writes JSONL directly. |
+| 9.5 | Fix PytestCollectionWarning | ✅ | LOW | Renamed TestData→PlaceData, TestFamily→StatFamily, TestStatus→StatStatus. 0 warnings (was 15). |
 | 9.6 | Fix pydantic-settings toml_file warning | ⬚ | LOW | Either add `tomli` extra or remove `toml_file` from Settings |
 | 9.7 | Add mypy to CI | ⬚ | MEDIUM | mypy is configured in pyproject.toml but never run in CI |
-| 9.8 | End-to-end workflow command | ⬚ | **HIGH** | Single command: load data → filter by element → run test → output results table. The scientific workflow. |
+| 9.8 | End-to-end workflow command | ✅ | **HIGH** | `toponymia analyze element <elem> --country XX --test spatial`. Discover mode: `toponymia analyze discover`. |
 | 9.9 | Test untested connectors | ⬚ | MEDIUM | OSM (0%), Wikidata (0%) have no tests — add mocked unit tests |
 | 9.10 | Commit uv.lock for reproducibility | ⬚ | MEDIUM | Ensures exact dependency versions across collaborators |
 | 9.11 | Clarify Docker vs. databank architecture in README | ⬚ | MEDIUM | PostgreSQL is optional analysis DB; databank is source of truth |
-| 9.12 | Expand Old Norse suffix/modifier dictionaries | ⬚ | **HIGH** | Litmus test: Bjǫrg, vin, ló, ós, angr unresolved. Add meanings for all known ON elements. |
-| 9.13 | Analyze attestation forms in pipeline | ⬚ | **HIGH** | Pipeline should segment ALL attestation forms (Bjǫrgvin, Ósló), not just modern name_form. Historical forms yield better segmentation. |
+| 9.12 | Expand Old Norse suffix/modifier dictionaries | ✅ | **HIGH** | 120+ entries. 9/10 modern names segment; all ON attestations resolve with meanings. |
+| 9.13 | Analyze attestation forms in pipeline | ✅ | **HIGH** | `segment_record()` analyzes all forms; picks best compound segmentation (e.g., Bergen→Bjǫrgvin). |
 
 ---
 
@@ -231,13 +231,11 @@ The framework has 15 seed records. To produce real research, it needs real data.
 
 The litmus test (May 2025) proved the pipeline works mechanically — data loads, segments, and etymologizes. The bottleneck is now **linguistic knowledge** (bigger dictionaries) and **data volume** (15 records → thousands).
 
-1. **Milestone 9.12–9.13** — Expand dictionaries + analyze attestation forms (immediate quality improvement)
-2. **Milestone 9.2, 9.4, 9.8** — Architecture bridges (databank → analysis → workflow command)
-3. **Milestone 10.1–10.2** — Real data population (15 records can't validate hypotheses)
-4. **Milestone 9.1, 9.3** — Persistence clarity + dependency trim
-5. **Milestone 2.12–2.13** — Danish/Swedish modules (needed for Danelaw and Nordic analysis)
-6. **Milestone 2.5–2.7** — More language modules (Celtic, Latin — for UK/France analysis)
-7. **Milestone 3.2, 3.4** — Language contact and political renaming tests
+1. **Milestone 10.1–10.2** — Real data population (15 records can't validate hypotheses)
+2. **Milestone 9.1, 9.11** — Persistence clarity (document databank as primary, PostgreSQL as optional cache)
+3. **Milestone 2.12–2.13** — Danish/Swedish modules (needed for Danelaw and Nordic analysis)
+4. **Milestone 2.5–2.7** — More language modules (Celtic, Latin — for UK/France analysis)
+5. **Milestone 3.2, 3.4** — Language contact and political renaming tests
 8. **Milestone 4.2–4.4** — Nordic/UK registry connectors
 9. **Milestone 6.1–6.2** — API and basic visualization
 10. **Milestone 5.1–5.4** — First perspective implementations
@@ -247,9 +245,9 @@ The litmus test (May 2025) proved the pipeline works mechanically — data loads
 
 ## Versioning
 
-- **v0.1.0** (current) — Framework foundation, architecture, proof-of-concept. Pipeline validated end-to-end.
-- **v0.2.0** — Expanded dictionaries + attestation analysis + first real data (Milestones 9.12–9.13 + 10.1)
-- **v0.3.0** — End-to-end research workflow functional (can run and report a statistical test on real data)
+- **v0.1.0** — Framework foundation, architecture, proof-of-concept.
+- **v0.2.0** (current) — Expanded dictionaries (120+ ON entries), attestation analysis, analysis bridge, end-to-end workflow command, dependency trim. Pipeline runs from CLI.
+- **v0.3.0** — Bulk data population (10,000+ records from GeoNames/Kartverket). First meaningful statistical results.
 - **v0.4.0** — Multi-country data, 6+ language modules, first perspective modules
 - **v0.5.0** — API and visualization layer
 - **v1.0.0** — First publishable research result produced using the framework
