@@ -200,7 +200,7 @@ Address structural debt accumulated during rapid development.
 | 9.6 | Fix pydantic-settings toml_file warning | ✅ | LOW | Removed unused `toml_file` from SettingsConfigDict. 0 warnings (was 1). |
 | 9.7 | Add mypy to CI | ✅ | MEDIUM | Added as informational step (continue-on-error). 56 errors in strict mode — non-blocking until resolved. |
 | 9.8 | End-to-end workflow command | ✅ | **HIGH** | `toponymia analyze element <elem> --country XX --test spatial`. Discover mode: `toponymia analyze discover`. |
-| 9.9 | Test untested connectors | ⬚ | MEDIUM | OSM (0%), Wikidata (0%) have no tests — add mocked unit tests |
+| 9.9 | Test untested connectors | ✅ | MEDIUM | 26 mocked unit tests for OSM + Wikidata connectors (fetch, validate, error handling, pagination) |
 | 9.10 | Commit uv.lock for reproducibility | ✅ | MEDIUM | uv.lock tracked in git (3549 lines). Ensures exact dependency versions. |
 | 9.11 | Clarify Docker vs. databank architecture in README | ✅ | MEDIUM | Architecture diagram + Persistence Model section clarify databank as primary, PostgreSQL as optional. |
 | 9.12 | Expand Old Norse suffix/modifier dictionaries | ✅ | **HIGH** | 120+ entries. 9/10 modern names segment; all ON attestations resolve with meanings. |
