@@ -1,0 +1,126 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/egkristi/ToponymiaEuropaea/databank/schema/place.v1.json",
+  "title": "Toponymia Europaea Place Record",
+  "description": "A single place name record in the databank. Schema is extensible: additional properties are preserved and passed through.",
+  "type": "object",
+  "required": ["name_form", "latitude", "longitude", "source_id"],
+  "properties": {
+    "name_form": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Primary attested name form (Unicode, NFC-normalized)"
+    },
+    "name_normalized": {
+      "type": "string",
+      "description": "Normalized lowercase form for matching"
+    },
+    "latitude": {
+      "type": "number",
+      "minimum": -90,
+      "maximum": 90,
+      "description": "WGS84 latitude in decimal degrees"
+    },
+    "longitude": {
+      "type": "number",
+      "minimum": -180,
+      "maximum": 180,
+      "description": "WGS84 longitude in decimal degrees"
+    },
+    "elevation_m": {
+      "type": ["number", "null"],
+      "description": "Elevation in metres above sea level"
+    },
+    "uncertainty_m": {
+      "type": ["number", "null"],
+      "minimum": 0,
+      "description": "Positional uncertainty radius in metres"
+    },
+    "language_code": {
+      "type": "string",
+      "pattern": "^[a-z]{3}$",
+      "description": "ISO 639-3 language code (3 lowercase letters)"
+    },
+    "script": {
+      "type": ["string", "null"],
+      "description": "ISO 15924 script code (e.g. 'Latn', 'Cyrl')"
+    },
+    "country_code": {
+      "type": "string",
+      "pattern": "^[A-Z]{2}$",
+      "description": "ISO 3166-1 alpha-2 country code"
+    },
+    "place_type": {
+      "type": ["string", "null"],
+      "description": "Feature type (e.g. 'populated_place', 'mountain', 'lake', 'river')"
+    },
+    "year_from": {
+      "type": ["integer", "null"],
+      "description": "Earliest attestation year (CE; negative for BCE)"
+    },
+    "year_to": {
+      "type": ["integer", "null"],
+      "description": "Latest attestation year (CE; null = still current)"
+    },
+    "is_current": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether this name is currently in use"
+    },
+    "source_id": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Unique identifier within the source dataset"
+    },
+    "source_dataset": {
+      "type": "string",
+      "description": "Dataset identifier (e.g. 'geonames', 'kartverket_ssr', 'wikidata')"
+    },
+    "source_url": {
+      "type": ["string", "null"],
+      "format": "uri",
+      "description": "URL to the original record"
+    },
+    "source_license": {
+      "type": ["string", "null"],
+      "description": "License of the source data (SPDX identifier preferred)"
+    },
+    "accessed_at": {
+      "type": ["string", "null"],
+      "format": "date",
+      "description": "Date the record was retrieved (ISO 8601)"
+    },
+    "wikidata_qid": {
+      "type": ["string", "null"],
+      "pattern": "^Q[0-9]+$",
+      "description": "Wikidata entity QID"
+    },
+    "geonames_id": {
+      "type": ["integer", "null"],
+      "description": "GeoNames feature ID"
+    },
+    "osm_id": {
+      "type": ["integer", "null"],
+      "description": "OpenStreetMap node/way/relation ID"
+    },
+    "alternative_names": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "array",
+        "items": { "type": "string" }
+      },
+      "description": "Alternative names keyed by language code"
+    },
+    "admin_region": {
+      "type": ["string", "null"],
+      "description": "Administrative region / county / municipality"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["candidate", "verified", "enriched", "reviewed", "published"],
+      "default": "candidate",
+      "description": "Data quality / onboarding stage"
+    }
+  },
+  "additionalProperties": true
+}

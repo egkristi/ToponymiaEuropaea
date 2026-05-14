@@ -82,3 +82,24 @@ jobs:
           g.parse('config/ontology/v1.0.0/name_types.skos.ttl', format='turtle')
           print(f'Ontology valid: {len(g)} triples loaded')
           "
+
+  validate-databank:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
+        with:
+          version: "latest"
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: uv sync --extra dev
+
+      - name: Validate databank records
+        run: uv run toponymia databank validate

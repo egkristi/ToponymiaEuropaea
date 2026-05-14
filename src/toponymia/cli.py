@@ -20,10 +20,12 @@ ingest_app = typer.Typer(help="Data ingestion commands")
 test_app = typer.Typer(help="Statistical testing commands")
 data_app = typer.Typer(help="Data onboarding lifecycle commands")
 quality_app = typer.Typer(help="Data quality metrics and reporting")
+databank_app = typer.Typer(help="Databank management and validation")
 app.add_typer(ingest_app, name="ingest")
 app.add_typer(test_app, name="test")
 app.add_typer(data_app, name="data")
 app.add_typer(quality_app, name="quality")
+app.add_typer(databank_app, name="databank")
 
 
 @app.command()
@@ -495,6 +497,79 @@ def quality_tests():
 
     console.print(table)
     console.print(f"\n[dim]{len(tests)} tests registered[/dim]")
+
+
+# === Databank commands ===
+
+
+@databank_app.command("validate")
+def databank_validate(
+    path: Path | None = typer.Option(None, "--path", "-p", help="Validate a specific JSONL file"),
+):
+    """Validate databank records against the place schema."""
+    from toponymia.pipelines.databank import validate_databank, validate_jsonl_file
+
+    if path is not None:
+        if not path.exists():
+            console.print(f"[red]File not found: {path}[/red]")
+            raise typer.Exit(1)
+        result = validate_jsonl_file(path)
+    else:
+        result = validate_databank()
+
+    table = Table(title="Databank Validation")
+    table.add_column("Metric", style="cyan")
+    table.add_column("Value", style="green" if result.is_valid else "yellow")
+    table.add_row("Files scanned", str(result.total_files))
+    table.add_row("Total records", str(result.total_records))
+    table.add_row("Valid records", str(result.valid_records))
+    table.add_row("Invalid records", str(result.invalid_records))
+    table.add_row(
+        "Status",
+        "[green]✓ All valid[/green]"
+        if result.is_valid
+        else f"[red]✗ {len(result.errors)} errors[/red]",
+    )
+    console.print(table)
+
+    if result.errors:
+        err_table = Table(title="Validation Errors")
+        err_table.add_column("File", style="dim")
+        err_table.add_column("Line", style="cyan")
+        err_table.add_column("Message", style="red")
+        for err in result.errors[:20]:  # Show first 20
+            err_table.add_row(Path(err.file).name, str(err.line), err.message)
+        console.print(err_table)
+        if len(result.errors) > 20:
+            console.print(f"[dim]... and {len(result.errors) - 20} more errors[/dim]")
+        raise typer.Exit(1)
+
+
+@databank_app.command("stats")
+def databank_stats():
+    """Show databank statistics by country and source."""
+    databank_path = Path(__file__).parent.parent.parent / "databank" / "places"
+
+    if not databank_path.exists():
+        console.print("[yellow]No databank/places directory found[/yellow]")
+        raise typer.Exit(1)
+
+    table = Table(title="Databank Contents")
+    table.add_column("Country", style="cyan")
+    table.add_column("Source", style="magenta")
+    table.add_column("Records", style="green", justify="right")
+
+    total = 0
+    for country_dir in sorted(databank_path.iterdir()):
+        if not country_dir.is_dir():
+            continue
+        for jsonl_file in sorted(country_dir.glob("*.jsonl")):
+            count = sum(1 for line in jsonl_file.open() if line.strip())
+            table.add_row(country_dir.name, jsonl_file.stem, str(count))
+            total += count
+
+    console.print(table)
+    console.print(f"\n[bold]{total}[/bold] total records in databank")
 
 
 if __name__ == "__main__":

@@ -1,0 +1,4 @@
+{"dataset_id": "geonames", "name": "GeoNames Geographical Database", "url": "https://www.geonames.org/", "license": "CC-BY-4.0", "coverage": "global", "record_count_approx": null, "notes": "Free geographical database, updated daily"}
+{"dataset_id": "kartverket_ssr", "name": "Kartverket Sentralt stedsnavnregister (SSR)", "url": "https://www.kartverket.no/en/api-and-data/stedsnavn", "license": "CC-BY-4.0", "coverage": "NO", "record_count_approx": 1000000, "notes": "Norwegian national place name registry"}
+{"dataset_id": "wikidata", "name": "Wikidata", "url": "https://www.wikidata.org/", "license": "CC0-1.0", "coverage": "global", "record_count_approx": null, "notes": "Structured knowledge base, multilingual place names"}
+{"dataset_id": "osm", "name": "OpenStreetMap", "url": "https://www.openstreetmap.org/", "license": "ODbL-1.0", "coverage": "global", "record_count_approx": null, "notes": "Community-mapped geographic data"}

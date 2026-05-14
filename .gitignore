@@ -28,9 +28,11 @@ htmlcov/
 # Data (large files tracked separately)
 data/
 .cache/
-*.parquet
 *.zip
 *.gz
+
+# Databank is tracked in git (do NOT ignore)
+# databank/ is the primary research dataset
 
 # Database
 *.db
