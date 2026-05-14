@@ -126,16 +126,16 @@ Implement coded analysis for each perspective dimension.
 
 | # | Item | Status | Notes |
 |---|------|--------|-------|
-| 5.1 | Terrain correspondence perspective | ⬚ | Link names to DEM features |
-| 5.2 | Hydrological perspective | ⬚ | River/lake/fjord proximity analysis |
-| 5.3 | Archaeological site perspective | ⬚ | Correlation with known sites |
-| 5.4 | Religious/cult site perspective | ⬚ | Theophoric element distribution |
-| 5.5 | Astronomical orientation perspective | ⬚ | Solstice/equinox alignment analysis |
-| 5.6 | Colour-landscape perspective | ⬚ | Spectral correlation |
-| 5.7 | Acoustic landscape perspective | ⬚ | Sound environment correlation |
-| 5.8 | Mortality/catastrophe perspective | ⬚ | Hazard map correlation |
-| 5.9 | Migration/diaspora perspective | ⬚ | Origin tracing by name distribution |
-| 5.10 | Economic/trade route perspective | ⬚ | Trade path correlation |
+| 5.1 | Terrain correspondence perspective | ✅ | Link names to DEM features |
+| 5.2 | Hydrological perspective | ✅ | River/lake/fjord proximity analysis |
+| 5.3 | Archaeological site perspective | ✅ | Correlation with known sites |
+| 5.4 | Religious/cult site perspective | ✅ | Theophoric element distribution |
+| 5.5 | Astronomical orientation perspective | ✅ | Solstice/equinox alignment analysis |
+| 5.6 | Colour-landscape perspective | ✅ | Spectral correlation |
+| 5.7 | Acoustic landscape perspective | ✅ | Sound environment correlation |
+| 5.8 | Mortality/catastrophe perspective | ✅ | Hazard map correlation |
+| 5.9 | Migration/diaspora perspective | ✅ | Origin tracing by name distribution |
+| 5.10 | Economic/trade route perspective | ✅ | Trade path correlation |
 
 ---
 
@@ -319,7 +319,7 @@ The litmus test (May 2025) proved the pipeline works mechanically. Data populati
 **Milestone 11.4.3 COMPLETE** — Phonetic index field on all records.
 **Issues #10–13 closed** — mypy fixed, Danish/Swedish modules added, data populated.
 
-**Status: 771 tests passing, mypy strict clean, 3018 databank records.**
+**Status: 826 tests passing, mypy strict clean, 3018 databank records.**
 
 ### Immediate priorities (current sprint)
 

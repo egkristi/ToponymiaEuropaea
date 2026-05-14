@@ -229,9 +229,7 @@ class RundataConnector(BaseConnector):
 
             # Normalized Old Norse form
             normalized: str = (
-                ref.get("normalized", name) or name
-                if isinstance(ref, dict)
-                else str(name)
+                ref.get("normalized", name) or name if isinstance(ref, dict) else str(name)
             )
 
             results.append(
