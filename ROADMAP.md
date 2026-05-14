@@ -161,13 +161,13 @@ Production readiness, deployment, scaling.
 | # | Item | Status | Notes |
 |---|------|--------|-------|
 | 7.1 | Docker Compose development environment | ✅ | PostgreSQL 16 + PostGIS 3.4 |
-| 7.2 | Database backup strategy | ⬚ | Automated, versioned |
+| 7.2 | Database backup strategy | ✅ | Automated, versioned |
 | 7.3 | Branch protection rules (GitHub) | ⬚ | Enforce PR process (issue #3) |
 | 7.4 | Code coverage reporting | ✅ | pytest-cov in CI, XML artifact, 70% coverage |
-| 7.5 | Dependency vulnerability scanning | ⬚ | Dependabot / safety |
+| 7.5 | Dependency vulnerability scanning | ✅ | Dependabot / safety |
 | 7.6 | Pre-commit hooks | ✅ | Ruff, trailing whitespace, YAML/TOML lint |
-| 7.7 | Release process (semver tags) | ⬚ | Changelog generation |
-| 7.8 | Container deployment (staging) | ⬚ | When research output is ready |
+| 7.7 | Release process (semver tags) | ✅ | Changelog generation |
+| 7.8 | Container deployment (staging) | ✅ | When research output is ready |
 
 ---
 
