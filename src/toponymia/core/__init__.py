@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import enum
 import uuid
 from datetime import date, datetime
 
@@ -11,6 +12,7 @@ from sqlalchemy import (
     Boolean,
     CheckConstraint,
     DateTime,
+    Enum,
     Float,
     ForeignKey,
     Integer,
@@ -19,6 +21,17 @@ from sqlalchemy import (
     func,
 )
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
+
+
+class RecordStatus(enum.Enum):
+    """Onboarding stage for data records."""
+
+    candidate = "candidate"
+    verified = "verified"
+    enriched = "enriched"
+    reviewed = "reviewed"
+    published = "published"
+    retracted = "retracted"
 
 
 class Base(DeclarativeBase):
@@ -85,9 +98,16 @@ class NameAttestation(Base):
     script: Mapped[str | None] = mapped_column(Text, nullable=True)
     year_from: Mapped[int | None] = mapped_column(Integer, nullable=True)
     year_to: Mapped[int | None] = mapped_column(Integer, nullable=True)
-    source_id: Mapped[uuid.UUID | None] = mapped_column(Uuid, ForeignKey("sources.id"), nullable=True)
+    source_id: Mapped[uuid.UUID] = mapped_column(Uuid, ForeignKey("sources.id"), nullable=False)
     confidence: Mapped[float | None] = mapped_column(Float, nullable=True)
+    status: Mapped[RecordStatus] = mapped_column(
+        Enum(RecordStatus, name="record_status"),
+        server_default="candidate",
+        nullable=False,
+    )
     is_current: Mapped[bool] = mapped_column(Boolean, server_default="false")
+    reviewed_by: Mapped[str | None] = mapped_column(Text, nullable=True)
+    reviewed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 
     place: Mapped[Place] = relationship(back_populates="attestations")
