@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Toponymia Europaea — Browse Place Names</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: #f5f6fa;
+            color: #2c3e50;
+        }
+        header {
+            background: #1a1a2e;
+            color: #eee;
+            padding: 16px 24px;
+        }
+        header h1 { font-size: 1.2rem; font-weight: 600; margin-bottom: 4px; }
+        header p { font-size: 0.8rem; color: #aaa; }
+        nav {
+            background: #16213e;
+            padding: 10px 24px;
+            display: flex;
+            gap: 16px;
+        }
+        nav a {
+            color: #ccc;
+            text-decoration: none;
+            font-size: 0.85rem;
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+        nav a:hover, nav a.active { color: #fff; background: #0f3460; }
+        .search-bar {
+            padding: 20px 24px;
+            background: #fff;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .search-bar input[type="text"] {
+            flex: 1;
+            min-width: 200px;
+            padding: 10px 16px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 0.95rem;
+        }
+        .search-bar select {
+            padding: 10px 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+        .search-bar button {
+            padding: 10px 20px;
+            background: #1a1a2e;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+        .search-bar button:hover { background: #16213e; }
+        .results {
+            padding: 20px 24px;
+        }
+        .results-info {
+            font-size: 0.85rem;
+            color: #888;
+            margin-bottom: 12px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        th, td {
+            padding: 10px 14px;
+            text-align: left;
+            font-size: 0.85rem;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #555;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+        }
+        tr:hover td { background: #f8f9ff; }
+        .pagination {
+            padding: 16px 24px;
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+        }
+        .pagination button {
+            padding: 8px 14px;
+            border: 1px solid #ddd;
+            background: #fff;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+        .pagination button:disabled { opacity: 0.4; cursor: not-allowed; }
+        .pagination button.active { background: #1a1a2e; color: #fff; border-color: #1a1a2e; }
+        .badge {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+        .badge-country { background: #eaf2f8; color: #2980b9; }
+        .badge-type { background: #eafaf1; color: #27ae60; }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Toponymia Europaea</h1>
+        <p>Browse and explore European place-name data</p>
+    </header>
+    <nav>
+        <a href="index.html" class="active">Browse</a>
+        <a href="map.html">Map</a>
+        <a href="dashboard.html">Dashboard</a>
+    </nav>
+    <div class="search-bar">
+        <input type="text" id="search-input" placeholder="Search place names...">
+        <select id="country-select">
+            <option value="">All countries</option>
+            <option value="NO">Norway</option>
+            <option value="SE">Sweden</option>
+            <option value="DK">Denmark</option>
+            <option value="FI">Finland</option>
+            <option value="IS">Iceland</option>
+        </select>
+        <button id="search-btn">Search</button>
+    </div>
+    <div class="results">
+        <div class="results-info" id="results-info">Loading...</div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Normalized</th>
+                    <th>Country</th>
+                    <th>Type</th>
+                    <th>Language</th>
+                    <th>Latitude</th>
+                    <th>Longitude</th>
+                    <th>Source</th>
+                </tr>
+            </thead>
+            <tbody id="results-body"></tbody>
+        </table>
+    </div>
+    <div class="pagination" id="pagination"></div>
+
+    <script>
+        const API_BASE = window.location.origin;
+        const PAGE_SIZE = 50;
+        let currentOffset = 0;
+
+        function getParams() {
+            const name = document.getElementById('search-input').value.trim();
+            const country = document.getElementById('country-select').value;
+            const params = new URLSearchParams();
+            params.set('limit', PAGE_SIZE);
+            params.set('offset', currentOffset);
+            if (name) params.set('name', name);
+            if (country) params.set('country', country);
+            return params;
+        }
+
+        async function loadPlaces() {
+            const params = getParams();
+            const info = document.getElementById('results-info');
+            const body = document.getElementById('results-body');
+
+            try {
+                const resp = await fetch(`${API_BASE}/api/v1/places?${params.toString()}`);
+                const data = await resp.json();
+
+                info.textContent = `Showing ${currentOffset + 1}–${currentOffset + data.length} records`;
+                body.innerHTML = data.map(p => `
+                    <tr>
+                        <td><strong>${escHtml(p.name_form)}</strong></td>
+                        <td>${escHtml(p.name_normalized || '')}</td>
+                        <td><span class="badge badge-country">${escHtml(p.country_code || '')}</span></td>
+                        <td><span class="badge badge-type">${escHtml(p.place_type || '')}</span></td>
+                        <td>${escHtml(p.language_code || '')}</td>
+                        <td>${p.latitude?.toFixed(4) ?? ''}</td>
+                        <td>${p.longitude?.toFixed(4) ?? ''}</td>
+                        <td>${escHtml(p.source_id || '')}</td>
+                    </tr>
+                `).join('');
+
+                renderPagination(data.length);
+            } catch (err) {
+                info.textContent = `Error: ${err.message}`;
+            }
+        }
+
+        function renderPagination(count) {
+            const pag = document.getElementById('pagination');
+            pag.innerHTML = '';
+            const prevBtn = document.createElement('button');
+            prevBtn.textContent = '← Previous';
+            prevBtn.disabled = currentOffset === 0;
+            prevBtn.onclick = () => { currentOffset = Math.max(0, currentOffset - PAGE_SIZE); loadPlaces(); };
+            pag.appendChild(prevBtn);
+
+            const nextBtn = document.createElement('button');
+            nextBtn.textContent = 'Next →';
+            nextBtn.disabled = count < PAGE_SIZE;
+            nextBtn.onclick = () => { currentOffset += PAGE_SIZE; loadPlaces(); };
+            pag.appendChild(nextBtn);
+        }
+
+        function escHtml(str) {
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+
+        document.getElementById('search-btn').addEventListener('click', () => {
+            currentOffset = 0;
+            loadPlaces();
+        });
+        document.getElementById('search-input').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') { currentOffset = 0; loadPlaces(); }
+        });
+
+        loadPlaces();
+    </script>
+</body>
+</html>

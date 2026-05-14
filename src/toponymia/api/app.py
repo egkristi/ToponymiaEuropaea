@@ -9,6 +9,7 @@ from pathlib import Path
 from typing import Any
 
 from fastapi import FastAPI, HTTPException, Query, Response
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
 DATABANK_PATH: Path | None = None
@@ -200,6 +201,11 @@ app = FastAPI(
     version="0.1.0",
     description="REST API for the Toponymia Europaea place-name databank",
 )
+
+# Mount static web files if the web/ directory exists
+_web_dir = Path(__file__).resolve().parent.parent.parent.parent / "web"
+if _web_dir.is_dir():
+    app.mount("/web", StaticFiles(directory=str(_web_dir), html=True), name="web")
 
 
 @app.get("/health", response_model=HealthResponse)

@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Toponymia Europaea — Interactive Map</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+          crossorigin="">
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+            crossorigin=""></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        #map { height: calc(100vh - 60px); width: 100%; }
+        .controls {
+            height: 60px;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            gap: 12px;
+            background: #1a1a2e;
+            color: #eee;
+        }
+        .controls h1 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-right: auto;
+        }
+        .controls select, .controls input, .controls button {
+            padding: 6px 12px;
+            border: 1px solid #444;
+            border-radius: 4px;
+            background: #16213e;
+            color: #eee;
+            font-size: 0.85rem;
+        }
+        .controls button {
+            background: #0f3460;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        .controls button:hover { background: #1a5276; }
+        .controls #status {
+            font-size: 0.8rem;
+            color: #aaa;
+        }
+        .leaflet-popup-content { font-size: 0.85rem; line-height: 1.4; }
+        .leaflet-popup-content strong { color: #1a1a2e; }
+        .place-popup { max-width: 280px; }
+        .place-popup .meta { color: #666; font-size: 0.78rem; margin-top: 4px; }
+    </style>
+</head>
+<body>
+    <div class="controls">
+        <h1>Toponymia Europaea</h1>
+        <label for="country">Country:</label>
+        <select id="country">
+            <option value="">All</option>
+            <option value="NO">Norway</option>
+            <option value="SE">Sweden</option>
+            <option value="DK">Denmark</option>
+            <option value="FI">Finland</option>
+            <option value="IS">Iceland</option>
+        </select>
+        <label for="name-filter">Name:</label>
+        <input id="name-filter" type="text" placeholder="Filter by name...">
+        <button id="load-btn">Load</button>
+        <span id="status">Ready</span>
+    </div>
+    <div id="map"></div>
+
+    <script>
+        const API_BASE = window.location.origin;
+
+        const map = L.map('map').setView([63.0, 15.0], 5);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+            maxZoom: 18,
+        }).addTo(map);
+
+        let geojsonLayer = null;
+
+        function getPopupContent(props) {
+            let html = `<div class="place-popup">`;
+            html += `<strong>${props.name_form || 'Unknown'}</strong>`;
+            if (props.name_normalized && props.name_normalized !== props.name_form) {
+                html += ` <em>(${props.name_normalized})</em>`;
+            }
+            html += `<div class="meta">`;
+            if (props.place_type) html += `Type: ${props.place_type}<br>`;
+            if (props.country_code) html += `Country: ${props.country_code}<br>`;
+            if (props.language_code) html += `Language: ${props.language_code}<br>`;
+            if (props.source_id) html += `Source ID: ${props.source_id}<br>`;
+            if (props.elevation) html += `Elevation: ${props.elevation}m<br>`;
+            if (props.alternative_names) {
+                const altNames = Object.values(props.alternative_names).flat();
+                if (altNames.length > 0) {
+                    html += `Alt names: ${altNames.slice(0, 5).join(', ')}`;
+                    if (altNames.length > 5) html += ` (+${altNames.length - 5} more)`;
+                    html += `<br>`;
+                }
+            }
+            html += `</div></div>`;
+            return html;
+        }
+
+        function getMarkerColor(placeType) {
+            if (!placeType) return '#3388ff';
+            if (placeType.startsWith('P.')) return '#e74c3c';
+            if (placeType.startsWith('H.')) return '#3498db';
+            if (placeType.startsWith('T.')) return '#27ae60';
+            if (placeType.startsWith('S.')) return '#f39c12';
+            if (placeType.startsWith('A.')) return '#9b59b6';
+            return '#3388ff';
+        }
+
+        async function loadData() {
+            const country = document.getElementById('country').value;
+            const name = document.getElementById('name-filter').value.trim();
+            const status = document.getElementById('status');
+
+            const params = new URLSearchParams();
+            if (country) params.set('country', country);
+            if (name) params.set('name', name);
+
+            status.textContent = 'Loading...';
+
+            try {
+                const url = `${API_BASE}/api/v1/export/geojson?${params.toString()}`;
+                const resp = await fetch(url);
+                if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+                const data = await resp.json();
+
+                if (geojsonLayer) {
+                    map.removeLayer(geojsonLayer);
+                }
+
+                geojsonLayer = L.geoJSON(data, {
+                    pointToLayer: (feature, latlng) => {
+                        const color = getMarkerColor(feature.properties.place_type);
+                        return L.circleMarker(latlng, {
+                            radius: 6,
+                            fillColor: color,
+                            color: '#fff',
+                            weight: 1,
+                            opacity: 1,
+                            fillOpacity: 0.8,
+                        });
+                    },
+                    onEachFeature: (feature, layer) => {
+                        layer.bindPopup(getPopupContent(feature.properties));
+                    },
+                }).addTo(map);
+
+                const count = data.features.length;
+                status.textContent = `${count.toLocaleString()} places loaded`;
+
+                if (count > 0) {
+                    map.fitBounds(geojsonLayer.getBounds(), { padding: [20, 20] });
+                }
+            } catch (err) {
+                status.textContent = `Error: ${err.message}`;
+                console.error('Failed to load data:', err);
+            }
+        }
+
+        document.getElementById('load-btn').addEventListener('click', loadData);
+        document.getElementById('name-filter').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') loadData();
+        });
+
+        // Auto-load on page open
+        loadData();
+    </script>
+</body>
+</html>
