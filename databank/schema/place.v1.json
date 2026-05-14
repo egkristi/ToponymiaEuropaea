@@ -210,6 +210,21 @@
     "_phonetic_key": {
       "type": ["string", "null"],
       "description": "Phonetic normalization key for cross-source deduplication and fuzzy matching. Computed by NordicPhoneticNormalizer from name_form."
+    },
+    "_h3_r7": {
+      "type": ["string", "null"],
+      "pattern": "^[0-9a-f]{15}$",
+      "description": "H3 spatial index at resolution 7 (~5.16 km²). For regional clustering and analysis."
+    },
+    "_h3_r9": {
+      "type": ["string", "null"],
+      "pattern": "^[0-9a-f]{15}$",
+      "description": "H3 spatial index at resolution 9 (~0.105 km²). For local neighbourhood and deduplication."
+    },
+    "_h3_r11": {
+      "type": ["string", "null"],
+      "pattern": "^[0-9a-f]{15}$",
+      "description": "H3 spatial index at resolution 11 (~0.00176 km²). For precise sub-settlement level."
     }
   },
   "additionalProperties": true
