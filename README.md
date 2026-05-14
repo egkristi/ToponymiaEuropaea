@@ -9,6 +9,26 @@
 
 ---
 
+## Current Status (v0.3.0)
+
+| Metric | Value |
+|--------|-------|
+| **Databank records** | 3,000 (5 Nordic countries, 2 sources) |
+| **Data sources** | GeoNames (2,500 records), Kartverket SSR (500 records) |
+| **Language modules** | 7 (Old Norse, Proto-Germanic, Northern Sámi, Finnish, Danish, Swedish, Old English) |
+| **Statistical tests** | 7 families (spatial, correspondence, astronomical, religious, temporal, migration, robustness) |
+| **Tests passing** | 412 |
+| **Type safety** | mypy strict, 0 errors |
+
+**Key capabilities:**
+- H3 hierarchical spatial indexing (R7/R9/R11) for efficient geospatial queries
+- Nordic phonetic normalizer for cross-source deduplication
+- Name lemma detection and frequency analysis across 5 countries
+- SHA-256 integrity signing with MANIFEST verification
+- Full CLI: ingest, analyze, test, databank, lemma commands
+
+---
+
 ## Abstract
 
 Place names (toponyms) are among humanity's oldest and most resilient cultural artefacts. They survive language shifts, state formations, colonizations, religious conversions, and mass migrations—often persisting for five to seven thousand years. A single toponym simultaneously functions as a *linguistic fossil*, a *geographical witness*, an *ecological memory*, a *historical document*, a *cultural symbol*, a *legal anchor*, and a *political instrument*.
@@ -758,6 +778,7 @@ class MySourceConnector(BaseConnector):
 | Language | Python 3.12+ | Ecosystem for NLP, geo, statistics |
 | Databank | JSONL (git-native) | Diff-friendly, merge-friendly, extensible schema |
 | Database | PostgreSQL 16 + PostGIS (optional) | Spatial queries for analysis cache |
+| Spatial | H3 hexagonal grid (R7/R9/R11) | Hierarchical spatial indexing for efficient queries |
 | Statistics | NumPy, SciPy | Permutation tests, spatial analysis |
 | Connectors | httpx | Async HTTP for GeoNames, Wikidata, OSM, Kartverket |
 | CLI | Typer + Rich | Type-safe commands with beautiful tables |
@@ -786,6 +807,9 @@ uv sync
 # For development (includes pytest, ruff, etc.)
 uv sync --extra dev
 
+# For geospatial features (H3 spatial indexing)
+uv sync --extra dev --extra geospatial
+
 # Verify installation
 uv run pytest
 ```
@@ -802,8 +826,19 @@ uv run toponymia analyze element heim --country NO
 # Run with a specific statistical test
 uv run toponymia analyze element heim --country NO --test spatial
 
-# Ingest more data from GeoNames into the databank
+# Ingest data from Kartverket (Norwegian official registry)
+uv run toponymia ingest kartverket --municipality 0301 --limit 500 --output databank/
+
+# Ingest data from GeoNames
 uv run toponymia ingest geonames --country NO --output databank/places/NO/source.jsonl --limit 100
+
+# View name lemma statistics
+uv run toponymia lemma stats
+uv run toponymia lemma list --limit 10
+
+# Sign and verify databank records (enriches with phonetic keys + H3)
+uv run toponymia databank sign
+uv run toponymia databank verify
 ```
 
 ### Optional: PostgreSQL for Analysis Cache
@@ -837,13 +872,13 @@ toponymia-europaea/
 ├── src/
 │   └── toponymia/
 │       ├── __init__.py
-│       ├── cli.py                    # Command-line interface (info, ingest, analyze, test, data, quality, databank)
+│       ├── cli.py                    # Command-line interface (info, ingest, analyze, test, data, quality, databank, lemma)
 │       ├── config.py                 # Configuration management
 │       ├── connectors/               # Data source plugins
 │       │   ├── __init__.py
 │       │   ├── base.py               # BaseConnector interface
 │       │   ├── geonames.py
-│       │   ├── kartverket.py         # Norwegian SSR connector
+│       │   ├── kartverket.py         # Norwegian SSR connector (api.kartverket.no)
 │       │   ├── wikidata.py
 │       │   └── osm.py
 │       ├── core/                     # Core domain model
@@ -855,18 +890,24 @@ toponymia-europaea/
 │       ├── pipelines/                # Analysis pipeline stages
 │       │   ├── __init__.py
 │       │   ├── normalize.py
-│       │   ├── segment.py            # Segmentation pipeline (segment_record with attestation support)
-│       │   ├── analyze.py            # Databank → analysis bridge (load, build PlaceData, run tests)
-│       │   ├── classify.py
-│       │   ├── etymologize.py
-│       │   └── link.py
+│       │   ├── segment.py            # Segmentation pipeline
+│       │   ├── analyze.py            # Databank → analysis bridge
+│       │   ├── databank.py           # Databank signing, verification, sorting
+│       │   ├── integrity.py          # SHA-256 integrity and MANIFEST
+│       │   ├── lemma.py              # Name lemma registry and detection
+│       │   ├── phonetic.py           # Nordic phonetic normalizer (cross-source dedup)
+│       │   ├── spatial.py            # H3 hierarchical spatial indexing
+│       │   ├── validate.py           # Schema validation
+│       │   └── ...
 │       ├── languages/                # Language-specific modules
 │       │   ├── __init__.py
 │       │   ├── base.py              # BaseLanguageModule interface
 │       │   ├── old_norse.py         # 120+ elements, compound analysis
 │       │   ├── proto_germanic.py    # Proto-Germanic + Old English
 │       │   ├── northern_sami.py     # Northern Sámi (sme)
-│       │   └── finnish.py           # Finnish (suomi), vowel harmony
+│       │   ├── finnish.py           # Finnish (suomi), vowel harmony
+│       │   ├── danish.py            # Danish (dan)
+│       │   └── swedish.py           # Swedish (swe)
 │       ├── statistics/               # Statistical testing framework
 │       │   ├── __init__.py
 │       │   ├── base.py              # BaseTest, PlaceData, StatFamily, StatStatus
@@ -885,9 +926,15 @@ toponymia-europaea/
 │           ├── geography.py
 │           └── ecology.py
 ├── databank/                         # Git-native JSONL persistence (source of truth)
+│   ├── schema/
+│   │   └── place.v1.json            # JSON Schema for place records
 │   └── places/
-│       ├── NO/source.jsonl           # Norwegian seed records
-│       └── FI/source.jsonl           # Finnish seed records
+│       ├── DK/geonames.jsonl        # 500 Danish records
+│       ├── FI/geonames.jsonl        # 500 Finnish records
+│       ├── IS/geonames.jsonl        # 500 Icelandic records
+│       ├── NO/geonames.jsonl        # 500 Norwegian (GeoNames) records
+│       ├── NO/kartverket.jsonl      # 500 Norwegian (Kartverket SSR) records
+│       └── SE/geonames.jsonl        # 500 Swedish records
 ├── migrations/                       # Database migrations (Alembic, optional)
 │   ├── env.py
 │   └── versions/
@@ -899,11 +946,11 @@ toponymia-europaea/
 │       └── v1.0.0/
 │           ├── name_types.skos.ttl
 │           └── perspectives.skos.ttl
-├── tests/
+├── tests/                            # 412 tests, mypy strict clean
 │   ├── conftest.py
-│   ├── test_cli/                    # CLI command tests (including analyze)
-│   ├── test_connectors/
-│   ├── test_pipelines/              # Pipeline tests (including analyze bridge)
+│   ├── test_cli/                    # CLI command tests
+│   ├── test_connectors/             # Connector tests (incl. Kartverket)
+│   ├── test_pipelines/              # Pipeline tests (spatial, phonetic, lemma, databank)
 │   ├── test_statistics/
 │   └── test_languages/
 ├── docs/
