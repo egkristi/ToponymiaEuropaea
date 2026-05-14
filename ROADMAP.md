@@ -108,8 +108,8 @@ Connect to additional authoritative data sources.
 | # | Item | Status | Notes |
 |---|------|--------|-------|
 | 4.1 | Kartverket (Norway) connector | ✅ | SSR API, pagination, rate limiting, 11 tests |
-| 4.2 | Lantmäteriet (Sweden) connector | ⬚ | Swedish national registry |
-| 4.3 | Maanmittauslaitos (Finland) connector | ⬚ | Finnish national registry |
+| 4.2 | Lantmäteriet (Sweden) connector | ✅ | CC0 license, Ortnamn API, pagination, minority language support. 13 tests. |
+| 4.3 | Maanmittauslaitos (Finland) connector | ✅ | CC-BY-4.0, Paikannimet API, Finnish/Swedish/Sámi. 13 tests. |
 | 4.4 | Ordnance Survey (UK) connector | ⬚ | British national mapping |
 | 4.5 | IGN (France) connector | ⬚ | French national mapping |
 | 4.6 | Historical map OCR pipeline | ⬚ | Extract names from scanned maps |
@@ -319,7 +319,7 @@ The litmus test (May 2025) proved the pipeline works mechanically. Data populati
 **Milestone 11.4.3 COMPLETE** — Phonetic index field on all records.
 **Issues #10–13 closed** — mypy fixed, Danish/Swedish modules added, data populated.
 
-**Status: 655 tests passing, mypy strict clean, 3018 databank records.**
+**Status: 681 tests passing, mypy strict clean, 3018 databank records.**
 
 ### Immediate priorities (current sprint)
 
@@ -349,7 +349,7 @@ The litmus test (May 2025) proved the pipeline works mechanically. Data populati
 
 - **v0.1.0** — Framework foundation, architecture, proof-of-concept.
 - **v0.2.0** — Expanded dictionaries (120+ ON entries), attestation analysis, analysis bridge, end-to-end workflow command, dependency trim. Pipeline runs from CLI.
-- **v0.3.0** (current) — 3018 records (5 Nordic countries, 2 sources), 14 language modules, H3 spatial indexing, phonetic dedup, diachronic linking, Bayesian etymology framework + comparison test, language contact/political renaming tests, Ripley's K spatial + name change rate + sacred geometry + catastrophe clustering + sensory correspondence tests, Kartverket SSR import. 655 tests, mypy strict clean.
+- **v0.3.0** (current) — 3018 records (5 Nordic countries, 2 sources), 14 language modules, H3 spatial indexing, phonetic dedup, diachronic linking, Bayesian etymology framework + comparison test, language contact/political renaming tests, Ripley's K spatial + name change rate + sacred geometry + catastrophe clustering + sensory correspondence tests, Kartverket + Lantmäteriet + MML connectors. 681 tests, mypy strict clean.
 - **v0.4.0** — Cross-source deduplication, three-layer persistence, Bayesian etymology framework.
 - **v0.5.0** — Historical sources (Norske Gaardnavne, Diplomatarium Norvegicum), Celtic/Latin modules.
 - **v0.6.0** — API and visualization layer, 6+ perspective modules
