@@ -18,8 +18,10 @@ console = Console()
 # Sub-command groups
 ingest_app = typer.Typer(help="Data ingestion commands")
 test_app = typer.Typer(help="Statistical testing commands")
+data_app = typer.Typer(help="Data onboarding lifecycle commands")
 app.add_typer(ingest_app, name="ingest")
 app.add_typer(test_app, name="test")
+app.add_typer(data_app, name="data")
 
 
 @app.command()
@@ -176,6 +178,132 @@ def results(
     console.print(
         "Example: toponymia test correspondence --element berg --signal elevation --region NO"
     )
+
+
+@data_app.command("promote")
+def data_promote(
+    record_id: str = typer.Argument(..., help="UUID of the record to promote"),
+    actor: str = typer.Option(..., "--actor", "-a", help="Who is performing the promotion"),
+    has_source: bool = typer.Option(False, "--has-source", help="Record has source_id"),
+    has_normalized_form: bool = typer.Option(
+        False, "--has-normalized-form", help="Record has normalized_form"
+    ),
+    has_language: bool = typer.Option(False, "--has-language", help="Record has language_code"),
+    has_components: bool = typer.Option(
+        False, "--has-components", help="Record has parsed components"
+    ),
+    reviewer: str | None = typer.Option(None, "--reviewer", help="Reviewer identity"),
+    ingester: str | None = typer.Option(None, "--ingester", help="Original ingester"),
+    current_status: str = typer.Option(..., "--status", "-s", help="Current status of the record"),
+):
+    """Promote a record to the next onboarding stage."""
+    from toponymia.core import RecordStatus
+    from toponymia.core.onboarding import GateError, InvalidTransitionError, promote
+
+    try:
+        status = RecordStatus(current_status)
+    except ValueError:
+        console.print(f"[red]Invalid status: {current_status}[/red]")
+        valid = ", ".join(s.value for s in RecordStatus)
+        console.print(f"Valid statuses: {valid}")
+        raise typer.Exit(1) from None
+
+    try:
+        new_status, transition = promote(
+            status,
+            actor=actor,
+            record_id=record_id,
+            has_source=has_source,
+            has_normalized_form=has_normalized_form,
+            has_language=has_language,
+            has_components=has_components,
+            reviewer=reviewer,
+            ingester=ingester,
+        )
+    except GateError as e:
+        console.print(f"[red]Gate check failed:[/red] {e}")
+        raise typer.Exit(1) from None
+    except InvalidTransitionError as e:
+        console.print(f"[red]Invalid transition:[/red] {e}")
+        raise typer.Exit(1) from None
+
+    console.print(
+        f"[green]Promoted[/green] {record_id}: {transition.from_status.value} → {new_status.value}"
+    )
+    console.print(f"  Actor: {transition.actor}")
+    console.print(f"  Time: {transition.timestamp.isoformat()}")
+
+
+@data_app.command("demote")
+def data_demote(
+    record_id: str = typer.Argument(..., help="UUID of the record to demote"),
+    actor: str = typer.Option(..., "--actor", "-a", help="Who is performing the demotion"),
+    reason: str = typer.Option(..., "--reason", "-r", help="Reason for demotion"),
+    current_status: str = typer.Option(..., "--status", "-s", help="Current status of the record"),
+):
+    """Demote a record to the previous onboarding stage."""
+    from toponymia.core import RecordStatus
+    from toponymia.core.onboarding import InvalidTransitionError, demote
+
+    try:
+        status = RecordStatus(current_status)
+    except ValueError:
+        console.print(f"[red]Invalid status: {current_status}[/red]")
+        raise typer.Exit(1) from None
+
+    try:
+        new_status, transition = demote(
+            status,
+            actor=actor,
+            record_id=record_id,
+            reason=reason,
+        )
+    except InvalidTransitionError as e:
+        console.print(f"[red]Invalid transition:[/red] {e}")
+        raise typer.Exit(1) from None
+
+    console.print(
+        f"[yellow]Demoted[/yellow] {record_id}: {transition.from_status.value} → {new_status.value}"
+    )
+    console.print(f"  Actor: {transition.actor}")
+    console.print(f"  Reason: {transition.reason}")
+    console.print(f"  Time: {transition.timestamp.isoformat()}")
+
+
+@data_app.command("retract")
+def data_retract(
+    record_id: str = typer.Argument(..., help="UUID of the record to retract"),
+    actor: str = typer.Option(..., "--actor", "-a", help="Who is performing the retraction"),
+    reason: str = typer.Option(..., "--reason", "-r", help="Reason for retraction"),
+    current_status: str = typer.Option(..., "--status", "-s", help="Current status of the record"),
+):
+    """Retract a record (soft-delete with audit trail)."""
+    from toponymia.core import RecordStatus
+    from toponymia.core.onboarding import InvalidTransitionError, retract
+
+    try:
+        status = RecordStatus(current_status)
+    except ValueError:
+        console.print(f"[red]Invalid status: {current_status}[/red]")
+        raise typer.Exit(1) from None
+
+    try:
+        new_status, transition = retract(
+            status,
+            actor=actor,
+            record_id=record_id,
+            reason=reason,
+        )
+    except InvalidTransitionError as e:
+        console.print(f"[red]Invalid transition:[/red] {e}")
+        raise typer.Exit(1) from None
+
+    console.print(
+        f"[red]Retracted[/red] {record_id}: {transition.from_status.value} → {new_status.value}"
+    )
+    console.print(f"  Actor: {transition.actor}")
+    console.print(f"  Reason: {transition.reason}")
+    console.print(f"  Time: {transition.timestamp.isoformat()}")
 
 
 if __name__ == "__main__":
