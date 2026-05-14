@@ -149,6 +149,84 @@ def ingest_wikidata(
     console.print(f"[green]Done:[/green] {count:,} records")
 
 
+@ingest_app.command("kartverket")
+def ingest_kartverket(
+    municipality: str | None = typer.Option(
+        None, "--municipality", "-m", help="4-digit municipality code"
+    ),
+    query: str | None = typer.Option(None, "--query", "-q", help="Name search query"),
+    language: str | None = typer.Option(
+        None, "--language", "-l", help="Language filter (nob/nno/sme/smj/sma/fkv)"
+    ),
+    output: Path | None = typer.Option(
+        None, "--output", "-o", help="Output to databank directory (e.g., databank/)"
+    ),
+    limit: int | None = typer.Option(None, "--limit", "-n", help="Max records to ingest"),
+) -> None:
+    """Ingest place names from Kartverket Stedsnavn (Norwegian national registry).
+
+    Fetches from the official Norwegian place-name API (~800k names).
+    Data license: NLOD 2.0.
+    """
+    from toponymia.connectors.kartverket import KartverketConnector
+
+    connector = KartverketConnector()
+    console.print("[bold]Ingesting Kartverket Stedsnavn...[/bold]")
+
+    count = 0
+    errors = 0
+    records_out: list[dict[str, object]] = []
+
+    for record in connector.fetch(
+        municipality=municipality,
+        name_query=query,
+        language=language,
+        max_results=limit,
+    ):
+        validation_errors = connector.validate(record)
+        if validation_errors:
+            errors += 1
+            continue
+        count += 1
+
+        if output is not None:
+            records_out.append(
+                {
+                    "name_form": record.name_form,
+                    "name_normalized": record.name_normalized,
+                    "latitude": record.latitude,
+                    "longitude": record.longitude,
+                    "source_id": record.source_id,
+                    "source_dataset": "kartverket_ssr",
+                    "source_url": record.source_url,
+                    "source_license": record.source_license,
+                    "language_code": record.language_code,
+                    "country_code": "NO",
+                    "place_type": record.place_type,
+                    "is_current": record.is_current,
+                    "alternative_names": record.alternative_names or {},
+                }
+            )
+
+        if count % 1000 == 0:
+            console.print(f"  Processed {count:,} records...")
+        if limit and count >= limit:
+            break
+
+    if output is not None:
+        outdir = output / "places" / "NO"
+        outdir.mkdir(parents=True, exist_ok=True)
+        outfile = outdir / "kartverket.jsonl"
+        with outfile.open("w", encoding="utf-8") as f:
+            for rec in records_out:
+                f.write(json.dumps(rec, ensure_ascii=False) + "\n")
+        console.print(f"[green]Wrote {count:,} records to {outfile}[/green]")
+        if errors:
+            console.print(f"[yellow]Skipped {errors:,} records with validation errors[/yellow]")
+    else:
+        console.print(f"[green]Done:[/green] {count:,} valid records, {errors:,} skipped")
+
+
 @app.command()
 def segment(
     region: str = typer.Option(..., "--region", "-r", help="Region/country code to segment"),

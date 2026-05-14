@@ -31,7 +31,7 @@ def lat_lng_to_h3(lat: float, lng: float, resolution: int = 9) -> str:
     Returns:
         H3 index as hex string.
     """
-    return h3.latlng_to_cell(lat, lng, resolution)
+    return str(h3.latlng_to_cell(lat, lng, resolution))
 
 
 def compute_h3_indices(
@@ -41,7 +41,7 @@ def compute_h3_indices(
 
     Returns dict with keys like 'h3_r7', 'h3_r9', 'h3_r11'.
     """
-    return {f"h3_r{r}": h3.latlng_to_cell(lat, lng, r) for r in resolutions}
+    return {f"h3_r{r}": str(h3.latlng_to_cell(lat, lng, r)) for r in resolutions}
 
 
 def enrich_record_h3(
@@ -60,7 +60,7 @@ def enrich_record_h3(
 
     result = dict(record)
     for r in resolutions:
-        result[f"_h3_r{r}"] = h3.latlng_to_cell(lat, lng, r)
+        result[f"_h3_r{r}"] = str(h3.latlng_to_cell(lat, lng, r))
 
     return result
 
@@ -85,6 +85,6 @@ def h3_distance(index1: str, index2: str) -> int:
     Returns -1 if cells are at different resolutions.
     """
     try:
-        return h3.grid_distance(index1, index2)
+        return int(h3.grid_distance(index1, index2))
     except (h3.H3ValueError, h3.H3ResMismatchError, h3.H3GridNavigationError):
         return -1

@@ -27,11 +27,17 @@ _LANGUAGE_MAP = {
     "nor": "nor",  # Norwegian (generic)
     "nob": "nob",  # Norwegian Bokmål
     "nno": "nno",  # Norwegian Nynorsk
-    "sme": "sme",  # Northern Sámi
-    "smj": "smj",  # Lule Sámi
-    "sma": "sma",  # Southern Sámi
-    "fkv": "fkv",  # Kven Finnish
-    "fin": "fin",  # Finnish
+    "norsk": "nor",  # API returns "Norsk"
+    "nordsamisk": "sme",  # Northern Sámi
+    "lulesamisk": "smj",  # Lule Sámi
+    "sørsamisk": "sma",  # Southern Sámi
+    "kvensk": "fkv",  # Kven Finnish
+    "finsk": "fin",  # Finnish
+    "sme": "sme",
+    "smj": "smj",
+    "sma": "sma",
+    "fkv": "fkv",
+    "fin": "fin",
 }
 
 # Kartverket name status values
@@ -58,10 +64,10 @@ class KartverketConnector(BaseConnector):
     source_name = "Kartverket Stedsnavn"
     license = "NLOD-2.0"
     coverage_region = "NO"
-    source_url = "https://ws.geonorge.no/stedsnavn/v1/"
+    source_url = "https://api.kartverket.no/stedsnavn/v1/"
 
-    _BASE_URL = "https://ws.geonorge.no/stedsnavn/v1/sted"
-    _SEARCH_URL = "https://ws.geonorge.no/stedsnavn/v1/sok"
+    _BASE_URL = "https://api.kartverket.no/stedsnavn/v1/sted"
+    _SEARCH_URL = "https://api.kartverket.no/stedsnavn/v1/sted"
     _MAX_PER_PAGE = 100
     _RATE_LIMIT_DELAY = 0.2  # seconds between requests
 
@@ -115,7 +121,7 @@ class KartverketConnector(BaseConnector):
             params["vest"] = bbox.min_lon
 
         if municipality:
-            params["kommunenummer"] = municipality
+            params["knr"] = municipality
 
         if name_query:
             params["sok"] = name_query
@@ -152,10 +158,11 @@ class KartverketConnector(BaseConnector):
 
             # Check if there are more pages
             metadata = data.get("metadata", {})
-            total_pages = metadata.get("totaltAntallSider", 1)
+            total_hits = metadata.get("totaltAntallTreff", 0)
             current_page = metadata.get("side", 1)
+            per_page = metadata.get("treffPerSide", self._MAX_PER_PAGE)
 
-            if current_page >= total_pages:
+            if current_page * per_page >= total_hits:
                 break
 
             params["side"] = current_page + 1
@@ -170,16 +177,18 @@ class KartverketConnector(BaseConnector):
         # Get representative point coordinates
         representasjonspunkt = entry.get("representasjonspunkt", {})
         lat = representasjonspunkt.get("nord")
-        lon = representasjonspunkt.get("ost")
+        lon = representasjonspunkt.get("øst", representasjonspunkt.get("ost"))
 
         if lat is None or lon is None:
-            # Try alternative coordinate paths
-            koordinater = entry.get("koordinater", {})
-            lat = koordinater.get("nord", koordinater.get("lat"))
-            lon = koordinater.get("ost", koordinater.get("lon"))
+            # Try GeoJSON fallback
+            geojson = entry.get("geojson", {})
+            geometry = geojson.get("geometry", {})
+            coords = geometry.get("coordinates", [])
+            if len(coords) >= 2:
+                lon, lat = coords[0], coords[1]
 
         if lat is None or lon is None:
-            logger.debug("Skipping entry without coordinates: %s", entry.get("skrivemåte", "?"))
+            logger.debug("Skipping entry without coordinates: %s", entry.get("stedsnummer", "?"))
             return results
 
         # Feature type
@@ -188,26 +197,34 @@ class KartverketConnector(BaseConnector):
         # Source identifier
         stedsnummer = str(entry.get("stedsnummer", ""))
 
-        # Process each name form (skrivemåte = spelling)
-        skrivemaater = entry.get("skrivemåter", entry.get("skrivemater", []))
-        if not skrivemaater:
-            # Fallback: single name
-            skrivemaate = entry.get("skrivemåte", entry.get("skrivemåte_enkel", ""))
-            if skrivemaate:
-                skrivemaater = [{"langnavn": skrivemaate}]
+        # Process each name form (stedsnavn array in new API)
+        stedsnavn_list = entry.get("stedsnavn", [])
+        if not stedsnavn_list:
+            # Fallback: try old format
+            stedsnavn_list = entry.get("skrivemåter", entry.get("skrivemater", []))
 
-        for skriv in skrivemaater:
-            name_form = skriv.get("langnavn", skriv.get("skrivemåte", ""))
+        for skriv in stedsnavn_list:
+            name_form = skriv.get("skrivemåte", skriv.get("langnavn", ""))
             if not name_form:
                 continue
 
-            # Language from skrivemåte
-            spraak = skriv.get("språk", skriv.get("spraak", "nor"))
-            iso_code = _LANGUAGE_MAP.get(spraak, "nor")
+            # Language from stedsnavn entry
+            spraak = skriv.get("språk", skriv.get("spraak", "Norsk"))
+            iso_code = _LANGUAGE_MAP.get(spraak.lower(), "nor")
 
             # Name status
             navnestatus = skriv.get("navnestatus", "")
-            is_current = navnestatus in (_STATUS_VEDTATT, _STATUS_GODKJENT, _STATUS_SAMLEVEDTAK)
+            skrivematestatus = skriv.get("skrivemåtestatus", "")
+            is_current = (
+                navnestatus
+                in (
+                    "hovednavn",
+                    _STATUS_VEDTATT,
+                    _STATUS_GODKJENT,
+                    _STATUS_SAMLEVEDTAK,
+                )
+                or "godkjent" in skrivematestatus.lower()
+            )
 
             result = ConnectorResult(
                 latitude=float(lat),
@@ -218,9 +235,9 @@ class KartverketConnector(BaseConnector):
                 is_current=is_current,
                 place_type=navneobjekttype,
                 source_id=f"kartverket:{stedsnummer}",
-                source_url=f"https://ws.geonorge.no/stedsnavn/v1/sted/{stedsnummer}",
+                source_url=f"https://api.kartverket.no/stedsnavn/v1/sted/{stedsnummer}",
                 source_license="NLOD-2.0",
-                alternative_names=self._extract_alternatives(skrivemaater, name_form),
+                alternative_names=self._extract_alternatives(stedsnavn_list, name_form),
             )
 
             results.append(result)
@@ -228,16 +245,16 @@ class KartverketConnector(BaseConnector):
         return results
 
     def _extract_alternatives(
-        self, skrivemaater: list[dict[str, Any]], exclude_form: str
+        self, stedsnavn_list: list[dict[str, Any]], exclude_form: str
     ) -> dict[str, list[str]]:
         """Extract alternative name forms grouped by language."""
         alternatives: dict[str, list[str]] = {}
-        for skriv in skrivemaater:
-            form = skriv.get("langnavn", skriv.get("skrivemåte", ""))
+        for skriv in stedsnavn_list:
+            form = skriv.get("skrivemåte", skriv.get("langnavn", ""))
             if not form or form == exclude_form:
                 continue
-            spraak = skriv.get("språk", skriv.get("spraak", "nor"))
-            iso_code = _LANGUAGE_MAP.get(spraak, "nor")
+            spraak = skriv.get("språk", skriv.get("spraak", "Norsk"))
+            iso_code = _LANGUAGE_MAP.get(spraak.lower(), "nor")
             alternatives.setdefault(iso_code, []).append(form)
         return alternatives
 
@@ -296,8 +313,8 @@ class KartverketConnector(BaseConnector):
             response = self._client.get(self._SEARCH_URL, params=params)
             response.raise_for_status()
             data = response.json()
-            result: int | None = data.get("metadata", {}).get("totaltAntallTreff")
-            return result
+            total: int | None = data.get("metadata", {}).get("totaltAntallTreff")
+            return total
         except (httpx.HTTPError, KeyError):
             return None
 

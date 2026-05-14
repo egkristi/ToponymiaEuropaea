@@ -13,7 +13,7 @@ def test_kartverket_connector_metadata():
     assert connector.source_name == "Kartverket Stedsnavn"
     assert connector.license == "NLOD-2.0"
     assert connector.coverage_region == "NO"
-    assert "geonorge.no" in connector.source_url
+    assert "kartverket.no" in connector.source_url
 
 
 def test_kartverket_validation_valid_record():
@@ -94,18 +94,20 @@ def test_kartverket_parse_name_entry():
     entry = {
         "stedsnummer": 54321,
         "navneobjekttype": "By",
-        "representasjonspunkt": {"nord": 63.4305, "ost": 10.3951},
+        "representasjonspunkt": {"nord": 63.4305, "øst": 10.3951},
         "kommuner": [{"kommunenummer": "5001", "kommunenavn": "Trondheim"}],
-        "skrivemåter": [
+        "stedsnavn": [
             {
-                "langnavn": "Trondheim",
-                "språk": "nob",
-                "navnestatus": "vedtatt",
+                "skrivemåte": "Trondheim",
+                "språk": "Norsk",
+                "navnestatus": "hovednavn",
+                "skrivemåtestatus": "godkjent og prioritert",
             },
             {
-                "langnavn": "Tråante",
-                "språk": "sme",
-                "navnestatus": "vedtatt",
+                "skrivemåte": "Tråante",
+                "språk": "Nordsamisk",
+                "navnestatus": "hovednavn",
+                "skrivemåtestatus": "godkjent og prioritert",
             },
         ],
     }
@@ -113,15 +115,15 @@ def test_kartverket_parse_name_entry():
     results = connector._parse_name_entry(entry)
     assert len(results) == 2
 
-    # First result: Norwegian Bokmål
-    nob_result = results[0]
-    assert nob_result.name_form == "Trondheim"
-    assert nob_result.language_code == "nob"
-    assert nob_result.latitude == 63.4305
-    assert nob_result.longitude == 10.3951
-    assert nob_result.is_current is True
-    assert nob_result.place_type == "By"
-    assert "kartverket:54321" in nob_result.source_id
+    # First result: Norwegian
+    nor_result = results[0]
+    assert nor_result.name_form == "Trondheim"
+    assert nor_result.language_code == "nor"
+    assert nor_result.latitude == 63.4305
+    assert nor_result.longitude == 10.3951
+    assert nor_result.is_current is True
+    assert nor_result.place_type == "By"
+    assert "kartverket:54321" in nor_result.source_id
 
     # Second result: Northern Sámi
     sme_result = results[1]
@@ -137,7 +139,7 @@ def test_kartverket_parse_entry_no_coordinates():
     entry = {
         "stedsnummer": 99999,
         "navneobjekttype": "Ukjent",
-        "skrivemåter": [{"langnavn": "NoCoords", "språk": "nob"}],
+        "stedsnavn": [{"skrivemåte": "NoCoords", "språk": "Norsk"}],
     }
 
     results = connector._parse_name_entry(entry)
@@ -148,19 +150,19 @@ def test_kartverket_extract_alternatives():
     """Test alternative name extraction."""
     connector = KartverketConnector()
 
-    skrivemaater = [
-        {"langnavn": "Tromsø", "språk": "nob"},
-        {"langnavn": "Romsa", "språk": "sme"},
-        {"langnavn": "Tromssa", "språk": "fkv"},
+    stedsnavn_list = [
+        {"skrivemåte": "Tromsø", "språk": "Norsk"},
+        {"skrivemåte": "Romsa", "språk": "Nordsamisk"},
+        {"skrivemåte": "Tromssa", "språk": "Kvensk"},
     ]
 
-    alternatives = connector._extract_alternatives(skrivemaater, "Tromsø")
+    alternatives = connector._extract_alternatives(stedsnavn_list, "Tromsø")
     assert "sme" in alternatives
     assert "Romsa" in alternatives["sme"]
     assert "fkv" in alternatives
     assert "Tromssa" in alternatives["fkv"]
     # Excluded form not in alternatives
-    assert "nob" not in alternatives or "Tromsø" not in alternatives.get("nob", [])
+    assert "nor" not in alternatives or "Tromsø" not in alternatives.get("nor", [])
 
 
 @patch("toponymia.connectors.kartverket.httpx.Client")
@@ -172,15 +174,19 @@ def test_kartverket_fetch_pagination(mock_client_class):
     # Page 1 response
     page1_response = MagicMock()
     page1_response.json.return_value = {
-        "metadata": {"totaltAntallTreff": 2, "totaltAntallSider": 2, "side": 1},
+        "metadata": {"totaltAntallTreff": 2, "treffPerSide": 1, "side": 1},
         "navn": [
             {
                 "stedsnummer": 1,
                 "navneobjekttype": "Fjord",
-                "representasjonspunkt": {"nord": 61.0, "ost": 7.0},
+                "representasjonspunkt": {"nord": 61.0, "\u00f8st": 7.0},
                 "kommuner": [{"kommunenummer": "4601"}],
-                "skrivemåter": [
-                    {"langnavn": "Sognefjorden", "språk": "nob", "navnestatus": "vedtatt"}
+                "stedsnavn": [
+                    {
+                        "skrivemåte": "Sognefjorden",
+                        "språk": "Norsk",
+                        "navnestatus": "hovednavn",
+                    }
                 ],
             }
         ],
@@ -190,14 +196,20 @@ def test_kartverket_fetch_pagination(mock_client_class):
     # Page 2 response
     page2_response = MagicMock()
     page2_response.json.return_value = {
-        "metadata": {"totaltAntallTreff": 2, "totaltAntallSider": 2, "side": 2},
+        "metadata": {"totaltAntallTreff": 2, "treffPerSide": 1, "side": 2},
         "navn": [
             {
                 "stedsnummer": 2,
                 "navneobjekttype": "Elv",
-                "representasjonspunkt": {"nord": 59.0, "ost": 10.0},
+                "representasjonspunkt": {"nord": 59.0, "\u00f8st": 10.0},
                 "kommuner": [{"kommunenummer": "3005"}],
-                "skrivemåter": [{"langnavn": "Glomma", "språk": "nob", "navnestatus": "vedtatt"}],
+                "stedsnavn": [
+                    {
+                        "skrivemåte": "Glomma",
+                        "språk": "Norsk",
+                        "navnestatus": "hovednavn",
+                    }
+                ],
             }
         ],
     }
