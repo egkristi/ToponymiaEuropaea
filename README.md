@@ -948,7 +948,7 @@ toponymia-europaea/
 │       └── v1.0.0/
 │           ├── name_types.skos.ttl
 │           └── perspectives.skos.ttl
-├── tests/                            # 598 tests, mypy strict clean
+├── tests/                            # 620 tests, mypy strict clean
 │   ├── conftest.py
 │   ├── test_cli/                    # CLI command tests
 │   ├── test_connectors/             # Connector tests (incl. Kartverket)
