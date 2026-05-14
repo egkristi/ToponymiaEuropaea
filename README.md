@@ -17,11 +17,12 @@
 | **Data sources** | GeoNames (2,507 records), Kartverket SSR (504 records) |
 | **Language modules** | 7 (Old Norse, Proto-Germanic, Northern Sámi, Finnish, Danish, Swedish, Old English) |
 | **Statistical tests** | 7 families (spatial, correspondence, astronomical, religious, temporal, migration, robustness) |
-| **Tests passing** | 422 |
+| **Tests passing** | 434 |
 | **Type safety** | mypy strict, 0 errors |
 
 **Key capabilities:**
 - Cross-source deduplication pipeline (phonetic blocking + H3 spatial verification)
+- Diachronic attestation linking (historical → modern name chains)
 - H3 hierarchical spatial indexing (R7/R9/R11) for efficient geospatial queries
 - Nordic phonetic normalizer for cross-source deduplication
 - Name lemma detection and frequency analysis across 5 countries

@@ -978,6 +978,61 @@ def databank_dedup(
     console.print(f"\n[bold]{report.high_confidence_count}[/bold] high-confidence matches (≥80%)")
 
 
+@databank_app.command("history")
+def databank_history(
+    country: str | None = typer.Option(None, "--country", "-c", help="Filter by ISO country code"),
+    min_depth: int = typer.Option(2, "--min-depth", help="Minimum number of distinct forms"),
+) -> None:
+    """Show diachronic attestation chains (name history over time)."""
+    from toponymia.pipelines.dedup import load_all_records
+    from toponymia.pipelines.diachronic import build_attestation_chains
+
+    databank_path = Path(__file__).parent.parent.parent / "databank"
+
+    if not (databank_path / "places").exists():
+        console.print("[yellow]No databank/places directory found[/yellow]")
+        raise typer.Exit(1)
+
+    records = load_all_records(str(databank_path))
+
+    if country:
+        records = [r for r in records if r.get("country_code", "").upper() == country.upper()]
+
+    if not records:
+        console.print("[yellow]No records found[/yellow]")
+        raise typer.Exit(1)
+
+    console.print(
+        f"Analyzing [bold]{len(records)}[/bold] records for diachronic attestation chains..."
+    )
+    report = build_attestation_chains(records)
+
+    chains = [c for c in report.chains if c.depth >= min_depth]
+
+    if not chains:
+        console.print("[green]No multi-form chains found.[/green]")
+        return
+
+    table = Table(title=f"Diachronic Chains ({len(chains)} found)")
+    table.add_column("Current Form", style="cyan")
+    table.add_column("Forms", justify="right")
+    table.add_column("Span (years)", justify="right")
+    table.add_column("Chain", style="dim")
+
+    for chain in sorted(chains, key=lambda c: c.span_years or 0, reverse=True):
+        form_str = " → ".join(f["form"] for f in chain.all_forms)
+        table.add_row(
+            chain.current_form,
+            str(chain.depth),
+            str(chain.span_years) if chain.span_years else "?",
+            form_str,
+        )
+
+    console.print(table)
+    if report.longest_span:
+        console.print(f"\nLongest span: [bold]{report.longest_span}[/bold] years")
+
+
 # --- Analyze commands ---
 
 

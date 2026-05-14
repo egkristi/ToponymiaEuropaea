@@ -281,7 +281,7 @@ Soundex/Metaphone are English-centric. For cross-source deduplication (Þórshof
 | 11.4.2 | Nordic phonetic normalizer (ON→modern) | ✅ | **HIGH** | þ→t, ð→d, ǫ→o, hv→kv, ö→ø, -hem→-heim; find_duplicates() |
 | 11.4.3 | Phonetic index field on attestations | ✅ | **HIGH** | `_phonetic_key` on all 3000 records, enriched during `databank sign` |
 | 11.4.4 | Cross-source deduplication pipeline | ✅ | **HIGH** | Phonetic blocking + H3 spatial verification; `databank dedup` CLI |
-| 11.4.5 | Diachronic attestation linking | ⬚ | HIGH | 1340 *Þorshofuum* → 2024 *Torshov* = same name history |
+| 11.4.5 | Diachronic attestation linking | ✅ | **HIGH** | Phonetic + spatial grouping, chronological chain building; `databank history` CLI |
 
 ### 11.5 — Bayesian Etymology Framework
 
@@ -319,12 +319,12 @@ The litmus test (May 2025) proved the pipeline works mechanically. Data populati
 **Milestone 11.4.3 COMPLETE** — Phonetic index field on all records.
 **Issues #10–13 closed** — mypy fixed, Danish/Swedish modules added, data populated.
 
-**Status: 422 tests passing, mypy strict clean, 3018 databank records.**
+**Status: 434 tests passing, mypy strict clean, 3018 databank records.**
 
 ### Immediate priorities (current sprint)
 
 1. ~~**Milestone 11.4.4** — Cross-source deduplication pipeline~~ ✅
-2. **Milestone 11.4.5** — Diachronic attestation linking
+2. ~~**Milestone 11.4.5** — Diachronic attestation linking~~ ✅
 3. **Milestone 11.2.5** — Local 3-layer dev setup (simulate production)
 4. **Milestone 11.5** — Bayesian etymology framework
 
@@ -348,7 +348,7 @@ The litmus test (May 2025) proved the pipeline works mechanically. Data populati
 
 - **v0.1.0** — Framework foundation, architecture, proof-of-concept.
 - **v0.2.0** — Expanded dictionaries (120+ ON entries), attestation analysis, analysis bridge, end-to-end workflow command, dependency trim. Pipeline runs from CLI.
-- **v0.3.0** (current) — 3018 records (5 Nordic countries, 2 sources), 7 language modules, H3 spatial indexing, phonetic dedup keys, cross-source dedup pipeline, Kartverket SSR import. 422 tests, mypy strict clean.
+- **v0.3.0** (current) — 3018 records (5 Nordic countries, 2 sources), 7 language modules, H3 spatial indexing, phonetic dedup keys, cross-source dedup pipeline, diachronic attestation linking, Kartverket SSR import. 434 tests, mypy strict clean.
 - **v0.4.0** — Cross-source deduplication, three-layer persistence, Bayesian etymology framework.
 - **v0.5.0** — Historical sources (Norske Gaardnavne, Diplomatarium Norvegicum), Celtic/Latin modules.
 - **v0.6.0** — API and visualization layer, 6+ perspective modules
