@@ -96,8 +96,9 @@ Each sub-question is designed to be **falsifiable**. The framework generates nul
                                  │
                                  ▼
 ┌─────────────────────────────────────────────────────────────────────┐
-│                         CORE DATABASE                                │
-│     PostgreSQL + PostGIS · Versioned schema · Full provenance       │
+│                    DATABANK (source of truth)                        │
+│     JSONL (git-native) · Diff-friendly · Full provenance            │
+│     Optional: PostgreSQL + PostGIS (analysis cache)                 │
 └────────────────────────────────┬────────────────────────────────────┘
                                  │
                                  ▼
@@ -112,6 +113,15 @@ Each sub-question is designed to be **falsifiable**. The framework generates nul
 │      Results DB · API · Visualizations · Research Papers            │
 └─────────────────────────────────────────────────────────────────────┘
 ```
+
+### Persistence Model
+
+| Layer | Role | Notes |
+|-------|------|-------|
+| **JSONL Databank** (`databank/`) | Source of truth | Git-native, diff-friendly, one file per country per source. Every record carries provenance. Validated in CI. |
+| **PostgreSQL + PostGIS** | Optional analysis cache | For spatial queries on large datasets. Not required for core workflow. |
+
+The databank is the authoritative persistence layer. All data enters via the ingestion pipeline (`toponymia ingest`) and is stored as JSONL in `databank/places/<ISO>/`. PostgreSQL is only needed when running spatial queries that benefit from indexing (e.g., nearest-neighbor searches across 100k+ records).
 
 ---
 
