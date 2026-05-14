@@ -35,9 +35,7 @@ class OldNorseModule(BaseLanguageModule):
         "-by",
         "-bø",  # farm, settlement
         "-land",  # land
-        "-vin",
         "-vin",  # meadow (very old, possibly pre-Norse)
-        "-nes",
         "-nes",  # headland, promontory
         "-ey",
         "-øy",  # island
@@ -47,7 +45,6 @@ class OldNorseModule(BaseLanguageModule):
         "-fjord",  # fjord
         "-dalr",
         "-dal",  # valley
-        "-berg",
         "-berg",  # mountain, rock
         "-haug",
         "-haugr",  # mound, hill
@@ -76,6 +73,31 @@ class OldNorseModule(BaseLanguageModule):
         "-vé",  # sacred enclosure
         "-hǫrgr",
         "-horg",  # altar, shrine
+        "-ló",
+        "-lo",  # meadow by water
+        "-óss",
+        "-ós",
+        "-os",  # river mouth
+        "-angr",
+        "-anger",  # fjord, inlet (archaic)
+        "-foss",  # waterfall
+        "-sand",
+        "-sandr",  # sandy plain
+        "-mo",  # heath
+        "-borg",  # fortification
+        "-fest",  # firm ground
+        "-ø",  # island (modern form of ey)
+        "-stein",
+        "-steinn",  # stone
+        "-garðr",
+        "-gard",  # farm, enclosure
+        "-tun",  # farmyard
+        "-fjell",
+        "-fjall",  # mountain
+        "-skog",  # forest
+        "-eid",  # isthmus
+        "-ås",  # ridge
+        "-bru",  # bridge
     ]
 
     # Common Old Norse toponymic prefixes/first elements
@@ -210,35 +232,167 @@ class OldNorseModule(BaseLanguageModule):
             period_estimate="old-norse" if confidence > 0.5 else None,
         )
 
+    # Comprehensive element meanings dictionary
+    # Maps normalized forms to (lemma, meaning, cognates)
+    ELEMENT_MEANINGS: dict[str, tuple[str, str, list[str]]] = {
+        # --- Settlement/habitation suffixes ---
+        "heim": ("heimr", "home, settlement", ["English -ham", "German -heim"]),
+        "heimr": ("heimr", "home, settlement", ["English -ham", "German -heim"]),
+        "by": ("býr", "farm, settlement", ["Danish -by", "English -by (Danelaw)"]),
+        "bø": ("býr/bœr", "farm, settlement", ["Danish -by"]),
+        "stad": ("staðr", "place, farm", ["German -stätte", "English -stead"]),
+        "staðir": ("staðr", "place, farm", ["German -stätte", "English -stead"]),
+        "setr": ("setr", "mountain pasture, shieling", ["English -sett"]),
+        "seter": ("setr", "mountain pasture, shieling", ["English -sett"]),
+        "land": ("land", "land, estate", ["English land", "German Land"]),
+        "garðr": ("garðr", "farm, enclosure", ["English -garth", "Russian gorod"]),
+        "gard": ("garðr", "farm, enclosure", ["English -garth", "Russian gorod"]),
+        "tun": ("tún", "farmyard, enclosure", ["English town", "German Zaun"]),
+        "rud": ("ruð", "clearing", ["English -rod/-royd"]),
+        "ruð": ("ruð", "clearing", ["English -rod/-royd"]),
+        "tveit": ("þveit", "clearing, cut piece", []),
+        "þveit": ("þveit", "clearing, cut piece", []),
+        "aker": ("akr", "cultivated field", ["English acre", "Latin ager"]),
+        "akr": ("akr", "cultivated field", ["English acre", "Latin ager"]),
+        "eng": ("eng", "meadow", ["English ing (meadow)"]),
+        # --- Meadow/field elements ---
+        "vin": ("vin", "meadow, pasture (archaic)", ["Gothic winja", "Latin vīnea?"]),
+        "vǫllr": ("vǫllr", "field, plain", ["English -wall/-wald"]),
+        "voll": ("vǫllr", "field, plain", ["English -wall/-wald"]),
+        # --- Water/coast features ---
+        "nes": ("nes", "headland, promontory", ["English -ness"]),
+        "vik": ("vík", "bay, inlet", ["English -wick"]),
+        "vík": ("vík", "bay, inlet", ["English -wick"]),
+        "ey": ("ey", "island", ["English -ey/-ay"]),
+        "øy": ("ey", "island", ["English -ey/-ay"]),
+        "ø": ("ey", "island", ["English -ey/-ay"]),
+        "fjord": ("fjǫrðr", "fjord, inlet", ["English firth"]),
+        "fjǫrðr": ("fjǫrðr", "fjord, inlet", ["English firth"]),
+        "sund": ("sund", "strait, sound", ["English sound"]),
+        "vatn": ("vatn", "lake, water", ["English water", "German Wasser"]),
+        "å": ("á", "river", ["German Ache", "Latin aqua"]),
+        "á": ("á", "river", ["German Ache", "Latin aqua"]),
+        "ós": ("óss", "river mouth, estuary", ["English ouse"]),
+        "os": ("óss", "river mouth, estuary", ["English ouse"]),
+        "óss": ("óss", "river mouth, estuary", ["English ouse"]),
+        "foss": ("fors", "waterfall", ["Swedish fors"]),
+        "hǫfn": ("hǫfn", "harbor", ["English haven", "German Hafen"]),
+        "havn": ("hǫfn", "harbor", ["English haven", "German Hafen"]),
+        "ló": ("ló", "meadow by water, flood-plain", []),
+        "lo": ("ló", "meadow by water, flood-plain", []),
+        # --- Terrain/landscape ---
+        "berg": ("berg", "mountain, rock", ["German Berg", "English barrow"]),
+        "bjǫrg": ("bjǫrg", "mountain, cliff, rock", ["German Berg"]),
+        "haug": ("haugr", "mound, hill", ["English howe"]),
+        "haugr": ("haugr", "mound, hill", ["English howe"]),
+        "holt": ("holt", "small forest, copse", ["English holt"]),
+        "lundr": ("lundr", "grove (often sacred)", ["Swedish -lund"]),
+        "lund": ("lundr", "grove (often sacred)", ["Swedish -lund"]),
+        "dal": ("dalr", "valley", ["English -dale", "German -tal"]),
+        "dalr": ("dalr", "valley", ["English -dale", "German -tal"]),
+        "ás": ("áss", "ridge, hill", ["English esker?"]),
+        "ås": ("áss", "ridge, hill", ["English esker?"]),
+        "fjall": ("fjall", "mountain", ["German Fels"]),
+        "fjell": ("fjall", "mountain", ["German Fels"]),
+        "stein": ("steinn", "stone, rock", ["English stone", "German Stein"]),
+        "steinn": ("steinn", "stone, rock", ["English stone", "German Stein"]),
+        "sand": ("sandr", "sand, sandy plain", ["English sand"]),
+        "sandr": ("sandr", "sand, sandy plain", ["English sand"]),
+        "mo": ("mór", "heath, moor", ["English moor"]),
+        "mór": ("mór", "heath, moor", ["English moor"]),
+        "skog": ("skógr", "forest", ["English shaw?"]),
+        "skógr": ("skógr", "forest", ["English shaw?"]),
+        "eid": ("eið", "isthmus, portage", []),
+        "eið": ("eið", "isthmus, portage", []),
+        "angr": ("angr", "fjord, inlet (archaic)", ["English anger?"]),
+        "anger": ("angr", "fjord, inlet (archaic)", ["English anger?"]),
+        # --- Sacred/cult ---
+        "hov": ("hof", "temple, cult building", []),
+        "hof": ("hof", "temple, cult building", []),
+        "vé": ("vé", "sacred enclosure, sanctuary", ["German Weihe"]),
+        "hǫrgr": ("hǫrgr", "altar, stone shrine", []),
+        "horg": ("hǫrgr", "altar, stone shrine", []),
+        # --- Modifiers: directions ---
+        "austr": ("austr", "east", ["English east"]),
+        "øst": ("austr", "east", ["English east"]),
+        "vestr": ("vestr", "west", ["English west"]),
+        "vest": ("vestr", "west", ["English west"]),
+        "norðr": ("norðr", "north", ["English north"]),
+        "nord": ("norðr", "north", ["English north"]),
+        "suðr": ("suðr", "south", ["English south"]),
+        "sør": ("suðr", "south", ["English south"]),
+        "syd": ("suðr", "south", ["English south"]),
+        # --- Modifiers: size/age ---
+        "nýr": ("nýr", "new", ["English new", "German neu"]),
+        "ny": ("nýr", "new", ["English new", "German neu"]),
+        "gamall": ("gamall", "old", ["German Gemahl"]),
+        "gaml": ("gamall", "old", ["German Gemahl"]),
+        "mikill": ("mikill", "great, large", ["English much"]),
+        "stor": ("stórr", "great, large", ["English stour (archaic)"]),
+        "lítill": ("lítill", "small, little", ["English little"]),
+        "lill": ("lítill", "small, little", ["English little"]),
+        # --- Modifiers: colours ---
+        "hvít": ("hvítr", "white", ["English white"]),
+        "kvit": ("hvítr", "white", ["English white"]),
+        "svartr": ("svartr", "black", ["English swart"]),
+        "svart": ("svartr", "black", ["English swart"]),
+        "rauðr": ("rauðr", "red", ["English red", "German rot"]),
+        "raud": ("rauðr", "red", ["English red", "German rot"]),
+        "grœnn": ("grœnn", "green", ["English green", "German grün"]),
+        "grøn": ("grœnn", "green", ["English green", "German grün"]),
+        "blá": ("blár", "blue, dark", ["English blue"]),
+        "blå": ("blár", "blue, dark", ["English blue"]),
+        "gulr": ("gulr", "gold, yellow", ["English gold", "German gelb"]),
+        "gul": ("gulr", "gold, yellow", ["English gold", "German gelb"]),
+        # --- Modifiers: deities ---
+        "þór": ("Þórr", "Thor (thunder god)", ["English Thursday"]),
+        "tor": ("Þórr", "Thor (thunder god)", ["English Thursday"]),
+        "óðinn": ("Óðinn", "Odin (all-father)", ["English Wednesday"]),
+        "odin": ("Óðinn", "Odin (all-father)", ["English Wednesday"]),
+        "freyr": ("Freyr", "Freyr (fertility god)", ["English Friday?"]),
+        "frøy": ("Freyr", "Freyr (fertility god)", ["English Friday?"]),
+        "freyja": ("Freyja", "Freyja (fertility goddess)", []),
+        "njǫrðr": ("Njǫrðr", "Njord (sea god)", []),
+        "njord": ("Njǫrðr", "Njord (sea god)", []),
+        "ullr": ("Ullr", "Ull (winter/hunt god)", []),
+        "ull": ("Ullr", "Ull (winter/hunt god)", []),
+        "týr": ("Týr", "Tyr (war god)", ["English Tuesday"]),
+        "baldr": ("Baldr", "Baldr (light god)", []),
+        # --- Modifiers: animals ---
+        "bjǫrn": ("bjǫrn", "bear", ["English bear", "German Bär"]),
+        "elgr": ("elgr", "elk, moose", ["English elk"]),
+        "ulfr": ("úlfr", "wolf", ["English wolf", "German Wolf"]),
+        "hrafn": ("hrafn", "raven", ["English raven"]),
+        "ǫrn": ("ǫrn", "eagle", ["English erne", "German Aar"]),
+        "ørn": ("ǫrn", "eagle", ["English erne", "German Aar"]),
+        "lax": ("lax", "salmon", ["English lax (archaic)", "German Lachs"]),
+        # --- Modifiers: nature/terrain descriptors ---
+        "kirkja": ("kirkja", "church", ["English church", "German Kirche"]),
+        "kirke": ("kirkja", "church", ["English church", "German Kirche"]),
+        "kross": ("kross", "cross (Christian)", ["English cross", "Latin crux"]),
+        "borg": ("borg", "fortification, stronghold", ["English borough"]),
+        "kaupangr": ("kaupangr", "market town", ["English cheapside"]),
+        "bru": ("brú", "bridge", ["German Brücke"]),
+        "brú": ("brú", "bridge", ["German Brücke"]),
+        "hammar": ("hamarr", "cliff, crag", ["English hammer?"]),
+        "hamarr": ("hamarr", "cliff, crag", ["English hammer?"]),
+        "fest": ("festr", "firm ground, fastening", ["English fast"]),
+        "niðar": ("niðr", "lower, downward (river Nid)", []),
+        "nidar": ("niðr", "lower, downward (river Nid)", []),
+        "trond": ("Þrœndr", "Trønder (people of Trøndelag)", []),
+        "stav": ("stafr", "staff, pillar, landing post", ["English staff"]),
+        "staf": ("stafr", "staff, pillar, landing post", ["English staff"]),
+    }
+
     def etymologize(self, components: list[SegmentationResult]) -> list[EtymologyCandidate]:
         """Generate etymology candidates for Old Norse components."""
         candidates: list[EtymologyCandidate] = []
 
-        # Suffix meanings (partial, extensible)
-        suffix_meanings = {
-            "heim": ("heimr", "home, settlement", ["English -ham", "German -heim"]),
-            "heimr": ("heimr", "home, settlement", ["English -ham", "German -heim"]),
-            "by": ("býr", "farm, settlement", ["Danish -by", "English -by (Danelaw)"]),
-            "bø": ("býr/bœr", "farm, settlement", ["Danish -by"]),
-            "stad": ("staðr", "place, farm", ["German -stätte", "English -stead"]),
-            "nes": ("nes", "headland, promontory", ["English -ness"]),
-            "vik": ("vík", "bay, inlet", ["English -wick"]),
-            "ey": ("ey", "island", ["English -ey/-ay"]),
-            "øy": ("ey", "island", ["English -ey/-ay"]),
-            "dal": ("dalr", "valley", ["English -dale", "German -tal"]),
-            "berg": ("berg", "mountain, rock", ["German Berg", "English barrow"]),
-            "hov": ("hof", "temple, cult building", []),
-            "lund": ("lundr", "grove (sacred)", ["Swedish -lund"]),
-            "rud": ("ruð", "clearing", ["English -rod/-royd"]),
-            "tveit": ("þveit", "clearing, cut piece", []),
-            "voll": ("vǫllr", "field, plain", ["English -wall/-wald"]),
-        }
-
         for comp in components:
             key = comp.lemma.lower().lstrip("-") if comp.lemma else comp.component.lower()
 
-            if key in suffix_meanings:
-                lemma, meaning, cognates = suffix_meanings[key]
+            if key in self.ELEMENT_MEANINGS:
+                lemma, meaning, cognates = self.ELEMENT_MEANINGS[key]
                 candidates.append(
                     EtymologyCandidate(
                         lemma=lemma,
