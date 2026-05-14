@@ -4,7 +4,7 @@ This roadmap tracks the project's development from initial framework to producti
 
 **Legend:** ✅ Done | 🔄 In Progress | ⬚ Not Started
 
-**Current status:** 345 tests passing, 0 warnings, CI green (lint + mypy strict + test py3.12/3.13 + ontology + databank validation). 2500 GeoNames records (5 Nordic countries × 500). 7 language modules. End-to-end: `toponymia analyze element nes --country NO` runs databank → segmentation → statistical test → results.
+**Current status:** 365 tests passing, 0 warnings, CI green (lint + mypy strict + test py3.12/3.13 + ontology + databank validation). 2500 GeoNames records (5 Nordic countries × 500). 7 language modules. End-to-end: `toponymia analyze element nes --country NO` runs databank → segmentation → statistical test → results.
 
 ---
 
@@ -243,9 +243,9 @@ The current model links attestations to places, but **names as types** (e.g., "B
 
 | # | Item | Status | Priority | Notes |
 |---|------|--------|----------|-------|
-| 11.1.1 | Design `name_lemmas` table/model | ⬚ | **CRITICAL** | canonical_form, language_code, semantic_field, pie_root |
-| 11.1.2 | Add `lemma_id` FK to attestations | ⬚ | **CRITICAL** | Links attestation → lemma (optional, backfilled) |
-| 11.1.3 | Lemma auto-detection from segmentation | ⬚ | HIGH | segment() output → lemma lookup/creation |
+| 11.1.1 | Design `name_lemmas` table/model | ✅ | **CRITICAL** | canonical_form, language_code, semantic_field, pie_root, cognates (JSONB) |
+| 11.1.2 | Add `lemma_id` FK to attestations | ✅ | **CRITICAL** | Links attestation → lemma (optional, backfilled) |
+| 11.1.3 | Lemma auto-detection from segmentation | ✅ | HIGH | LemmaRegistry + suffix detection from databank |
 | 11.1.4 | JSONL schema extension for lemma references | ⬚ | HIGH | `_lemma` field in databank records |
 | 11.1.5 | CLI: `toponymia lemma list/show/stats` | ⬚ | MEDIUM | Browse lemma distribution |
 

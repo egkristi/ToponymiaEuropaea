@@ -133,6 +133,35 @@ class Place(Base):
     )
 
 
+class NameLemma(Base):
+    """A name as a lexical type, independent of which places it attaches to.
+
+    Represents the abstract identity of a name (e.g., "Berg") across all
+    attestations and places. Enables distributional statistics ("show me
+    all 40,000 Berg-attestations") and etymological tracking.
+    """
+
+    __tablename__ = "name_lemmas"
+
+    id: Mapped[uuid.UUID] = mapped_column(
+        Uuid, primary_key=True, server_default=func.gen_random_uuid()
+    )
+    canonical_form: Mapped[str] = mapped_column(Text, nullable=False)
+    language_code: Mapped[str] = mapped_column(
+        Text, ForeignKey("languages.iso_code"), nullable=False
+    )
+    semantic_field: Mapped[str | None] = mapped_column(Text, nullable=True)
+    pie_root: Mapped[str | None] = mapped_column(Text, nullable=True)
+    meaning: Mapped[str | None] = mapped_column(Text, nullable=True)
+    cognates: Mapped[dict[str, Any] | None] = mapped_column(JSONB, nullable=True)
+    first_attested_year: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    frequency_rank: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
+    # Relationships
+    attestations: Mapped[list[NameAttestation]] = relationship(back_populates="lemma")
+
+
 class NameAttestation(Base):
     __tablename__ = "name_attestations"
 
@@ -141,6 +170,9 @@ class NameAttestation(Base):
     )
     place_id: Mapped[uuid.UUID] = mapped_column(
         Uuid, ForeignKey("places.id", ondelete="CASCADE"), nullable=False
+    )
+    lemma_id: Mapped[uuid.UUID | None] = mapped_column(
+        Uuid, ForeignKey("name_lemmas.id"), nullable=True
     )
 
     # --- Name forms ---
@@ -190,6 +222,7 @@ class NameAttestation(Base):
 
     # --- Relationships ---
     place: Mapped[Place] = relationship(back_populates="attestations")
+    lemma: Mapped[NameLemma | None] = relationship(back_populates="attestations")
     components: Mapped[list[NameComponent]] = relationship(
         back_populates="attestation", cascade="all, delete-orphan"
     )
