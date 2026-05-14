@@ -1,6 +1,10 @@
 """Tests for H3 spatial indexing pipeline."""
 
-from toponymia.pipelines.spatial import (
+import pytest
+
+h3 = pytest.importorskip("h3", reason="h3 not installed")
+
+from toponymia.pipelines.spatial import (  # noqa: E402
     compute_h3_indices,
     enrich_record_h3,
     find_neighbours,
