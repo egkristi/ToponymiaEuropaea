@@ -9,12 +9,12 @@ https://download.geonames.org/export/dump/readme.txt
 
 from __future__ import annotations
 
+import contextlib
 import csv
-import io
 import logging
 import zipfile
+from collections.abc import Iterator
 from pathlib import Path
-from typing import Iterator
 
 import httpx
 
@@ -60,7 +60,9 @@ class GeoNamesConnector(BaseConnector):
         self._cache_dir = cache_dir or settings.cache_dir / "geonames"
         self._cache_dir.mkdir(parents=True, exist_ok=True)
 
-    def fetch(self, bbox: BoundingBox | None = None, country: str | None = None) -> Iterator[ConnectorResult]:
+    def fetch(
+        self, bbox: BoundingBox | None = None, country: str | None = None
+    ) -> Iterator[ConnectorResult]:
         """Fetch GeoNames records, optionally filtered by country or bbox.
 
         Args:
@@ -69,7 +71,7 @@ class GeoNamesConnector(BaseConnector):
         """
         filepath = self._ensure_downloaded(country)
 
-        with open(filepath, "r", encoding="utf-8") as f:
+        with filepath.open(encoding="utf-8") as f:
             reader = csv.reader(f, delimiter="\t", quoting=csv.QUOTE_NONE)
             for row in reader:
                 if len(row) < 19:
@@ -84,15 +86,11 @@ class GeoNamesConnector(BaseConnector):
                 # Parse elevation (prefer DEM over geonames elevation field)
                 elevation = None
                 if row[_DEM] and row[_DEM] != "":
-                    try:
+                    with contextlib.suppress(ValueError):
                         elevation = float(row[_DEM])
-                    except ValueError:
-                        pass
                 if elevation is None and row[_ELEVATION] and row[_ELEVATION] != "":
-                    try:
+                    with contextlib.suppress(ValueError):
                         elevation = float(row[_ELEVATION])
-                    except ValueError:
-                        pass
 
                 # Parse alternative names
                 alt_names: dict[str, list[str]] = {}
@@ -126,10 +124,14 @@ class GeoNamesConnector(BaseConnector):
             errors.append(ValidationError(field="name_form", message="Empty name"))
 
         if not (-90 <= record.latitude <= 90):
-            errors.append(ValidationError(field="latitude", message=f"Invalid latitude: {record.latitude}"))
+            errors.append(
+                ValidationError(field="latitude", message=f"Invalid latitude: {record.latitude}")
+            )
 
         if not (-180 <= record.longitude <= 180):
-            errors.append(ValidationError(field="longitude", message=f"Invalid longitude: {record.longitude}"))
+            errors.append(
+                ValidationError(field="longitude", message=f"Invalid longitude: {record.longitude}")
+            )
 
         if record.geonames_id is not None and record.geonames_id <= 0:
             errors.append(ValidationError(field="geonames_id", message="Invalid GeoNames ID"))
@@ -155,7 +157,7 @@ class GeoNamesConnector(BaseConnector):
             logger.info(f"Downloading {url}...")
             with httpx.stream("GET", url, follow_redirects=True) as response:
                 response.raise_for_status()
-                with open(zip_path, "wb") as f:
+                with zip_path.open("wb") as f:
                     for chunk in response.iter_bytes(chunk_size=8192):
                         f.write(chunk)
             logger.info(f"Downloaded {zip_path}")

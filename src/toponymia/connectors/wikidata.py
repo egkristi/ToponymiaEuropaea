@@ -9,9 +9,10 @@ Uses SPARQL queries against the Wikidata Query Service to fetch:
 
 from __future__ import annotations
 
+import contextlib
 import logging
 import time
-from typing import Iterator
+from collections.abc import Iterator
 
 import httpx
 
@@ -32,7 +33,9 @@ WHERE {{
   OPTIONAL {{ ?place wdt:P1566 ?geonames_id . }}
   OPTIONAL {{ ?place wdt:P402 ?osm_id . }}
   OPTIONAL {{ ?place wdt:P138 ?namedAfter . }}
-  SERVICE wikibase:label {{ bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en,de,fr,es,it,pt,ru,pl,sv,no,da,fi" . }}
+  SERVICE wikibase:label {{
+    bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en,de,fr,es,it,pt,ru,pl,sv,no,da,fi" .
+  }}
 }}
 LIMIT {limit}
 OFFSET {offset}
@@ -54,7 +57,9 @@ class WikidataConnector(BaseConnector):
         self._batch_size = 5000
         self._rate_limit_seconds = 2.0
 
-    def fetch(self, bbox: BoundingBox | None = None, country: str | None = None) -> Iterator[ConnectorResult]:
+    def fetch(
+        self, bbox: BoundingBox | None = None, country: str | None = None
+    ) -> Iterator[ConnectorResult]:
         """Fetch place names from Wikidata within a bounding box.
 
         Note: Wikidata requires a bounding box for efficient spatial queries.
@@ -154,10 +159,8 @@ class WikidataConnector(BaseConnector):
 
         geonames_id = None
         if "geonames_id" in result:
-            try:
+            with contextlib.suppress(ValueError, KeyError):
                 geonames_id = int(result["geonames_id"]["value"])
-            except (ValueError, KeyError):
-                pass
 
         return ConnectorResult(
             latitude=lat,

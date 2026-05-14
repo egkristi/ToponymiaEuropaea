@@ -96,7 +96,20 @@ src = ["src", "tests"]
 
 [tool.ruff.lint]
 select = ["E", "F", "W", "I", "N", "UP", "S", "B", "A", "COM", "C4", "DTZ", "ISC", "PIE", "PT", "RSE", "RET", "SIM", "TID", "TCH", "ARG", "PTH", "ERA"]
-ignore = ["S101", "COM812", "ISC001"]
+ignore = [
+    "S101",    # assert usage (needed in tests)
+    "COM812",  # trailing comma (conflicts with formatter)
+    "ISC001",  # implicit string concat (conflicts with formatter)
+    "B008",    # function call in default arg (standard Typer pattern)
+    "TC003",   # move stdlib import to TYPE_CHECKING (too strict)
+    "TC001",   # move third-party import to TYPE_CHECKING (too strict)
+    "ARG001",  # unused function argument (CLI placeholders)
+    "ARG002",  # unused method argument (ABC signatures)
+    "PT028",   # pytest fixture default arg (false positive on Typer test_ commands)
+]
+
+[tool.ruff.lint.per-file-ignores]
+"migrations/*" = ["E501"]  # SQL strings in migrations can be long
 
 [tool.ruff.lint.isort]
 known-first-party = ["toponymia"]

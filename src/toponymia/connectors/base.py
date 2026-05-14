@@ -8,8 +8,8 @@ the standard interface and registering the connector.
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
+from collections.abc import Iterator
 from dataclasses import dataclass, field
-from typing import Iterator
 
 
 @dataclass(frozen=True)
@@ -22,8 +22,7 @@ class BoundingBox:
     max_lat: float
 
     def contains(self, lon: float, lat: float) -> bool:
-        return (self.min_lon <= lon <= self.max_lon and
-                self.min_lat <= lat <= self.max_lat)
+        return self.min_lon <= lon <= self.max_lon and self.min_lat <= lat <= self.max_lat
 
 
 @dataclass
@@ -101,7 +100,9 @@ class BaseConnector(ABC):
     source_url: str = ""
 
     @abstractmethod
-    def fetch(self, bbox: BoundingBox | None = None, country: str | None = None) -> Iterator[ConnectorResult]:
+    def fetch(
+        self, bbox: BoundingBox | None = None, country: str | None = None
+    ) -> Iterator[ConnectorResult]:
         """Yield normalized place records from source.
 
         Args:
@@ -130,4 +131,5 @@ class BaseConnector(ABC):
         return None
 
     def __repr__(self) -> str:
-        return f"<{self.__class__.__name__} source_id={self.source_id!r} region={self.coverage_region!r}>"
+        cls = self.__class__.__name__
+        return f"<{cls} source_id={self.source_id!r} region={self.coverage_region!r}>"

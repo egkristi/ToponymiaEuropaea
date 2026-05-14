@@ -49,9 +49,7 @@ def test_script_detection_greek():
 
 def test_custom_substitutions():
     """Test language-specific substitutions."""
-    config = NormalizationConfig(
-        substitutions={"ð": "d", "þ": "th"}
-    )
+    config = NormalizationConfig(substitutions={"ð": "d", "þ": "th"})
     pipeline = NormalizationPipeline(config)
     assert pipeline.normalize("Norðfjord") == "nordfjord"
     assert pipeline.normalize("Þingvellir") == "thingvellir"

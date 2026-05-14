@@ -8,7 +8,6 @@ forest cover) compared to a null model of random placement.
 from __future__ import annotations
 
 import numpy as np
-from scipy import stats
 
 from toponymia.statistics.base import (
     BaseTest,
@@ -32,9 +31,16 @@ class ElementSignalCorrespondenceTest(BaseTest):
 
     test_id = "element_signal_correspondence"
     test_family = TestFamily.CORRESPONDENCE
-    description = "Tests whether a toponymic element corresponds with a continuous environmental signal"
-    null_hypothesis = "Signal values at element-bearing places are drawn from the same distribution as non-element places"
-    alternative_hypothesis = "Signal values differ significantly between element-bearing and non-element places"
+    description = (
+        "Tests whether a toponymic element corresponds with a continuous environmental signal"
+    )
+    null_hypothesis = (
+        "Signal values at element-bearing places are drawn from"
+        " the same distribution as non-element places"
+    )
+    alternative_hypothesis = (
+        "Signal values differ significantly between element-bearing and non-element places"
+    )
 
     def run(self, data: TestData, n_permutations: int = 10000) -> TestResult:
         """Run permutation test for element-signal correspondence."""
@@ -80,9 +86,11 @@ class ElementSignalCorrespondenceTest(BaseTest):
 
         # Effect size (Cohen's d)
         pooled_std = np.sqrt(
-            ((len(positive) - 1) * np.var(positive, ddof=1) +
-             (len(negative) - 1) * np.var(negative, ddof=1)) /
-            (len(positive) + len(negative) - 2)
+            (
+                (len(positive) - 1) * np.var(positive, ddof=1)
+                + (len(negative) - 1) * np.var(negative, ddof=1)
+            )
+            / (len(positive) + len(negative) - 2)
         )
         cohens_d = observed_diff / pooled_std if pooled_std > 0 else 0.0
 

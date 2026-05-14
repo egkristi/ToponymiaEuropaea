@@ -99,13 +99,19 @@ class NormalizationPipeline:
 
         # Common substitutions for characters that don't decompose cleanly
         substitutions = {
-            "ø": "o", "Ø": "O",
-            "æ": "ae", "Æ": "AE",
-            "å": "aa", "Å": "AA",
-            "ð": "d", "Ð": "D",
-            "þ": "th", "Þ": "TH",
+            "ø": "o",
+            "Ø": "O",
+            "æ": "ae",
+            "Æ": "AE",
+            "å": "aa",
+            "Å": "AA",
+            "ð": "d",
+            "Ð": "D",
+            "þ": "th",
+            "Þ": "TH",
             "ß": "ss",
-            "ł": "l", "Ł": "L",
+            "ł": "l",
+            "Ł": "L",
         }
 
         result = form

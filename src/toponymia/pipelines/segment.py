@@ -13,7 +13,7 @@ The segmentation pipeline:
 from __future__ import annotations
 
 import logging
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 
 from toponymia.languages.base import BaseLanguageModule, LanguageClassification, SegmentationResult
 

@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import logging
 import time
-from typing import Iterator
+from collections.abc import Iterator
 
 import httpx
 
@@ -42,7 +42,9 @@ class OSMConnector(BaseConnector):
         self._endpoint = endpoint
         self._rate_limit_seconds = 10.0
 
-    def fetch(self, bbox: BoundingBox | None = None, country: str | None = None) -> Iterator[ConnectorResult]:
+    def fetch(
+        self, bbox: BoundingBox | None = None, country: str | None = None
+    ) -> Iterator[ConnectorResult]:
         """Fetch place names from OSM within a bounding box."""
         if bbox is None:
             raise ValueError("OSM connector requires a bounding box")
@@ -69,10 +71,14 @@ class OSMConnector(BaseConnector):
             errors.append(ValidationError(field="name_form", message="Empty name"))
 
         if not (-90 <= record.latitude <= 90):
-            errors.append(ValidationError(field="latitude", message=f"Invalid latitude: {record.latitude}"))
+            errors.append(
+                ValidationError(field="latitude", message=f"Invalid latitude: {record.latitude}")
+            )
 
         if not (-180 <= record.longitude <= 180):
-            errors.append(ValidationError(field="longitude", message=f"Invalid longitude: {record.longitude}"))
+            errors.append(
+                ValidationError(field="longitude", message=f"Invalid longitude: {record.longitude}")
+            )
 
         return errors
 

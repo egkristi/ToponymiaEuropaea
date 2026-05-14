@@ -40,7 +40,7 @@ class Settings(BaseSettings):
     ontology_version: str = "1.0.0"
 
     # API
-    api_host: str = "0.0.0.0"
+    api_host: str = "0.0.0.0"  # noqa: S104
     api_port: int = 8000
 
 

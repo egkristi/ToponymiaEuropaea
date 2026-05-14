@@ -239,14 +239,21 @@ class BaseTest(ABC):
         all_non_significant = all(p >= 0.05 for p in jackknife_pvalues)
         stable = all_significant or all_non_significant
 
-        checks.append(RobustnessResult(
-            check_type="regional_jackknife",
-            passed=stable,
-            details=f"p-values across {n_folds} folds: min={min(jackknife_pvalues):.4f}, max={max(jackknife_pvalues):.4f}",
-            values=jackknife_pvalues,
-        ))
+        checks.append(
+            RobustnessResult(
+                check_type="regional_jackknife",
+                passed=stable,
+                details=(
+                    f"p-values across {n_folds} folds:"
+                    f" min={min(jackknife_pvalues):.4f}, max={max(jackknife_pvalues):.4f}"
+                ),
+                values=jackknife_pvalues,
+            )
+        )
 
         return checks
 
     def __repr__(self) -> str:
-        return f"<{self.__class__.__name__} test_id={self.test_id!r} family={self.test_family.value}>"
+        return (
+            f"<{self.__class__.__name__} test_id={self.test_id!r} family={self.test_family.value}>"
+        )

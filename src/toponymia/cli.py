@@ -34,6 +34,7 @@ def info():
     # Check database connectivity
     try:
         from toponymia.config import get_settings
+
         settings = get_settings()
         console.print(f"Database: {settings.database_url}")
         console.print(f"Ontology version: {settings.ontology_version}")
@@ -44,7 +45,9 @@ def info():
 @ingest_app.command("geonames")
 def ingest_geonames(
     country: str = typer.Option(..., "--country", "-c", help="ISO 3166-1 alpha-2 country code"),
-    cache_dir: Path | None = typer.Option(None, "--cache-dir", help="Cache directory for downloads"),
+    cache_dir: Path | None = typer.Option(
+        None, "--cache-dir", help="Cache directory for downloads"
+    ),
 ):
     """Ingest place names from GeoNames for a country."""
     from toponymia.connectors.geonames import GeoNamesConnector
@@ -69,7 +72,9 @@ def ingest_geonames(
 @ingest_app.command("wikidata")
 def ingest_wikidata(
     country: str | None = typer.Option(None, "--country", "-c", help="Country code"),
-    bbox: str | None = typer.Option(None, "--bbox", "-b", help="Bounding box: min_lon,min_lat,max_lon,max_lat"),
+    bbox: str | None = typer.Option(
+        None, "--bbox", "-b", help="Bounding box: min_lon,min_lat,max_lon,max_lat"
+    ),
 ):
     """Ingest place names from Wikidata."""
     from toponymia.connectors.base import BoundingBox
@@ -81,10 +86,10 @@ def ingest_wikidata(
         parsed_bbox = BoundingBox(*parts)
 
     connector = WikidataConnector()
-    console.print(f"[bold]Ingesting Wikidata place names...[/bold]")
+    console.print("[bold]Ingesting Wikidata place names...[/bold]")
 
     count = 0
-    for record in connector.fetch(bbox=parsed_bbox, country=country):
+    for _record in connector.fetch(bbox=parsed_bbox, country=country):
         count += 1
         if count % 1000 == 0:
             console.print(f"  Processed {count:,} records...")
@@ -112,9 +117,13 @@ def segment(
 @test_app.command("correspondence")
 def test_correspondence(
     element: str = typer.Option(..., "--element", "-e", help="Name element to test (e.g., 'berg')"),
-    signal: str = typer.Option(..., "--signal", "-s", help="Signal to test against (e.g., 'elevation')"),
+    signal: str = typer.Option(
+        ..., "--signal", "-s", help="Signal to test against (e.g., 'elevation')"
+    ),
     region: str = typer.Option(..., "--region", "-r", help="Region to test in"),
-    n_permutations: int = typer.Option(10000, "--permutations", "-n", help="Number of permutations"),
+    n_permutations: int = typer.Option(
+        10000, "--permutations", "-n", help="Number of permutations"
+    ),
 ):
     """Run element-signal correspondence test."""
     console.print(f"[bold]Correspondence test: -{element} vs. {signal} in {region}[/bold]")
@@ -158,11 +167,15 @@ def test_validate(
 
 @app.command()
 def results(
-    format: str = typer.Option("table", "--format", "-f", help="Output format: table, json, csv"),
+    output_format: str = typer.Option(
+        "table", "--format", "-f", help="Output format: table, json, csv"
+    ),
 ):
     """View analysis results."""
     console.print("[yellow]No results yet. Run tests first.[/yellow]")
-    console.print("Example: toponymia test correspondence --element berg --signal elevation --region NO")
+    console.print(
+        "Example: toponymia test correspondence --element berg --signal elevation --region NO"
+    )
 
 
 if __name__ == "__main__":

@@ -27,57 +27,97 @@ class OldNorseModule(BaseLanguageModule):
 
     # Common Old Norse toponymic suffixes (settlement names)
     suffixes = [
-        "-heim", "-heimr",      # home, settlement
-        "-staðir", "-stad",     # place, farm
-        "-bý", "-by", "-bø",   # farm, settlement
-        "-land",                # land
-        "-vin", "-vin",         # meadow (very old, possibly pre-Norse)
-        "-nes", "-nes",         # headland, promontory
-        "-ey", "-øy",           # island
-        "-vík", "-vik",         # bay, inlet
-        "-fjǫrðr", "-fjord",   # fjord
-        "-dalr", "-dal",        # valley
-        "-berg", "-berg",       # mountain, rock
-        "-haug", "-haugr",      # mound, hill
-        "-setr", "-seter",      # mountain pasture
-        "-þveit", "-tveit",     # clearing
-        "-ruð", "-rud",         # clearing
-        "-aker", "-akr",        # field
-        "-eng",                 # meadow
-        "-holt",                # small forest
-        "-lundr", "-lund",      # grove
-        "-vǫllr", "-voll",     # field, plain
-        "-á", "-å",            # river
-        "-vatn",                # lake
-        "-hǫfn", "-havn",      # harbor
-        "-sund",                # strait
-        "-hof", "-hov",         # temple
-        "-vé",                  # sacred enclosure
-        "-hǫrgr", "-horg",     # altar, shrine
+        "-heim",
+        "-heimr",  # home, settlement
+        "-staðir",
+        "-stad",  # place, farm
+        "-bý",
+        "-by",
+        "-bø",  # farm, settlement
+        "-land",  # land
+        "-vin",
+        "-vin",  # meadow (very old, possibly pre-Norse)
+        "-nes",
+        "-nes",  # headland, promontory
+        "-ey",
+        "-øy",  # island
+        "-vík",
+        "-vik",  # bay, inlet
+        "-fjǫrðr",
+        "-fjord",  # fjord
+        "-dalr",
+        "-dal",  # valley
+        "-berg",
+        "-berg",  # mountain, rock
+        "-haug",
+        "-haugr",  # mound, hill
+        "-setr",
+        "-seter",  # mountain pasture
+        "-þveit",
+        "-tveit",  # clearing
+        "-ruð",
+        "-rud",  # clearing
+        "-aker",
+        "-akr",  # field
+        "-eng",  # meadow
+        "-holt",  # small forest
+        "-lundr",
+        "-lund",  # grove
+        "-vǫllr",
+        "-voll",  # field, plain
+        "-á",
+        "-å",  # river
+        "-vatn",  # lake
+        "-hǫfn",
+        "-havn",  # harbor
+        "-sund",  # strait
+        "-hof",
+        "-hov",  # temple
+        "-vé",  # sacred enclosure
+        "-hǫrgr",
+        "-horg",  # altar, shrine
     ]
 
     # Common Old Norse toponymic prefixes/first elements
     prefixes = [
-        "Þór-", "Tor-",        # Thor (deity)
-        "Óðinn-", "Odin-",     # Odin (deity)
-        "Freyr-", "Frøy-",     # Freyr (deity)
-        "Freyja-",             # Freyja (deity)
-        "Njǫrðr-", "Njord-",  # Njord (deity)
-        "Ullr-", "Ull-",       # Ull (deity)
-        "Týr-",                # Tyr (deity)
-        "Baldr-",              # Baldr (deity)
-        "Austr-", "Øst-",     # east
-        "Vestr-", "Vest-",    # west
-        "Norðr-", "Nord-",    # north
-        "Suðr-", "Sør-", "Syd-",  # south
-        "Nýr-", "Ny-",        # new
-        "Gamall-", "Gaml-",   # old
-        "Mikill-", "Stor-",   # great, large
-        "Lítill-", "Lill-",   # small
-        "Hvít-", "Kvit-",    # white
-        "Svartr-", "Svart-", # black
-        "Rauðr-", "Raud-",   # red
-        "Grœnn-", "Grøn-",   # green
+        "Þór-",
+        "Tor-",  # Thor (deity)
+        "Óðinn-",
+        "Odin-",  # Odin (deity)
+        "Freyr-",
+        "Frøy-",  # Freyr (deity)
+        "Freyja-",  # Freyja (deity)
+        "Njǫrðr-",
+        "Njord-",  # Njord (deity)
+        "Ullr-",
+        "Ull-",  # Ull (deity)
+        "Týr-",  # Tyr (deity)
+        "Baldr-",  # Baldr (deity)
+        "Austr-",
+        "Øst-",  # east
+        "Vestr-",
+        "Vest-",  # west
+        "Norðr-",
+        "Nord-",  # north
+        "Suðr-",
+        "Sør-",
+        "Syd-",  # south
+        "Nýr-",
+        "Ny-",  # new
+        "Gamall-",
+        "Gaml-",  # old
+        "Mikill-",
+        "Stor-",  # great, large
+        "Lítill-",
+        "Lill-",  # small
+        "Hvít-",
+        "Kvit-",  # white
+        "Svartr-",
+        "Svart-",  # black
+        "Rauðr-",
+        "Raud-",  # red
+        "Grœnn-",
+        "Grøn-",  # green
     ]
 
     def segment(self, form: str) -> list[SegmentationResult]:
@@ -100,31 +140,37 @@ class OldNorseModule(BaseLanguageModule):
 
         if matched_suffix:
             stem = form[: len(form) - len(matched_suffix)]
-            suffix_part = form[len(form) - len(matched_suffix):]
+            suffix_part = form[len(form) - len(matched_suffix) :]
 
             if stem:
-                results.append(SegmentationResult(
-                    component=stem,
-                    position=0,
-                    morph_type="compound_modifier",
-                    confidence=0.6,
-                ))
+                results.append(
+                    SegmentationResult(
+                        component=stem,
+                        position=0,
+                        morph_type="compound_modifier",
+                        confidence=0.6,
+                    )
+                )
 
-            results.append(SegmentationResult(
-                component=suffix_part,
-                position=1,
-                morph_type="compound_head",
-                lemma=matched_suffix,
-                confidence=0.7,
-            ))
+            results.append(
+                SegmentationResult(
+                    component=suffix_part,
+                    position=1,
+                    morph_type="compound_head",
+                    lemma=matched_suffix,
+                    confidence=0.7,
+                )
+            )
         else:
             # No recognized suffix—return whole form as stem
-            results.append(SegmentationResult(
-                component=form,
-                position=0,
-                morph_type="stem",
-                confidence=0.3,
-            ))
+            results.append(
+                SegmentationResult(
+                    component=form,
+                    position=0,
+                    morph_type="stem",
+                    confidence=0.3,
+                )
+            )
 
         return results
 
@@ -189,19 +235,18 @@ class OldNorseModule(BaseLanguageModule):
         }
 
         for comp in components:
-            if comp.lemma:
-                key = comp.lemma.lower().lstrip("-")
-            else:
-                key = comp.component.lower()
+            key = comp.lemma.lower().lstrip("-") if comp.lemma else comp.component.lower()
 
             if key in suffix_meanings:
                 lemma, meaning, cognates = suffix_meanings[key]
-                candidates.append(EtymologyCandidate(
-                    lemma=lemma,
-                    meaning=meaning,
-                    language_code=self.language_code,
-                    confidence=0.7,
-                    cognates=cognates,
-                ))
+                candidates.append(
+                    EtymologyCandidate(
+                        lemma=lemma,
+                        meaning=meaning,
+                        language_code=self.language_code,
+                        confidence=0.7,
+                        cognates=cognates,
+                    )
+                )
 
         return candidates

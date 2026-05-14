@@ -8,7 +8,6 @@ what would be expected under spatial randomness.
 from __future__ import annotations
 
 import numpy as np
-from scipy import stats
 from scipy.spatial.distance import pdist, squareform
 
 from toponymia.statistics.base import (
@@ -78,7 +77,9 @@ class SpatialClusteringTest(BaseTest):
         p_value = np.mean(perm_mnn <= observed_mnn)
 
         # Effect size: standardized difference
-        effect_size = (np.mean(perm_mnn) - observed_mnn) / np.std(perm_mnn) if np.std(perm_mnn) > 0 else 0.0
+        effect_size = (
+            (np.mean(perm_mnn) - observed_mnn) / np.std(perm_mnn) if np.std(perm_mnn) > 0 else 0.0
+        )
 
         status = TestStatus.CONFIRMED if p_value < 0.05 else TestStatus.EXECUTED
 

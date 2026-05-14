@@ -65,12 +65,12 @@ class BaseLanguageModule(ABC):
     """
 
     # Class-level metadata (override in subclass)
-    language_code: str = ""       # ISO 639-3
+    language_code: str = ""  # ISO 639-3
     language_name: str = ""
-    family: str = ""              # e.g., "Indo-European"
-    branch: str = ""              # e.g., "Germanic > North Germanic"
-    period: str = ""              # e.g., "Old Norse (700-1350)"
-    script: str = "Latn"          # ISO 15924
+    family: str = ""  # e.g., "Indo-European"
+    branch: str = ""  # e.g., "Germanic > North Germanic"
+    period: str = ""  # e.g., "Old Norse (700-1350)"
+    script: str = "Latn"  # ISO 15924
 
     # Known toponymic elements (populate in subclass)
     prefixes: list[str] = []

@@ -4,8 +4,8 @@ Revision ID: 001
 Create Date: 2025-05-14
 """
 
-from alembic import op
 import sqlalchemy as sa
+from alembic import op
 from geoalchemy2 import Geometry
 
 revision = "001"
@@ -63,7 +63,9 @@ def upgrade() -> None:
     op.create_table(
         "name_attestations",
         sa.Column("id", sa.Uuid(), primary_key=True, server_default=sa.text("gen_random_uuid()")),
-        sa.Column("place_id", sa.Uuid(), sa.ForeignKey("places.id", ondelete="CASCADE"), nullable=False),
+        sa.Column(
+            "place_id", sa.Uuid(), sa.ForeignKey("places.id", ondelete="CASCADE"), nullable=False
+        ),
         sa.Column("form", sa.Text(), nullable=False),
         sa.Column("normalized_form", sa.Text(), nullable=False),
         sa.Column("language_code", sa.Text(), sa.ForeignKey("languages.iso_code"), nullable=False),
@@ -79,7 +81,9 @@ def upgrade() -> None:
     op.create_index("ix_attestations_place", "name_attestations", ["place_id"])
     op.create_index("ix_attestations_form", "name_attestations", ["normalized_form"])
     op.create_index(
-        "ix_attestations_form_trgm", "name_attestations", ["normalized_form"],
+        "ix_attestations_form_trgm",
+        "name_attestations",
+        ["normalized_form"],
         postgresql_using="gin",
         postgresql_ops={"normalized_form": "gin_trgm_ops"},
     )
@@ -88,7 +92,12 @@ def upgrade() -> None:
     op.create_table(
         "name_components",
         sa.Column("id", sa.Uuid(), primary_key=True, server_default=sa.text("gen_random_uuid()")),
-        sa.Column("attestation_id", sa.Uuid(), sa.ForeignKey("name_attestations.id", ondelete="CASCADE"), nullable=False),
+        sa.Column(
+            "attestation_id",
+            sa.Uuid(),
+            sa.ForeignKey("name_attestations.id", ondelete="CASCADE"),
+            nullable=False,
+        ),
         sa.Column("component", sa.Text(), nullable=False),
         sa.Column("position", sa.Integer(), nullable=False),
         sa.Column("morph_type", sa.Text(), nullable=False),
@@ -109,7 +118,9 @@ def upgrade() -> None:
     op.create_table(
         "language_layers",
         sa.Column("id", sa.Uuid(), primary_key=True, server_default=sa.text("gen_random_uuid()")),
-        sa.Column("place_id", sa.Uuid(), sa.ForeignKey("places.id", ondelete="CASCADE"), nullable=False),
+        sa.Column(
+            "place_id", sa.Uuid(), sa.ForeignKey("places.id", ondelete="CASCADE"), nullable=False
+        ),
         sa.Column("language_code", sa.Text(), sa.ForeignKey("languages.iso_code"), nullable=False),
         sa.Column("period", sa.Text(), nullable=True),
         sa.Column("evidence_summary", sa.Text(), nullable=True),
@@ -121,7 +132,9 @@ def upgrade() -> None:
     op.create_table(
         "interpretations",
         sa.Column("id", sa.Uuid(), primary_key=True, server_default=sa.text("gen_random_uuid()")),
-        sa.Column("place_id", sa.Uuid(), sa.ForeignKey("places.id", ondelete="CASCADE"), nullable=False),
+        sa.Column(
+            "place_id", sa.Uuid(), sa.ForeignKey("places.id", ondelete="CASCADE"), nullable=False
+        ),
         sa.Column("claim", sa.Text(), nullable=False),
         sa.Column("probability", sa.Float(), nullable=True),
         sa.Column("method", sa.Text(), nullable=True),
@@ -139,7 +152,9 @@ def upgrade() -> None:
     op.create_table(
         "hypotheses",
         sa.Column("id", sa.Uuid(), primary_key=True, server_default=sa.text("gen_random_uuid()")),
-        sa.Column("place_id", sa.Uuid(), sa.ForeignKey("places.id", ondelete="CASCADE"), nullable=True),
+        sa.Column(
+            "place_id", sa.Uuid(), sa.ForeignKey("places.id", ondelete="CASCADE"), nullable=True
+        ),
         sa.Column("claim", sa.Text(), nullable=False),
         sa.Column("null_hypothesis", sa.Text(), nullable=False),
         sa.Column("test_family", sa.Text(), nullable=False),
@@ -159,7 +174,9 @@ def upgrade() -> None:
     op.create_table(
         "terrain_features",
         sa.Column("id", sa.Uuid(), primary_key=True, server_default=sa.text("gen_random_uuid()")),
-        sa.Column("place_id", sa.Uuid(), sa.ForeignKey("places.id", ondelete="CASCADE"), nullable=False),
+        sa.Column(
+            "place_id", sa.Uuid(), sa.ForeignKey("places.id", ondelete="CASCADE"), nullable=False
+        ),
         sa.Column("feature_type", sa.Text(), nullable=False),
         sa.Column("value", sa.Float(), nullable=True),
         sa.Column("unit", sa.Text(), nullable=True),
@@ -171,7 +188,9 @@ def upgrade() -> None:
     op.create_table(
         "ecological_features",
         sa.Column("id", sa.Uuid(), primary_key=True, server_default=sa.text("gen_random_uuid()")),
-        sa.Column("place_id", sa.Uuid(), sa.ForeignKey("places.id", ondelete="CASCADE"), nullable=False),
+        sa.Column(
+            "place_id", sa.Uuid(), sa.ForeignKey("places.id", ondelete="CASCADE"), nullable=False
+        ),
         sa.Column("feature_type", sa.Text(), nullable=False),
         sa.Column("species_taxon", sa.Text(), nullable=True),
         sa.Column("period", sa.Text(), nullable=True),
@@ -183,7 +202,9 @@ def upgrade() -> None:
     op.create_table(
         "archaeological_sites",
         sa.Column("id", sa.Uuid(), primary_key=True, server_default=sa.text("gen_random_uuid()")),
-        sa.Column("place_id", sa.Uuid(), sa.ForeignKey("places.id", ondelete="CASCADE"), nullable=False),
+        sa.Column(
+            "place_id", sa.Uuid(), sa.ForeignKey("places.id", ondelete="CASCADE"), nullable=False
+        ),
         sa.Column("site_type", sa.Text(), nullable=False),
         sa.Column("period", sa.Text(), nullable=True),
         sa.Column("description", sa.Text(), nullable=True),
@@ -194,7 +215,9 @@ def upgrade() -> None:
     op.create_table(
         "cultural_features",
         sa.Column("id", sa.Uuid(), primary_key=True, server_default=sa.text("gen_random_uuid()")),
-        sa.Column("place_id", sa.Uuid(), sa.ForeignKey("places.id", ondelete="CASCADE"), nullable=False),
+        sa.Column(
+            "place_id", sa.Uuid(), sa.ForeignKey("places.id", ondelete="CASCADE"), nullable=False
+        ),
         sa.Column("feature_type", sa.Text(), nullable=False),
         sa.Column("religion", sa.Text(), nullable=True),
         sa.Column("period", sa.Text(), nullable=True),
@@ -206,7 +229,9 @@ def upgrade() -> None:
     op.create_table(
         "historical_events",
         sa.Column("id", sa.Uuid(), primary_key=True, server_default=sa.text("gen_random_uuid()")),
-        sa.Column("place_id", sa.Uuid(), sa.ForeignKey("places.id", ondelete="CASCADE"), nullable=False),
+        sa.Column(
+            "place_id", sa.Uuid(), sa.ForeignKey("places.id", ondelete="CASCADE"), nullable=False
+        ),
         sa.Column("event_type", sa.Text(), nullable=False),
         sa.Column("date_from", sa.Integer(), nullable=True),
         sa.Column("date_to", sa.Integer(), nullable=True),
@@ -218,9 +243,15 @@ def upgrade() -> None:
     op.create_table(
         "renaming_events",
         sa.Column("id", sa.Uuid(), primary_key=True, server_default=sa.text("gen_random_uuid()")),
-        sa.Column("place_id", sa.Uuid(), sa.ForeignKey("places.id", ondelete="CASCADE"), nullable=False),
-        sa.Column("from_attestation_id", sa.Uuid(), sa.ForeignKey("name_attestations.id"), nullable=True),
-        sa.Column("to_attestation_id", sa.Uuid(), sa.ForeignKey("name_attestations.id"), nullable=True),
+        sa.Column(
+            "place_id", sa.Uuid(), sa.ForeignKey("places.id", ondelete="CASCADE"), nullable=False
+        ),
+        sa.Column(
+            "from_attestation_id", sa.Uuid(), sa.ForeignKey("name_attestations.id"), nullable=True
+        ),
+        sa.Column(
+            "to_attestation_id", sa.Uuid(), sa.ForeignKey("name_attestations.id"), nullable=True
+        ),
         sa.Column("year", sa.Integer(), nullable=True),
         sa.Column("motivation", sa.Text(), nullable=True),
         sa.Column("actor", sa.Text(), nullable=True),
@@ -231,7 +262,9 @@ def upgrade() -> None:
     op.create_table(
         "administrative_units",
         sa.Column("id", sa.Uuid(), primary_key=True, server_default=sa.text("gen_random_uuid()")),
-        sa.Column("place_id", sa.Uuid(), sa.ForeignKey("places.id", ondelete="CASCADE"), nullable=False),
+        sa.Column(
+            "place_id", sa.Uuid(), sa.ForeignKey("places.id", ondelete="CASCADE"), nullable=False
+        ),
         sa.Column("unit_type", sa.Text(), nullable=False),
         sa.Column("unit_name", sa.Text(), nullable=False),
         sa.Column("date_from", sa.Integer(), nullable=True),
