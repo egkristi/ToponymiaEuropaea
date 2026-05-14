@@ -118,10 +118,13 @@ Each sub-question is designed to be **falsifiable**. The framework generates nul
 
 | Layer | Role | Notes |
 |-------|------|-------|
-| **JSONL Databank** (`databank/`) | Source of truth | Git-native, diff-friendly, one file per country per source. Every record carries provenance. Validated in CI. |
-| **PostgreSQL + PostGIS** | Optional analysis cache | For spatial queries on large datasets. Not required for core workflow. |
+| **JSONL Databank** (`databank/`) | Source of truth (current) | Git-native, diff-friendly, one file per country per source. Every record carries provenance. Validated in CI. |
+| **PostgreSQL + PostGIS** | Operational store (planned) | For spatial queries, transactional writes, H3 indexing. Local dev via Docker. |
+| **Parquet + DuckDB** | Analytical layer (planned) | Immutable snapshots for large-scale statistical runs (permutation tests over millions of rows). |
 
-The databank is the authoritative persistence layer. All data enters via the ingestion pipeline (`toponymia ingest`) and is stored as JSONL in `databank/places/<ISO>/`. PostgreSQL is only needed when running spatial queries that benefit from indexing (e.g., nearest-neighbor searches across 100k+ records).
+The databank is the authoritative persistence layer **during development**. All data enters via the ingestion pipeline (`toponymia ingest`) and is stored as JSONL in `databank/places/<ISO>/`. PostgreSQL is only needed when running spatial queries that benefit from indexing (e.g., nearest-neighbor searches across 100k+ records).
+
+**Scaling path**: At 10M+ records, JSONL remains as a curated gold-standard kernel (tens of thousands of verified records), while PostgreSQL becomes the primary operational store and Parquet provides the analytical layer. See ROADMAP Milestone 11 for details.
 
 ---
 

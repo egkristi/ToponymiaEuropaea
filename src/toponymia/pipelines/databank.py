@@ -56,7 +56,8 @@ def _load_schema(schema_path: Path | None = None) -> dict[str, Any]:
         return {"required": list(_REQUIRED_FIELDS)}
 
     with schema_path.open() as f:
-        return json.load(f)
+        schema: dict[str, Any] = json.load(f)
+        return schema
 
 
 def validate_record_against_schema(

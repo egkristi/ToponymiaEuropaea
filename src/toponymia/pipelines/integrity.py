@@ -62,7 +62,7 @@ def verify_record(record: dict[str, Any]) -> bool:
     stored_hash = record.get("_sha256")
     if stored_hash is None:
         return False
-    return compute_record_hash(record) == stored_hash
+    return bool(compute_record_hash(record) == stored_hash)
 
 
 def sign_jsonl_file(filepath: Path) -> int:

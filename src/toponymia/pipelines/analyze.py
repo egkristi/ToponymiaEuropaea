@@ -88,7 +88,7 @@ def build_test_data(
     """
     coordinates = []
     element_present = []
-    signal_values = [] if signal_field else None
+    signal_values: list[float] | None = [] if signal_field else None
 
     element_lower = element.lower()
 
@@ -104,7 +104,7 @@ def build_test_data(
         coordinates.append([lon, lat])
         element_present.append(has_element)
 
-        if signal_values is not None:
+        if signal_values is not None and signal_field is not None:
             val = record.get(signal_field)
             signal_values.append(float(val) if val is not None else 0.0)
 

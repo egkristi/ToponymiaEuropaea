@@ -5,13 +5,13 @@ from __future__ import annotations
 from collections.abc import Generator
 from contextlib import contextmanager
 
-from sqlalchemy import create_engine
+from sqlalchemy import Engine, create_engine
 from sqlalchemy.orm import Session, sessionmaker
 
 from toponymia.config import get_settings
 
 
-def get_engine():
+def get_engine() -> Engine:
     """Create SQLAlchemy engine from settings."""
     settings = get_settings()
     return create_engine(

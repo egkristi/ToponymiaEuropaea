@@ -3,10 +3,14 @@
 from __future__ import annotations
 
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 import typer
 from rich.console import Console
 from rich.table import Table
+
+if TYPE_CHECKING:
+    from toponymia.statistics.base import PlaceData, TestResult
 
 app = typer.Typer(
     name="toponymia",
@@ -31,7 +35,7 @@ app.add_typer(analyze_app, name="analyze")
 
 
 @app.command()
-def info():
+def info() -> None:
     """Show project information and status."""
     from toponymia import __version__
 
@@ -60,7 +64,7 @@ def ingest_geonames(
         None, "--output", "-o", help="Output to databank directory (e.g., databank/)"
     ),
     limit: int | None = typer.Option(None, "--limit", "-l", help="Max records to ingest"),
-):
+) -> None:
     """Ingest place names from GeoNames for a country."""
     import json
 
@@ -71,7 +75,7 @@ def ingest_geonames(
 
     count = 0
     errors = 0
-    records_out: list[dict] = []
+    records_out: list[dict[str, object]] = []
 
     for record in connector.fetch(country=country):
         validation_errors = connector.validate(record)
@@ -120,7 +124,7 @@ def ingest_wikidata(
     bbox: str | None = typer.Option(
         None, "--bbox", "-b", help="Bounding box: min_lon,min_lat,max_lon,max_lat"
     ),
-):
+) -> None:
     """Ingest place names from Wikidata."""
     from toponymia.connectors.base import BoundingBox
     from toponymia.connectors.wikidata import WikidataConnector
@@ -146,7 +150,7 @@ def ingest_wikidata(
 def segment(
     region: str = typer.Option(..., "--region", "-r", help="Region/country code to segment"),
     top_k: int = typer.Option(3, "--top-k", "-k", help="Number of hypotheses per name"),
-):
+) -> None:
     """Run morphological segmentation on ingested names."""
     from toponymia.languages.old_norse import OldNorseModule
     from toponymia.pipelines.segment import SegmentationPipeline
@@ -169,7 +173,7 @@ def test_correspondence(
     n_permutations: int = typer.Option(
         10000, "--permutations", "-n", help="Number of permutations"
     ),
-):
+) -> None:
     """Run element-signal correspondence test."""
     console.print(f"[bold]Correspondence test: -{element} vs. {signal} in {region}[/bold]")
     console.print(f"Permutations: {n_permutations:,}")
@@ -180,7 +184,7 @@ def test_correspondence(
 def test_validate(
     test_name: str = typer.Option("correspondence", "--test", "-t", help="Test to validate"),
     n_trials: int = typer.Option(100, "--trials", "-n", help="Number of synthetic trials"),
-):
+) -> None:
     """Validate a statistical test on synthetic data."""
     from toponymia.statistics.correspondence import ElementSignalCorrespondenceTest
     from toponymia.statistics.spatial import SpatialClusteringTest
@@ -215,7 +219,7 @@ def results(
     output_format: str = typer.Option(
         "table", "--format", "-f", help="Output format: table, json, csv"
     ),
-):
+) -> None:
     """View analysis results."""
     console.print("[yellow]No results yet. Run tests first.[/yellow]")
     console.print(
@@ -238,7 +242,7 @@ def data_promote(
     reviewer: str | None = typer.Option(None, "--reviewer", help="Reviewer identity"),
     ingester: str | None = typer.Option(None, "--ingester", help="Original ingester"),
     current_status: str = typer.Option(..., "--status", "-s", help="Current status of the record"),
-):
+) -> None:
     """Promote a record to the next onboarding stage."""
     from toponymia.core import RecordStatus
     from toponymia.core.onboarding import GateError, InvalidTransitionError, promote
@@ -283,7 +287,7 @@ def data_demote(
     actor: str = typer.Option(..., "--actor", "-a", help="Who is performing the demotion"),
     reason: str = typer.Option(..., "--reason", "-r", help="Reason for demotion"),
     current_status: str = typer.Option(..., "--status", "-s", help="Current status of the record"),
-):
+) -> None:
     """Demote a record to the previous onboarding stage."""
     from toponymia.core import RecordStatus
     from toponymia.core.onboarding import InvalidTransitionError, demote
@@ -319,7 +323,7 @@ def data_retract(
     actor: str = typer.Option(..., "--actor", "-a", help="Who is performing the retraction"),
     reason: str = typer.Option(..., "--reason", "-r", help="Reason for retraction"),
     current_status: str = typer.Option(..., "--status", "-s", help="Current status of the record"),
-):
+) -> None:
     """Retract a record (soft-delete with audit trail)."""
     from toponymia.core import RecordStatus
     from toponymia.core.onboarding import InvalidTransitionError, retract
@@ -353,7 +357,7 @@ def data_retract(
 
 
 @quality_app.command("summary")
-def quality_summary():
+def quality_summary() -> None:
     """Show overall data quality summary and metrics."""
     from toponymia.pipelines.validate import ValidationConfig
 
@@ -425,7 +429,7 @@ def quality_summary():
 def quality_validate_file(
     filepath: Path = typer.Argument(..., help="Path to data file (JSON lines)"),
     strict: bool = typer.Option(False, "--strict", help="Fail on first error"),
-):
+) -> None:
     """Validate a data file against quality rules."""
     import json
 
@@ -500,7 +504,7 @@ def quality_validate_file(
 
 
 @quality_app.command("tests")
-def quality_tests():
+def quality_tests() -> None:
     """List all available statistical tests with validation status."""
     from toponymia.statistics.astronomical import AstronomicalAlignmentTest
     from toponymia.statistics.correspondence import ElementSignalCorrespondenceTest
@@ -547,7 +551,7 @@ def databank_validate(
     integrity: bool = typer.Option(
         False, "--integrity", "-i", help="Also verify SHA-256 integrity hashes"
     ),
-):
+) -> None:
     """Validate databank records against the place schema."""
     from toponymia.pipelines.databank import validate_databank, validate_jsonl_file
 
@@ -612,8 +616,8 @@ def databank_validate(
         if integrity_errors:
             n_errs = len(integrity_errors)
             console.print(f"\n[red]✗ Integrity check failed ({n_errs} errors):[/red]")
-            for err in integrity_errors[:20]:
-                console.print(f"  [red]{err}[/red]")
+            for integrity_err in integrity_errors[:20]:
+                console.print(f"  [red]{integrity_err}[/red]")
             if len(integrity_errors) > 20:
                 console.print(f"[dim]... and {len(integrity_errors) - 20} more[/dim]")
             raise typer.Exit(1)
@@ -623,7 +627,7 @@ def databank_validate(
 @databank_app.command("sign")
 def databank_sign(
     path: Path | None = typer.Option(None, "--path", "-p", help="Sign a specific JSONL file"),
-):
+) -> None:
     """Sign databank records with SHA-256 integrity hashes.
 
     Each record gets a _sha256 field computed from its canonical JSON.
@@ -661,7 +665,7 @@ def databank_sign(
 @databank_app.command("verify")
 def databank_verify(
     path: Path | None = typer.Option(None, "--path", "-p", help="Verify a specific JSONL file"),
-):
+) -> None:
     """Verify integrity of databank records and manifest.
 
     Checks that _sha256 hashes match record content (tamper detection)
@@ -722,7 +726,7 @@ def databank_verify(
 def databank_sort(
     path: Path | None = typer.Option(None, "--path", "-p", help="Sort a specific JSONL file"),
     key: str = typer.Option("source_id", "--key", "-k", help="Sort key field"),
-):
+) -> None:
     """Sort databank JSONL files by source_id for deterministic diffs.
 
     Canonical ordering enables clean git merges and rebases.
@@ -751,7 +755,7 @@ def databank_sort(
 
 
 @databank_app.command("stats")
-def databank_stats():
+def databank_stats() -> None:
     """Show databank statistics by country and source."""
     databank_path = Path(__file__).parent.parent.parent / "databank" / "places"
 
@@ -795,7 +799,7 @@ def analyze_element(
     no_attestations: bool = typer.Option(
         False, "--no-attestations", help="Skip attestation form analysis"
     ),
-):
+) -> None:
     """Run a statistical test for a toponymic element on databank data."""
     from toponymia.languages.old_norse import OldNorseModule
     from toponymia.pipelines.analyze import build_test_data, load_databank
@@ -862,7 +866,7 @@ def analyze_element(
 def analyze_discover(
     country: str | None = typer.Option(None, "--country", "-c", help="Filter by ISO country code"),
     min_count: int = typer.Option(2, "--min-count", "-m", help="Minimum element count to show"),
-):
+) -> None:
     """Discover toponymic elements present in the databank."""
     from toponymia.languages.old_norse import OldNorseModule
     from toponymia.pipelines.analyze import get_element_summary, load_databank
@@ -896,41 +900,42 @@ def analyze_discover(
     )
 
 
-def _run_test(test_type: str, data, signal_field: str | None):
+def _run_test(test_type: str, data: PlaceData, signal_field: str | None) -> TestResult:
     """Run a statistical test and return the result."""
-    from toponymia.statistics.base import StatFamily, StatStatus, TestResult
+    from toponymia.statistics.base import StatFamily, StatStatus
+    from toponymia.statistics.base import TestResult as _TestResult
 
     if test_type == "spatial":
         from toponymia.statistics.spatial import SpatialClusteringTest
 
-        test = SpatialClusteringTest()
-        return test.run(data)
+        spatial_test = SpatialClusteringTest()
+        return spatial_test.run(data)
 
     if test_type == "correspondence":
         from toponymia.statistics.correspondence import ElementSignalCorrespondenceTest
 
         if not signal_field:
-            return TestResult(
+            return _TestResult(
                 test_id="correspondence-no-signal",
                 test_family=StatFamily.CORRESPONDENCE,
                 status=StatStatus.PROPOSED,
                 null_hypothesis="N/A",
                 alternative_hypothesis="N/A",
             )
-        test = ElementSignalCorrespondenceTest()
-        return test.run(data)
+        corr_test = ElementSignalCorrespondenceTest()
+        return corr_test.run(data)
 
     if test_type == "temporal":
         from toponymia.statistics.temporal import TemporalLayerConsistencyTest
 
-        test = TemporalLayerConsistencyTest()
-        return test.run(data)
+        temporal_test = TemporalLayerConsistencyTest()
+        return temporal_test.run(data)
 
     if test_type == "migration":
         from toponymia.statistics.migration import MigrationOverfrequencyTest
 
-        test = MigrationOverfrequencyTest()
-        return test.run(data)
+        migration_test = MigrationOverfrequencyTest()
+        return migration_test.run(data)
 
     raise typer.Exit(code=1)
 

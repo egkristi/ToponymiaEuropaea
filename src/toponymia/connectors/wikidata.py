@@ -13,6 +13,7 @@ import contextlib
 import logging
 import time
 from collections.abc import Iterator
+from typing import Any
 
 import httpx
 
@@ -51,7 +52,7 @@ class WikidataConnector(BaseConnector):
     coverage_region = "global"
     source_url = "https://www.wikidata.org"
 
-    def __init__(self):
+    def __init__(self) -> None:
         settings = get_settings()
         self._endpoint = settings.wikidata_endpoint
         self._batch_size = 5000
@@ -109,7 +110,7 @@ class WikidataConnector(BaseConnector):
 
         return errors
 
-    def _execute_sparql(self, query: str) -> list[dict]:
+    def _execute_sparql(self, query: str) -> list[dict[str, Any]]:
         """Execute SPARQL query with rate limiting and error handling."""
         headers = {
             "Accept": "application/sparql-results+json",
@@ -125,7 +126,7 @@ class WikidataConnector(BaseConnector):
             )
             response.raise_for_status()
             data = response.json()
-            return data.get("results", {}).get("bindings", [])
+            return list(data.get("results", {}).get("bindings", []))
         except httpx.HTTPStatusError as e:
             if e.response.status_code == 429:
                 logger.warning("Rate limited by Wikidata, waiting...")
@@ -137,7 +138,7 @@ class WikidataConnector(BaseConnector):
             logger.error(f"Wikidata query failed: {e}")
             return []
 
-    def _parse_result(self, result: dict) -> ConnectorResult | None:
+    def _parse_result(self, result: dict[str, Any]) -> ConnectorResult | None:
         """Parse a SPARQL result binding into a ConnectorResult."""
         coord_value = result.get("coord", {}).get("value", "")
         if not coord_value:

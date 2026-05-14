@@ -4,7 +4,7 @@ This roadmap tracks the project's development from initial framework to producti
 
 **Legend:** ✅ Done | 🔄 In Progress | ⬚ Not Started
 
-**Current status:** 270 tests passing, 0 warnings, ~8,000 lines source, 15 databank records. End-to-end workflow functional: `toponymia analyze element heim --country NO` runs databank → segmentation → statistical test → results table. CI green (lint + mypy + test py3.12/3.13 + ontology + databank validation).
+**Current status:** 345 tests passing, 0 warnings, CI green (lint + mypy strict + test py3.12/3.13 + ontology + databank validation). 2500 GeoNames records (5 Nordic countries × 500). 7 language modules. End-to-end: `toponymia analyze element nes --country NO` runs databank → segmentation → statistical test → results.
 
 ---
 
@@ -75,8 +75,8 @@ Add language modules for major European toponymic traditions.
 | 2.9 | Basque module | ⬚ | Pre-IE isolate (harri-, mendi-, ibai-) |
 | 2.10 | Old High German module | ⬚ | Germanic continental (-heim, -burg, -wald) |
 | 2.11 | Arabic/Moorish module | ⬚ | Iberian substrate layer (al-, wadi-, qal'a-) |
-| 2.12 | Danish module | ⬚ | Critical for Danelaw analysis (-by, -thorp, -toft) |
-| 2.13 | Swedish module | ⬚ | -torp, -rud, -ås, -holm |
+| 2.12 | Danish module | ✅ | -by, -torp/-drup, -toft, -lev, -løse. Segment, classify, etymologize. 22 tests. |
+| 2.13 | Swedish module | ✅ | -torp, -rud, -ås, -tuna, -köping. Segment, classify, etymologize. 23 tests. |
 
 ---
 
@@ -214,9 +214,9 @@ The framework has 15 seed records. To produce real research, it needs real data.
 
 | # | Item | Status | Priority | Notes |
 |---|------|--------|----------|-------|
-| 10.1 | Bulk GeoNames import (Norway) | ⬚ | **HIGH** | ~50,000 Norwegian place names from GeoNames dump |
+| 10.1 | Bulk GeoNames import (Norway) | ✅ | 500 records ingested, sorted, signed, verified |
 | 10.2 | Kartverket SSR bulk import | ⬚ | **HIGH** | ~800,000 official Norwegian names (primary authority) |
-| 10.3 | Bulk GeoNames import (Nordic) | ⬚ | HIGH | Sweden, Finland, Denmark, Iceland |
+| 10.3 | Bulk GeoNames import (Nordic) | ✅ | 500 each for SE, FI, DK, IS — 2500 total records |
 | 10.4 | Wikidata etymology extraction | ⬚ | MEDIUM | P138 (named after) for all European settlements |
 | 10.5 | Norske Gaardnavne (Rygh) digitized | ⬚ | HIGH | 19th-century authoritative Norwegian farm-name corpus |
 | 10.6 | EPNS volumes (England) | ⬚ | MEDIUM | English Place-Name Society historical records |
@@ -227,29 +227,124 @@ The framework has 15 seed records. To produce real research, it needs real data.
 
 ---
 
+## NEW: Milestone 11 — Architecture for Scale (External Review)
+
+Based on external architectural review (May 2026). Addresses scaling to 100M+ records while preserving the git-native development workflow during early phases.
+
+### Design Principles
+
+1. **JSONL remains primary during development** — until centralized infrastructure is established and migration is complete.
+2. **Local PostgreSQL+PostGIS simulates future production** — enables testing and development against the target architecture.
+3. **Three-layer persistence** replaces the current two-layer model at scale.
+
+### 11.1 — Name Lemma as First-Class Entity
+
+The current model links attestations to places, but **names as types** (e.g., "Berg" across 40,000 places) have no representation. This is a prerequisite for distributional statistics.
+
+| # | Item | Status | Priority | Notes |
+|---|------|--------|----------|-------|
+| 11.1.1 | Design `name_lemmas` table/model | ⬚ | **CRITICAL** | canonical_form, language_code, semantic_field, pie_root |
+| 11.1.2 | Add `lemma_id` FK to attestations | ⬚ | **CRITICAL** | Links attestation → lemma (optional, backfilled) |
+| 11.1.3 | Lemma auto-detection from segmentation | ⬚ | HIGH | segment() output → lemma lookup/creation |
+| 11.1.4 | JSONL schema extension for lemma references | ⬚ | HIGH | `_lemma` field in databank records |
+| 11.1.5 | CLI: `toponymia lemma list/show/stats` | ⬚ | MEDIUM | Browse lemma distribution |
+
+### 11.2 — Layered Persistence Architecture
+
+| # | Item | Status | Priority | Notes |
+|---|------|--------|----------|-------|
+| 11.2.1 | Curated JSONL kernel (gold-standard records) | ⬚ | **HIGH** | Keep in git: ontology, seed data, manually verified. Tens of thousands max. |
+| 11.2.2 | PostgreSQL+PostGIS as operational store | ⬚ | **HIGH** | All published records, transactional writes from ingest. Local dev via Docker. |
+| 11.2.3 | Parquet/DuckDB analytical layer | ⬚ | **HIGH** | Immutable snapshots for statistical runs (permutation tests over millions of rows) |
+| 11.2.4 | Sync pipeline: JSONL → Postgres → Parquet | ⬚ | HIGH | Unidirectional flow with checksums |
+| 11.2.5 | Local dev setup: `docker compose up` → full 3-layer | ⬚ | HIGH | Simulate production locally for testing |
+| 11.2.6 | JSONL export on release (archival snapshots) | ⬚ | MEDIUM | Git-tagged exports for reproducibility |
+
+### 11.3 — Spatial Indexing (H3/S2)
+
+PostGIS GIST indexes work to ~10M points. Beyond that, hierarchical spatial indexing is needed for queries like "all Tor- names within 5 km of an archaeological site".
+
+| # | Item | Status | Priority | Notes |
+|---|------|--------|----------|-------|
+| 11.3.1 | Add `h3_index_r7`, `h3_index_r9`, `h3_index_r11` to places | ⬚ | **HIGH** | Computed from lat/lon on ingest |
+| 11.3.2 | H3 computation in ingest pipeline | ⬚ | HIGH | Auto-populated when coordinates present |
+| 11.3.3 | Spatial queries via H3 (neighbour lookup) | ⬚ | MEDIUM | "All X-names within N km" without full table scan |
+| 11.3.4 | H3 field in JSONL schema | ⬚ | MEDIUM | `h3_r7`, `h3_r9` fields in databank records |
+
+### 11.4 — Phonetic Indexing & Fuzzy Matching
+
+Soundex/Metaphone are English-centric. For cross-source deduplication (Þórshof = Torshov = Torshof), language-aware phonetic normalization is required.
+
+| # | Item | Status | Priority | Notes |
+|---|------|--------|----------|-------|
+| 11.4.1 | Evaluate Beider-Morse Phonetic Matching | ⬚ | HIGH | Best for multi-language, but complex |
+| 11.4.2 | Nordic phonetic normalizer (ON→modern) | ⬚ | **HIGH** | þ→t, ð→d, ǫ→o, etc. — sound change rules |
+| 11.4.3 | Phonetic index field on attestations | ⬚ | HIGH | `_phonetic_key` for duplicate detection |
+| 11.4.4 | Cross-source deduplication pipeline | ⬚ | HIGH | GeoNames + Kartverket + Wikidata → merged records |
+| 11.4.5 | Diachronic attestation linking | ⬚ | HIGH | 1340 *Þorshofuum* → 2024 *Torshov* = same name history |
+
+### 11.5 — Bayesian Etymology Framework
+
+Current `interpretations` table stores flat probabilities. For proper Bayesian hypothesis testing, competing etymologies must be modeled as mutually exclusive sets with explicit priors and evidence.
+
+| # | Item | Status | Priority | Notes |
+|---|------|--------|----------|-------|
+| 11.5.1 | `hypothesis_set` model (competing etymologies) | ⬚ | HIGH | Probabilities sum to 1.0 within set |
+| 11.5.2 | `evidence` model (what updates which hypothesis) | ⬚ | HIGH | Phonological, semantic, geographic evidence |
+| 11.5.3 | Prior vs. posterior tracking | ⬚ | HIGH | Explicit Bayesian updating log |
+| 11.5.4 | Bayesian comparison test using hypothesis sets | ⬚ | MEDIUM | Replaces flat probability storage |
+
+### 11.6 — Coordinate Conflict Resolution & Legal
+
+| # | Item | Status | Priority | Notes |
+|---|------|--------|----------|-------|
+| 11.6.1 | Multi-source coordinate strategy | ⬚ | MEDIUM | When Kartverket, GeoNames, Wikidata disagree — explicit resolution |
+| 11.6.2 | Source priority hierarchy for geo | ⬚ | MEDIUM | National authority > GeoNames > OSM > Wikidata |
+| 11.6.3 | License compatibility matrix | ⬚ | MEDIUM | CC-BY + ODbL + CC0 → output license determination |
+| 11.6.4 | ODbL share-alike compliance | ⬚ | MEDIUM | OSM-derived data must maintain ODbL chain |
+| 11.6.5 | GDPR for historical person-names | ⬚ | LOW | Jurisdiction-specific "dead enough" thresholds |
+
+---
+
 ## Priority Order (Revised)
 
-The litmus test (May 2025) proved the pipeline works mechanically — data loads, segments, and etymologizes. The bottleneck is now **linguistic knowledge** (bigger dictionaries) and **data volume** (15 records → thousands).
+The litmus test (May 2025) proved the pipeline works mechanically. Data population (May 2026) delivered 2500 records across 5 countries with 7 language modules. The bottleneck is now **architectural scaling** and **data volume**.
 
-**Milestone 9 is COMPLETE** — all 13 items done. CI green, 270 tests, 0 warnings.
+**Milestone 9 is COMPLETE** — all 13 items done.
+**Milestone 10 partially complete** — GeoNames bulk import done (2500 records). Kartverket + historical sources remain.
+**Issues #10–13 closed** — mypy fixed, Danish/Swedish modules added, data populated.
 
-1. **Milestone 10.1–10.2** — Real data population (15 records can't validate hypotheses)
-2. **Milestone 2.12–2.13** — Danish/Swedish modules (needed for Danelaw and Nordic analysis)
-3. **Milestone 2.5–2.7** — More language modules (Celtic, Latin — for UK/France analysis)
-4. **Issue #10** — Fix mypy strict mode errors (make type checking blocking)
-5. **Milestone 3.2, 3.4** — Language contact and political renaming tests
-6. **Milestone 4.2–4.4** — Nordic/UK registry connectors
-7. **Milestone 6.1–6.2** — API and basic visualization
-10. **Milestone 5.1–5.4** — First perspective implementations
-11. **Milestones 7–8** — Infrastructure and community
+### Immediate priorities (current sprint)
+
+1. **Milestone 11.1** — Name lemma entity (prerequisite for distributional analysis at scale)
+2. **Milestone 10.2** — Kartverket SSR bulk import (authoritative Norwegian data)
+3. **Milestone 11.4.2** — Nordic phonetic normalizer (deduplication blocker)
+4. **Milestone 11.2.5** — Local 3-layer dev setup (simulate production)
+
+### Next phase
+
+5. **Milestone 11.2.1–11.2.3** — Layered persistence (JSONL kernel + Postgres + Parquet)
+6. **Milestone 11.3** — H3 spatial indexing
+7. **Milestone 2.5–2.7** — Celtic/Latin language modules (for UK/France analysis)
+8. **Milestone 11.5** — Bayesian etymology framework
+9. **Milestone 3.2, 3.4** — Language contact and political renaming tests
+
+### Later
+
+10. **Milestone 4.2–4.4** — Nordic/UK registry connectors
+11. **Milestone 6.1–6.2** — API and basic visualization
+12. **Milestone 5.1–5.4** — First perspective implementations
+13. **Milestones 7–8** — Infrastructure and community
 
 ---
 
 ## Versioning
 
 - **v0.1.0** — Framework foundation, architecture, proof-of-concept.
-- **v0.2.0** (current) — Expanded dictionaries (120+ ON entries), attestation analysis, analysis bridge, end-to-end workflow command, dependency trim. Pipeline runs from CLI.
-- **v0.3.0** — Bulk data population (10,000+ records from GeoNames/Kartverket). First meaningful statistical results.
-- **v0.4.0** — Multi-country data, 6+ language modules, first perspective modules
-- **v0.5.0** — API and visualization layer
+- **v0.2.0** — Expanded dictionaries (120+ ON entries), attestation analysis, analysis bridge, end-to-end workflow command, dependency trim. Pipeline runs from CLI.
+- **v0.3.0** (current) — 2500 records (5 Nordic countries), 7 language modules (ON, PGmc, OE, Sámi, Finnish, Danish, Swedish), mypy strict clean, 345 tests.
+- **v0.4.0** — Name lemma entity, phonetic indexing, Kartverket bulk import. First real distributional statistics.
+- **v0.5.0** — Three-layer persistence (JSONL + Postgres + Parquet), H3 spatial indexing, local dev simulates production.
+- **v0.6.0** — Celtic/Latin modules, Bayesian etymology, 6+ perspective modules
+- **v0.7.0** — API and visualization layer
 - **v1.0.0** — First publishable research result produced using the framework

@@ -131,7 +131,7 @@ def promote(
     if status not in VALID_PROMOTIONS:
         raise InvalidTransitionError(f"No valid promotion from {status.value}")
 
-    gate = check_promotion_gate(status, **gate_kwargs)
+    gate = check_promotion_gate(status, **gate_kwargs)  # type: ignore[arg-type]
     if not gate.passed:
         raise GateError(gate)
 

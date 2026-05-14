@@ -8,7 +8,7 @@ what would be expected under spatial randomness.
 from __future__ import annotations
 
 import numpy as np
-from scipy.spatial.distance import pdist, squareform
+from scipy.spatial.distance import pdist, squareform  # type: ignore[import-untyped]
 
 from toponymia.statistics.base import (
     BaseTest,

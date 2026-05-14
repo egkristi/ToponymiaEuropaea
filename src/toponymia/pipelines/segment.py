@@ -30,7 +30,7 @@ class SegmentationHypothesis:
     components: list[SegmentationResult]
     overall_confidence: float = 0.0
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         if self.components and self.overall_confidence == 0.0:
             # Compute overall confidence as product of component confidences * language confidence
             component_conf = sum(c.confidence for c in self.components) / len(self.components)

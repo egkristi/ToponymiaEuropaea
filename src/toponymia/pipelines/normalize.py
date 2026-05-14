@@ -61,7 +61,7 @@ class NormalizationPipeline:
         result = form
 
         # Unicode normalization
-        result = unicodedata.normalize(self.config.unicode_form, result)
+        result = unicodedata.normalize(self.config.unicode_form, result)  # type: ignore[arg-type]
 
         # Strip whitespace
         if self.config.strip_whitespace:

@@ -16,7 +16,7 @@ to permutation null distribution.
 from __future__ import annotations
 
 import numpy as np
-from scipy.spatial.distance import cdist
+from scipy.spatial.distance import cdist  # type: ignore[import-untyped]
 
 from toponymia.statistics.base import (
     BaseTest,

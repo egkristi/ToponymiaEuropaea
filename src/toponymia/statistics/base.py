@@ -69,7 +69,7 @@ class PlaceData:
     signal_name: str = ""
     n_places: int = 0
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         self.n_places = len(self.coordinates)
 
 

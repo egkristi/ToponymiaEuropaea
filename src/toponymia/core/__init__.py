@@ -5,6 +5,7 @@ from __future__ import annotations
 import enum
 import uuid
 from datetime import date, datetime
+from typing import Any
 
 from geoalchemy2 import Geometry
 from sqlalchemy import (
@@ -112,7 +113,7 @@ class Place(Base):
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 
     # --- Extensibility (arbitrary structured data) ---
-    extra: Mapped[dict | None] = mapped_column(JSONB, nullable=True)
+    extra: Mapped[dict[str, Any] | None] = mapped_column(JSONB, nullable=True)
 
     # --- Relationships ---
     attestations: Mapped[list[NameAttestation]] = relationship(
@@ -185,7 +186,7 @@ class NameAttestation(Base):
     historical_context: Mapped[str | None] = mapped_column(Text, nullable=True)
 
     # --- Extensibility ---
-    extra: Mapped[dict | None] = mapped_column(JSONB, nullable=True)
+    extra: Mapped[dict[str, Any] | None] = mapped_column(JSONB, nullable=True)
 
     # --- Relationships ---
     place: Mapped[Place] = relationship(back_populates="attestations")
@@ -311,7 +312,7 @@ class PlaceRelation(Base):
     source_id: Mapped[uuid.UUID | None] = mapped_column(
         Uuid, ForeignKey("sources.id"), nullable=True
     )
-    extra: Mapped[dict | None] = mapped_column(JSONB, nullable=True)
+    extra: Mapped[dict[str, Any] | None] = mapped_column(JSONB, nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 
     place: Mapped[Place] = relationship(foreign_keys=[place_id], back_populates="relations_from")

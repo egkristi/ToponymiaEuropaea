@@ -14,6 +14,7 @@ from __future__ import annotations
 import logging
 import time
 from collections.abc import Iterator
+from typing import Any
 
 import httpx
 
@@ -101,7 +102,7 @@ class KartverketConnector(BaseConnector):
         Yields:
             ConnectorResult for each place name found.
         """
-        params: dict[str, str | int] = {
+        params: dict[str, str | int | float] = {
             "treffPerSide": self._MAX_PER_PAGE,
             "side": 1,
         }
@@ -159,12 +160,12 @@ class KartverketConnector(BaseConnector):
 
             params["side"] = current_page + 1
 
-    def _parse_name_entry(self, entry: dict) -> list[ConnectorResult]:
+    def _parse_name_entry(self, entry: dict[str, Any]) -> list[ConnectorResult]:
         """Parse a single name entry from the API response.
 
         Each entry may have multiple name forms (different languages/spellings).
         """
-        results = []
+        results: list[ConnectorResult] = []
 
         # Get representative point coordinates
         representasjonspunkt = entry.get("representasjonspunkt", {})
@@ -227,7 +228,7 @@ class KartverketConnector(BaseConnector):
         return results
 
     def _extract_alternatives(
-        self, skrivemaater: list[dict], exclude_form: str
+        self, skrivemaater: list[dict[str, Any]], exclude_form: str
     ) -> dict[str, list[str]]:
         """Extract alternative name forms grouped by language."""
         alternatives: dict[str, list[str]] = {}
@@ -282,7 +283,7 @@ class KartverketConnector(BaseConnector):
 
     def count(self, bbox: BoundingBox | None = None, country: str | None = None) -> int | None:
         """Get estimated record count from the API metadata."""
-        params: dict[str, str | int] = {"treffPerSide": 1, "side": 1}
+        params: dict[str, str | int | float] = {"treffPerSide": 1, "side": 1}
 
         if bbox:
             params["nord"] = bbox.max_lat
@@ -295,7 +296,8 @@ class KartverketConnector(BaseConnector):
             response = self._client.get(self._SEARCH_URL, params=params)
             response.raise_for_status()
             data = response.json()
-            return data.get("metadata", {}).get("totaltAntallTreff")
+            result: int | None = data.get("metadata", {}).get("totaltAntallTreff")
+            return result
         except (httpx.HTTPError, KeyError):
             return None
 

@@ -9,6 +9,7 @@ from __future__ import annotations
 import logging
 import time
 from collections.abc import Iterator
+from typing import Any
 
 import httpx
 
@@ -82,7 +83,7 @@ class OSMConnector(BaseConnector):
 
         return errors
 
-    def _execute_overpass(self, query: str) -> list[dict]:
+    def _execute_overpass(self, query: str) -> list[dict[str, Any]]:
         """Execute Overpass API query."""
         try:
             response = httpx.post(
@@ -93,7 +94,7 @@ class OSMConnector(BaseConnector):
             )
             response.raise_for_status()
             data = response.json()
-            return data.get("elements", [])
+            return list(data.get("elements", []))
         except httpx.HTTPStatusError as e:
             if e.response.status_code == 429:
                 logger.warning("Rate limited by Overpass API, waiting 60s...")
@@ -105,7 +106,7 @@ class OSMConnector(BaseConnector):
             logger.error(f"Overpass query failed: {e}")
             return []
 
-    def _parse_element(self, element: dict) -> ConnectorResult | None:
+    def _parse_element(self, element: dict[str, Any]) -> ConnectorResult | None:
         """Parse an OSM element into a ConnectorResult."""
         tags = element.get("tags", {})
         name = tags.get("name", "")
