@@ -1,4 +1,4 @@
-.PHONY: help install test lint format db-create db-migrate db-reset clean
+.PHONY: help install test lint format db-create db-migrate db-reset clean docker-up docker-down docker-logs
 
 PYTHON := uv run python
 PYTEST := uv run pytest
@@ -34,9 +34,21 @@ typecheck: ## Run type checker
 
 # Database commands
 DB_NAME ?= toponymia
-DB_USER ?= $(USER)
+DB_USER ?= toponymia
 DB_HOST ?= localhost
 DB_PORT ?= 5432
+
+docker-up: ## Start PostgreSQL + PostGIS via Docker
+	docker compose up -d
+	@echo "Waiting for database to be ready..."
+	@until docker compose exec db pg_isready -U toponymia > /dev/null 2>&1; do sleep 1; done
+	@echo "Database ready at localhost:$(DB_PORT)"
+
+docker-down: ## Stop Docker containers
+	docker compose down
+
+docker-logs: ## View database container logs
+	docker compose logs -f db
 
 db-create: ## Create database with PostGIS
 	createdb -h $(DB_HOST) -p $(DB_PORT) -U $(DB_USER) $(DB_NAME) || true
