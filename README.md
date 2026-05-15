@@ -9,19 +9,22 @@
 
 ---
 
-## Current Status (v0.4.0)
+## Current Status (v0.5.0)
 
 | Metric | Value |
 |--------|-------|
 | **Databank records** | 3,018 (5 Nordic countries, 2 sources) |
+| **Gold-standard kernel** | 8 verified records with full etymologies |
 | **Data sources** | GeoNames (2,507 records), Kartverket SSR (504 records) |
-| **Language modules** | 201 (covering all European languages, ancient/extinct, and adjacent civilizations) |
+| **Language modules** | 199 auto-discovered (covering all European languages + ancient/extinct) |
 | **Statistical tests** | 12 families (spatial, correspondence, astronomical, religious, temporal, migration, robustness, Bayesian, sensory, Ripley's K, name change rate, catastrophe) |
-| **Tests passing** | 820+ |
+| **Tests passing** | 4,000+ (incl. 3,184 parametrized module tests) |
 | **Type safety** | mypy strict, 0 errors |
 | **CI pipeline** | Lint + format + mypy + tests (3.12/3.13) + ontology + databank validation |
 
 **Key capabilities:**
+- Language module auto-discovery registry with 199 modules
+- Gold-standard kernel with validated etymologies and morphological segmentation
 - Cross-source deduplication pipeline (phonetic blocking + H3 spatial verification)
 - Diachronic attestation linking (historical → modern name chains)
 - H3 hierarchical spatial indexing (R7/R9/R11) for efficient geospatial queries
@@ -30,7 +33,8 @@
 - SHA-256 integrity signing with MANIFEST verification
 - Full CLI: ingest, analyze, test, databank, lemma commands
 - Bayesian etymology framework with hypothesis sets and evidence updating
-- 201 language modules spanning 7,000+ years of European linguistic history
+- JSONL archival snapshots attached to releases with checksums
+- 199 language modules spanning 7,000+ years of European linguistic history
 
 **Language coverage (201 modules):**
 

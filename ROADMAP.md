@@ -4,7 +4,7 @@ This roadmap tracks the project's development from initial framework to producti
 
 **Legend:** ✅ Done | 🔄 In Progress | ⬚ Not Started
 
-**Current status:** 820+ tests passing, 0 warnings, CI green (lint + mypy strict + test py3.12/3.13 + ontology + databank validation). 3018 records (5 Nordic countries × 2 sources). 201 language modules. End-to-end: `toponymia analyze element nes --country NO` runs databank → segmentation → statistical test → results.
+**Current status:** 4,000+ tests passing, 0 warnings, CI green (lint + mypy strict + test py3.12/3.13 + ontology + databank validation). 3018 records (5 Nordic countries × 2 sources). 199 language modules with auto-discovery registry. Gold-standard kernel (8 records). End-to-end: `toponymia analyze element nes --country NO` runs databank → segmentation → statistical test → results.
 
 ---
 
@@ -327,7 +327,7 @@ The litmus test (May 2025) proved the pipeline works mechanically. Data populati
 **Milestone 11.4.3 COMPLETE** — Phonetic index field on all records.
 **Issues #10–13 closed** — mypy fixed, Danish/Swedish modules added, data populated.
 
-**Status: 820+ tests passing, mypy strict clean, 3018 databank records, 201 language modules.**
+**Status: 4,000+ tests passing (incl. 3,184 parametrized module tests), mypy strict clean, 3018 databank records, 199 language modules with auto-discovery registry, 8 gold-standard kernel records.**
 
 ### Immediate priorities (current sprint)
 
@@ -336,6 +336,10 @@ The litmus test (May 2025) proved the pipeline works mechanically. Data populati
 3. ~~**Milestone 11.5.1–11.5.3** — Bayesian etymology framework~~ ✅
 4. ~~**Milestone 11.5.4** — Bayesian comparison test~~ ✅
 5. ~~**Milestone 3.2, 3.4** — Language contact and political renaming tests~~ ✅
+6. ~~**Issue #40** — Language module auto-discovery registry~~ ✅
+7. ~~**Issue #39** — Parametrized interface tests for all modules~~ ✅
+8. ~~**Issue #31** — JSONL archival snapshots attached to releases~~ ✅
+9. ~~**Issue #34** — Gold-standard kernel with validation tooling~~ ✅
 
 ### Next phase
 
