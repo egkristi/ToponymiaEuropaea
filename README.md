@@ -16,14 +16,14 @@
 | **Databank records** | 3,018 (5 Nordic countries, 2 sources) |
 | **Gold-standard kernel** | 8 verified records with full etymologies |
 | **Data sources** | GeoNames (2,507 records), Kartverket SSR (504 records) |
-| **Language modules** | 199 auto-discovered (covering all European languages + ancient/extinct) |
+| **Language modules** | 201 auto-discovered (covering all European languages + ancient/extinct) |
 | **Statistical tests** | 12 families (spatial, correspondence, astronomical, religious, temporal, migration, robustness, Bayesian, sensory, Ripley's K, name change rate, catastrophe) |
 | **Tests passing** | 4,000+ (incl. 3,184 parametrized module tests) |
 | **Type safety** | mypy strict, 0 errors |
 | **CI pipeline** | Lint + format + mypy + tests (3.12/3.13) + ontology + databank validation |
 
 **Key capabilities:**
-- Language module auto-discovery registry with 199 modules
+- Language module auto-discovery registry with 201 modules
 - Gold-standard kernel with validated etymologies and morphological segmentation
 - Cross-source deduplication pipeline (phonetic blocking + H3 spatial verification)
 - Diachronic attestation linking (historical → modern name chains)
@@ -34,7 +34,7 @@
 - Full CLI: ingest, analyze, test, databank, lemma commands
 - Bayesian etymology framework with hypothesis sets and evidence updating
 - JSONL archival snapshots attached to releases with checksums
-- 199 language modules spanning 7,000+ years of European linguistic history
+- 201 language modules spanning 7,000+ years of European linguistic history
 - Phonetic algorithm evaluation benchmark (decision: custom normalizer outperforms BMPM for Nordic toponyms)
 - **Parquet/DuckDB analytical layer** — SQL queries over databank without loading into memory
 - **Docker Compose 3-layer stack** — PostgreSQL+PostGIS, API service, seed pipeline
@@ -52,16 +52,16 @@
 | **Romance** | Latin, Portuguese, Galician, Spanish, Catalan, Occitan, French, Italian, Romanian, Sardinian, Corsican, Aragonese, Asturian, Mirandese, Friulian, Ladin, Romansh, Aromanian, Dalmatian, Mozarabic, Old Provencal, Ladino |
 | **Slavic** | Old Slavic, Russian, Ukrainian, Belarusian, Polish, Czech, Slovak, Serbian, Croatian, Slovenian, Bulgarian, Macedonian, Upper/Lower Sorbian, Kashubian, Old East Slavic, Polabian |
 | **Baltic** | Lithuanian, Latvian, Old Prussian, Curonian, Semigallian, Selonian, Galindian, Sudovian, Proto-Balto-Slavic |
-| **Uralic/Finnic** | Finnish, Northern Sami, South/Lule/Pite/Ume/Skolt/Kildin Sami, Estonian, Hungarian, Karelian, Veps, Livonian, Voro, Erzya, Moksha, Mari, Udmurt, Komi |
-| **Turkic** | Turkish, Azerbaijani, Gagauz, Crimean Tatar, Chuvash, Uzbek, Kazakh, Turkmen |
+| **Uralic/Finnic** | Finnish, Northern Sami, South/Lule/Pite/Ume/Skolt/Kildin/Ter/Inari Sami, Estonian, Hungarian, Karelian, Veps, Livonian, Voro, Kven, Erzya, Moksha, Mari, Udmurt, Komi, Proto-Uralic |
+| **Turkic** | Turkish, Azerbaijani, Gagauz, Crimean Tatar, Tatar, Chuvash, Uzbek, Kazakh, Turkmen, Cuman-Kipchak, Pecheneg, Khazar, Volga Bulgar |
 | **Ancient/Pre-Roman** | Etruscan, Iberian, Tartessian, Rhaetian, Ancient Ligurian, Lusitanian, Basque |
 | **Italic** | Oscan, Umbrian, Faliscan, Proto-Italic |
 | **Greek/Anatolian** | Ancient Greek, Mycenaean, Modern Greek, Hittite, Luwian, Lydian, Lycian, Phrygian |
 | **Paleo-Balkan** | Thracian, Dacian, Illyrian, Messapian, Venetic |
-| **Caucasian** | Georgian, Armenian, Abkhaz, Adyghe, Chechen, Avar, Lezgian, Svan, Laz, Urartian |
+| **Caucasian** | Georgian, Armenian, Abkhaz, Adyghe, Chechen, Avar (Caucasian), Lezgian, Svan, Laz, Urartian |
 | **Semitic/Near East** | Arabic/Moorish, Hebrew, Aramaic, Phoenician, Punic, Ugaritic, Akkadian, Sumerian |
-| **Iranian** | Ossetian, Kurdish, Old Persian, Sogdian, Bactrian, Khwarezmian, Parthian, Avestan, Proto-Indo-Iranian |
-| **Other** | Maltese, Romani, Hunnic, Pecheneg, Crimean Gothic, Langobardic, Burgundian, Vandalic, Hurrian, Elamite, and more |
+| **Iranian** | Ossetian, Kurdish, Old Persian, Persian, Sogdian, Bactrian, Khwarezmian, Parthian, Avestan, Scythian-Sarmatian, Proto-Indo-Iranian |
+| **Other** | Maltese, Romani, Mongolian, Hunnic, Crimean Gothic, Langobardic, Burgundian, Vandalic, Hurrian, Elamite, Kalaallisut, and more |
 
 ---
 
@@ -956,7 +956,7 @@ toponymia-europaea/
 │       │   ├── spatial.py            # H3 hierarchical spatial indexing
 │       │   ├── validate.py           # Schema validation
 │       │   └── ...
-│       ├── languages/                # Language-specific modules (201 modules)
+│       ├── languages/                # Language-specific modules (201 auto-discovered)
 │       │   ├── __init__.py
 │       │   ├── base.py              # BaseLanguageModule interface
 │       │   ├── old_norse.py         # 120+ elements, compound analysis
@@ -978,12 +978,19 @@ toponymia-europaea/
 │       │   ├── migration.py         # Migration overfrequency test
 │       │   ├── robustness.py
 │       │   └── null_models.py
-│       └── perspectives/             # Perspective-specific analysis
+│       └── perspectives/             # Perspective-specific analysis (10 implementations)
 │           ├── __init__.py
 │           ├── base.py              # BasePerspective interface
-│           ├── linguistics.py
-│           ├── geography.py
-│           └── ecology.py
+│           ├── terrain.py           # Terrain correspondence (DEM features)
+│           ├── hydrological.py      # River/lake/fjord proximity
+│           ├── archaeological.py    # Correlation with known sites
+│           ├── religious.py         # Theophoric element distribution
+│           ├── astronomical.py      # Solstice/equinox alignment
+│           ├── colour.py            # Spectral/landscape colour correlation
+│           ├── acoustic.py          # Sound environment correlation
+│           ├── mortality.py         # Hazard map correlation
+│           ├── migration.py         # Origin tracing by name distribution
+│           └── economic.py          # Trade route correlation
 ├── databank/                         # Git-native JSONL persistence (source of truth)
 │   ├── schema/
 │   │   └── place.v1.json            # JSON Schema for place records

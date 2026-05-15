@@ -363,7 +363,7 @@ The litmus test (May 2025) proved the pipeline works mechanically. Data populati
 
 8. **Milestone 4.2–4.4** — Nordic/UK registry connectors
 9. **Milestone 6.1–6.2** — API and basic visualization
-10. **Milestone 5.1–5.4** — First perspective implementations
+10. ~~**Milestone 5.1–5.10** — All 10 perspective implementations~~ ✅
 11. **Milestones 7–8** — Infrastructure and community
 
 ---
@@ -375,6 +375,6 @@ The litmus test (May 2025) proved the pipeline works mechanically. Data populati
 - **v0.3.0** — 3018 records (5 Nordic countries, 2 sources), 14 language modules, H3 spatial indexing, phonetic dedup, diachronic linking, Bayesian etymology framework + comparison test, language contact/political renaming tests, Ripley's K spatial + name change rate + sacred geometry + catastrophe clustering + sensory correspondence tests, Kartverket + Lantmäteriet + MML + OS + IGN connectors. 707 tests, mypy strict clean.
 - **v0.4.0** — 201 language modules (all European, ancient/extinct, and adjacent civilizations), 820+ tests, full CI pipeline, comprehensive linguistic coverage from Proto-Indo-European to modern minority languages.
 - **v0.5.0** (current) — Full 3-layer persistence (JSONL+Postgres+Parquet), sync pipeline, Wikidata etymology extraction, Docker Compose stack, coordinate resolution, license matrix. 4000+ tests.
-- **v0.6.0** — API and visualization layer, 6+ perspective modules
+- **v0.6.0** — API and visualization layer, all 10 perspective modules implemented
 - **v0.7.0** — Full Bayesian updating, publication-ready research outputs
 - **v1.0.0** — First publishable research result produced using the framework
