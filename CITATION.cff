@@ -5,11 +5,11 @@ title: "Toponymia Europaea: An Open Research Framework for Place Name Analysis"
 authors:
   - family-names: Kristiansen
     given-names: Erling
-version: 0.1.0
-date-released: 2025-05-14
+version: 0.5.0
+date-released: 2026-05-15
 url: "https://github.com/egkristi/ToponymiaEuropaea"
 repository-code: "https://github.com/egkristi/ToponymiaEuropaea"
-license: MIT
+license: CC-BY-NC-SA-4.0
 keywords:
   - toponymy
   - place-names

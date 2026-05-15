@@ -4,7 +4,7 @@ This roadmap tracks the project's development from initial framework to producti
 
 **Legend:** ✅ Done | 🔄 In Progress | ⬚ Not Started
 
-**Current status:** 4,000+ tests passing, 0 warnings, CI green (lint + mypy strict + test py3.12/3.13 + ontology + databank validation). 3018 records (5 Nordic countries × 2 sources). 199 language modules with auto-discovery registry. Gold-standard kernel (8 records). End-to-end: `toponymia analyze element nes --country NO` runs databank → segmentation → statistical test → results.
+**Current status:** 4,000+ tests passing, 0 warnings, CI green (lint + mypy strict + test py3.12/3.13 + ontology + databank validation). 3,018 records (5 Nordic countries × 2 sources). 201 language modules with auto-discovery registry. 10 perspective modules. Gold-standard kernel (8 records). Full 3-layer persistence (JSONL → PostgreSQL → Parquet). End-to-end: `toponymia analyze element nes --country NO` runs databank → segmentation → statistical test → results.
 
 ---
 
@@ -327,7 +327,7 @@ The litmus test (May 2025) proved the pipeline works mechanically. Data populati
 **Milestone 11.4.3 COMPLETE** — Phonetic index field on all records.
 **Issues #10–13 closed** — mypy fixed, Danish/Swedish modules added, data populated.
 
-**Status: 4,000+ tests passing (incl. 3,184 parametrized module tests), mypy strict clean, 3018 databank records, 199 language modules with auto-discovery registry, 8 gold-standard kernel records.**
+**Status: 4,000+ tests passing (incl. 3,184 parametrized module tests), mypy strict clean, 3,018 databank records, 201 language modules with auto-discovery registry, 10 perspective modules, 8 gold-standard kernel records.**
 
 **Milestone 11.2 COMPLETE** — Full 3-layer persistence: JSONL kernel, PostgreSQL+PostGIS, Parquet/DuckDB, sync pipeline with checksums.
 **Milestone 11.6 (4/5) COMPLETE** — Coordinate resolution, license matrix, ODbL compliance. Only GDPR analysis remains.
@@ -356,15 +356,15 @@ The litmus test (May 2025) proved the pipeline works mechanically. Data populati
 ### Next phase
 
 1. **Milestone 10.5/10.7** — Historical sources (Norske Gaardnavne, Diplomatarium Norvegicum)
-2. **Milestone 2.8–2.11** — Additional language modules (Old Slavic, Basque, OHG, Arabic)
-3. **Milestone 10.8–10.9** — Seed data for UK/Ireland and Iberia
+2. **Milestone 10.8–10.9** — Seed data for UK/Ireland and Iberia
+3. **Milestone 10.10** — Historical attestation curation workflow
 
 ### Later
 
-8. **Milestone 4.2–4.4** — Nordic/UK registry connectors
-9. **Milestone 6.1–6.2** — API and basic visualization
+8. ~~**Milestone 4.2–4.4** — Nordic/UK registry connectors~~ ✅
+9. ~~**Milestone 6.1–6.2** — API and basic visualization~~ ✅
 10. ~~**Milestone 5.1–5.10** — All 10 perspective implementations~~ ✅
-11. **Milestones 7–8** — Infrastructure and community
+11. **Milestones 7–8** — Infrastructure and community (partial: #3, #35–38 remain)
 
 ---
 

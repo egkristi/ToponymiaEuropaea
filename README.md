@@ -929,57 +929,71 @@ toponymia-europaea/
 ├── src/
 │   └── toponymia/
 │       ├── __init__.py
-│       ├── cli.py                    # Command-line interface (info, ingest, analyze, test, data, quality, databank, lemma)
+│       ├── cli.py                    # CLI: info, ingest, analyze, test, databank, lemma
 │       ├── config.py                 # Configuration management
-│       ├── connectors/               # Data source plugins
-│       │   ├── __init__.py
+│       ├── api.py                    # Standalone DuckDB-backed API (Docker)
+│       ├── seed.py                   # JSONL → PostgreSQL + Parquet seeder
+│       ├── paper.py                  # Research paper LaTeX generator
+│       ├── api/                      # FastAPI application
+│       │   └── app.py               # REST endpoints (/places, /search, /stats)
+│       ├── connectors/               # Data source plugins (14 connectors)
 │       │   ├── base.py               # BaseConnector interface
-│       │   ├── geonames.py
-│       │   ├── kartverket.py         # Norwegian SSR connector (api.kartverket.no)
-│       │   ├── wikidata.py
-│       │   └── osm.py
+│       │   ├── geonames.py           # GeoNames gazetteer
+│       │   ├── kartverket.py         # Norwegian SSR (api.kartverket.no)
+│       │   ├── lantmateriet.py       # Swedish Lantmäteriet (Ortnamn)
+│       │   ├── maanmittauslaitos.py  # Finnish MML (Paikannimet)
+│       │   ├── ordnance_survey.py    # UK Ordnance Survey (OS Names)
+│       │   ├── ign.py               # French IGN (BD TOPO)
+│       │   ├── wikidata.py          # Wikidata SPARQL
+│       │   ├── osm.py              # OpenStreetMap Overpass
+│       │   ├── diplomatarium.py     # Medieval charter databases
+│       │   ├── rundata.py           # Scandinavian runic inscriptions
+│       │   ├── dem.py               # DEM/terrain data (SRTM/Copernicus)
+│       │   ├── climate.py           # Historical climate (CRU, PAGES2k)
+│       │   └── historical_map_ocr.py # OCR from scanned historical maps
 │       ├── core/                     # Core domain model
-│       │   ├── __init__.py
-│       │   ├── models.py             # Pydantic models
 │       │   ├── database.py           # Database connection
-│       │   ├── onboarding.py         # Data promotion/demotion workflow
-│       │   └── repository.py         # Data access layer
-│       ├── pipelines/                # Analysis pipeline stages
-│       │   ├── __init__.py
-│       │   ├── normalize.py
-│       │   ├── segment.py            # Segmentation pipeline
+│       │   └── onboarding.py         # Data promotion/demotion workflow
+│       ├── pipelines/                # Analysis and data pipeline stages (18 modules)
+│       │   ├── normalize.py          # Unicode NFC, substitutions, ASCII fallback
+│       │   ├── segment.py            # Morphological segmentation
 │       │   ├── analyze.py            # Databank → analysis bridge
-│       │   ├── databank.py           # Databank signing, verification, sorting
+│       │   ├── databank.py           # Signing, verification, sorting
 │       │   ├── integrity.py          # SHA-256 integrity and MANIFEST
-│       │   ├── lemma.py              # Name lemma registry and detection
-│       │   ├── phonetic.py           # Nordic phonetic normalizer (cross-source dedup)
-│       │   ├── spatial.py            # H3 hierarchical spatial indexing
 │       │   ├── validate.py           # Schema validation
-│       │   └── ...
+│       │   ├── lemma.py              # Name lemma registry and detection
+│       │   ├── phonetic.py           # Nordic phonetic normalizer
+│       │   ├── dedup.py              # Cross-source deduplication
+│       │   ├── diachronic.py         # Historical attestation linking
+│       │   ├── spatial.py            # H3 hierarchical spatial indexing
+│       │   ├── bayesian.py           # Bayesian hypothesis updating
+│       │   ├── kernel.py             # Gold-standard kernel management
+│       │   ├── analytical.py         # Parquet/DuckDB export and queries
+│       │   ├── sync.py              # JSONL → Postgres → Parquet sync
+│       │   ├── coordinates.py        # Multi-source coordinate resolution
+│       │   └── etymology.py          # Wikidata P138 etymology extraction
 │       ├── languages/                # Language-specific modules (201 auto-discovered)
-│       │   ├── __init__.py
 │       │   ├── base.py              # BaseLanguageModule interface
-│       │   ├── old_norse.py         # 120+ elements, compound analysis
-│       │   ├── proto_germanic.py    # Proto-Germanic + Old English
-│       │   ├── northern_sami.py     # Northern Sámi (sme)
-│       │   ├── finnish.py           # Finnish (suomi), vowel harmony
-│       │   ├── danish.py            # Danish (dan)
-│       │   ├── swedish.py           # Swedish (swe)
-│       │   ├── ...                  # + 193 more: all European, ancient, Caucasian,
+│       │   ├── old_norse.py         # Reference implementation (120+ elements)
+│       │   ├── ...                  # 199 more: all European, ancient, Caucasian,
 │       │   └── ...                  #   Near Eastern, and Central Asian languages
-│       ├── statistics/               # Statistical testing framework
-│       │   ├── __init__.py
+│       ├── statistics/               # Statistical testing framework (15 modules)
 │       │   ├── base.py              # BaseTest, PlaceData, StatFamily, StatStatus
-│       │   ├── correspondence.py
-│       │   ├── spatial.py
+│       │   ├── correspondence.py    # Permutation-based correspondence
+│       │   ├── spatial.py           # Nearest-neighbour spatial clustering
 │       │   ├── astronomical.py      # Rayleigh alignment test
-│       │   ├── religious.py         # Religious stratigraphy test
-│       │   ├── temporal.py          # Temporal layer consistency test
-│       │   ├── migration.py         # Migration overfrequency test
-│       │   ├── robustness.py
-│       │   └── null_models.py
-│       └── perspectives/             # Perspective-specific analysis (10 implementations)
-│           ├── __init__.py
+│       │   ├── religious.py         # Religious stratigraphy proximity
+│       │   ├── temporal.py          # Temporal layer consistency
+│       │   ├── migration.py         # Migration overfrequency
+│       │   ├── language_contact.py  # kNN segregation boundary detection
+│       │   ├── political_renaming.py # Temporal clustering detection
+│       │   ├── bayesian.py          # Bayesian etymology comparison
+│       │   ├── ripleys_k.py         # Multi-scale spatial L(r)-r function
+│       │   ├── name_change_rate.py  # Poisson rate ratio test
+│       │   ├── sacred_geometry.py   # Ley-line hypothesis test
+│       │   ├── catastrophe_clustering.py # Disaster names vs. hazard maps
+│       │   └── sensory_correspondence.py # Sound environment correlation
+│       └── perspectives/             # Perspective analysis (10 implementations)
 │           ├── base.py              # BasePerspective interface
 │           ├── terrain.py           # Terrain correspondence (DEM features)
 │           ├── hydrological.py      # River/lake/fjord proximity
@@ -992,47 +1006,70 @@ toponymia-europaea/
 │           ├── migration.py         # Origin tracing by name distribution
 │           └── economic.py          # Trade route correlation
 ├── databank/                         # Git-native JSONL persistence (source of truth)
+│   ├── MANIFEST.sha256              # Integrity checksums for all data files
+│   ├── sources.jsonl                # Source metadata registry
 │   ├── schema/
 │   │   └── place.v1.json            # JSON Schema for place records
-│   └── places/
+│   ├── kernel/                      # Gold-standard verified records
+│   │   ├── gold.jsonl               # 8 manually verified etymologies
+│   │   └── criteria.json            # Validation criteria
+│   └── places/                      # 3,018 records across 5 countries
 │       ├── DK/geonames.jsonl        # 500 Danish records
 │       ├── FI/geonames.jsonl        # 500 Finnish records
 │       ├── IS/geonames.jsonl        # 500 Icelandic records
 │       ├── NO/geonames.jsonl        # 500 Norwegian (GeoNames) records
-│       ├── NO/kartverket.jsonl      # 500 Norwegian (Kartverket SSR) records
+│       ├── NO/kartverket.jsonl      # 504 Norwegian (Kartverket SSR) records
 │       └── SE/geonames.jsonl        # 500 Swedish records
-├── migrations/                       # Database migrations (Alembic, optional)
+├── docker/                           # Container build files
+│   ├── Dockerfile.api               # API service container
+│   ├── Dockerfile.seed              # Seed/migration container
+│   └── initdb/
+│       └── 02-schema.sql            # PostgreSQL+PostGIS operational schema
+├── docker-compose.yml                # Full 3-layer dev stack (db + api + seed)
+├── Dockerfile                        # Main application container
+├── migrations/                       # Database migrations (Alembic)
 │   ├── env.py
 │   └── versions/
-│       ├── 001_initial_schema.py
-│       └── 002_add_onboarding_and_enriched_fields.py
 ├── config/
 │   ├── settings.example.toml
-│   └── ontology/                    # Versioned ontology definitions
+│   └── ontology/
 │       └── v1.0.0/
-│           ├── name_types.skos.ttl
+│           ├── name_types.skos.ttl  # SKOS name type hierarchy
 │           └── perspectives.skos.ttl
-├── tests/                            # 820+ tests, mypy strict clean
+├── web/                              # Static web frontend
+│   ├── index.html                   # Public browse interface
+│   ├── map.html                     # Interactive map (Leaflet/MapLibre)
+│   └── dashboard.html               # Statistical results dashboard
+├── benchmarks/
+│   └── phonetic_evaluation.py       # BMPM vs Nordic normalizer benchmark
+├── templates/
+│   └── paper.tex                    # Research paper LaTeX template
+├── tests/                            # 4,000+ tests, mypy strict clean
 │   ├── conftest.py
+│   ├── test_api/                    # API endpoint tests
 │   ├── test_cli/                    # CLI command tests
-│   ├── test_connectors/             # Connector tests (incl. Kartverket)
-│   ├── test_pipelines/              # Pipeline tests (spatial, phonetic, lemma, databank)
-│   ├── test_statistics/
-│   └── test_languages/
+│   ├── test_connectors/             # Connector tests (13 test files)
+│   ├── test_core/                   # Core domain tests
+│   ├── test_languages/              # Language module tests (3,184 parametrized)
+│   ├── test_perspectives/           # Perspective module tests
+│   ├── test_pipelines/              # Pipeline tests (17 test files)
+│   └── test_statistics/             # Statistical test validation (13 test files)
 ├── docs/
-│   ├── methodology.md
-│   ├── data_model.md
-│   ├── adding_a_language.md
-│   ├── adding_a_source.md
-│   ├── adding_a_perspective.md
-│   ├── statistical_tests.md
-│   └── ethics.md
-├── pyproject.toml
+│   ├── methodology.md              # Research methodology
+│   ├── adding_a_language.md        # Guide: new language modules
+│   ├── adding_a_source.md          # Guide: new data connectors
+│   ├── ethics.md                   # Ethical considerations
+│   ├── backup_strategy.md          # Database backup strategy
+│   ├── LICENSING.md                # License compatibility matrix
+│   └── decisions/                   # Architecture Decision Records
+│       ├── 002-phonetic-matching.md
+│       └── 003-coordinate-resolution.md
+├── pyproject.toml                    # Project config (UV, dependencies, extras)
+├── Makefile                          # Common dev commands
 ├── ROADMAP.md
-├── Makefile
 ├── CONTRIBUTING.md
 ├── CITATION.cff
-├── LICENSE
+├── LICENSE                           # CC BY-NC-SA 4.0
 └── README.md
 ```
 
