@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Toponymia Europaea — Place Detail</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+          crossorigin="">
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+            crossorigin=""></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: #f5f6fa;
+            color: #2c3e50;
+            line-height: 1.6;
+        }
+        header {
+            background: #1a1a2e;
+            color: #eee;
+            padding: 16px 24px;
+        }
+        header h1 { font-size: 1.2rem; font-weight: 600; margin-bottom: 4px; }
+        header p { font-size: 0.8rem; color: #aaa; }
+        nav {
+            background: #16213e;
+            padding: 10px 24px;
+            display: flex;
+            gap: 16px;
+        }
+        nav a {
+            color: #ccc;
+            text-decoration: none;
+            font-size: 0.85rem;
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+        nav a:hover { color: #fff; background: #0f3460; }
+        .loading { text-align: center; padding: 60px; color: #888; font-size: 1.1rem; }
+        .error { text-align: center; padding: 60px; color: #c0392b; }
+        .place-header {
+            background: #fff;
+            padding: 24px 32px;
+            border-bottom: 1px solid #eee;
+        }
+        .place-header h1 {
+            font-size: 1.8rem;
+            color: #1a1a2e;
+            margin-bottom: 4px;
+        }
+        .place-header .normalized {
+            font-size: 1rem;
+            color: #666;
+            font-style: italic;
+        }
+        .place-header .badges {
+            margin-top: 8px;
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .badge-country { background: #eaf2f8; color: #2980b9; }
+        .badge-type { background: #eafaf1; color: #27ae60; }
+        .badge-lang { background: #fdf2e9; color: #e67e22; }
+        .badge-current { background: #d4edda; color: #155724; }
+        .badge-historical { background: #f8d7da; color: #721c24; }
+        .badge-point { background: #e8eaf6; color: #3f51b5; }
+        .badge-area { background: #fff3e0; color: #e65100; }
+        .badge-line { background: #e0f7fa; color: #00695c; }
+        .badge-warning { background: #fff3cd; color: #856404; }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            padding: 24px 32px;
+            max-width: 1400px;
+        }
+        @media (max-width: 900px) {
+            .content-grid { grid-template-columns: 1fr; }
+        }
+        .card {
+            background: #fff;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        .card h3 {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #888;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .card.full-width {
+            grid-column: 1 / -1;
+        }
+        .field-table {
+            width: 100%;
+        }
+        .field-table tr td {
+            padding: 6px 0;
+            font-size: 0.85rem;
+            border-bottom: 1px solid #f8f8f8;
+            vertical-align: top;
+        }
+        .field-table tr td:first-child {
+            font-weight: 600;
+            color: #555;
+            width: 160px;
+            padding-right: 16px;
+        }
+        .field-table tr:last-child td { border-bottom: none; }
+        .alt-names-list {
+            list-style: none;
+            padding: 0;
+        }
+        .alt-names-list li {
+            display: inline-block;
+            margin: 2px 4px 2px 0;
+            padding: 3px 8px;
+            background: #f0f2f5;
+            border-radius: 3px;
+            font-size: 0.82rem;
+        }
+        .alt-names-list .lang-label {
+            font-weight: 600;
+            color: #555;
+            font-size: 0.75rem;
+            display: block;
+            margin-top: 8px;
+            margin-bottom: 4px;
+        }
+        #detail-map {
+            height: 300px;
+            border-radius: 6px;
+            z-index: 1;
+        }
+        .raw-json {
+            background: #1a1a2e;
+            color: #e0e0e0;
+            padding: 16px;
+            border-radius: 6px;
+            font-family: "SF Mono", "Fira Code", monospace;
+            font-size: 0.78rem;
+            overflow-x: auto;
+            max-height: 400px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+        .geometry-info {
+            font-size: 0.85rem;
+            color: #666;
+        }
+        .geometry-info .status-defined { color: #27ae60; }
+        .geometry-info .status-pending { color: #e67e22; }
+        .geometry-info .status-point { color: #3498db; }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Toponymia Europaea</h1>
+        <p>Place Name Detail</p>
+    </header>
+    <nav>
+        <a href="index.html">Browse</a>
+        <a href="map.html">Map</a>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="docs.html">Docs</a>
+    </nav>
+
+    <div id="content">
+        <div class="loading" id="loading">Loading place data...</div>
+    </div>
+
+    <script>
+        const PLACE_TYPE_LABELS = {
+            'P.PPL': 'Populated place', 'P.PPLX': 'Section of populated place',
+            'P.PPLL': 'Populated locality', 'P.PPLA': 'Admin center',
+            'P.PPLA2': 'Admin center (2nd)', 'P.PPLC': 'Capital',
+            'H.LK': 'Lake', 'H.LKS': 'Lakes', 'H.STM': 'Stream/River',
+            'H.STMX': 'River section', 'H.STMA': 'Anabranch',
+            'H.STMD': 'Distributary', 'H.STMH': 'Headwaters',
+            'H.STMM': 'River mouth', 'H.STMB': 'Bend',
+            'H.RF': 'Reef', 'H.SHOL': 'Shoal', 'H.BAY': 'Bay',
+            'H.COVE': 'Cove', 'H.FJD': 'Fjord', 'H.INLT': 'Inlet',
+            'H.HBR': 'Harbor', 'H.FLLS': 'Waterfall', 'H.BOG': 'Bog',
+            'H.SWMP': 'Swamp', 'H.MRSH': 'Marsh', 'H.MOOR': 'Moor',
+            'H.PND': 'Pond', 'H.RPDS': 'Rapids', 'H.GLCR': 'Glacier',
+            'H.CNL': 'Canal', 'H.BGHT': 'Bight', 'H.STRT': 'Strait',
+            'H.RVN': 'Ravine', 'H.SD': 'Sound', 'H.LGN': 'Lagoon',
+            'H.NRWS': 'Narrows', 'H.BNK': 'Bank', 'H.CHNM': 'Channel',
+            'T.ISL': 'Island', 'T.ISLS': 'Islands', 'T.ISLX': 'Island section',
+            'T.ISLET': 'Islet', 'T.ISLT': 'Islet',
+            'T.MT': 'Mountain', 'T.MTS': 'Mountains', 'T.PK': 'Peak',
+            'T.PT': 'Point', 'T.HLL': 'Hill', 'T.HLLS': 'Hills',
+            'T.RK': 'Rock', 'T.RKS': 'Rocks', 'T.RDGE': 'Ridge',
+            'T.PEN': 'Peninsula', 'T.PENX': 'Peninsula section',
+            'T.VAL': 'Valley', 'T.CLF': 'Cliff', 'T.CAPE': 'Cape',
+            'T.HDLD': 'Headland', 'T.SLP': 'Slope', 'T.PASS': 'Pass',
+            'T.PROM': 'Promontory', 'T.GRGE': 'Gorge', 'T.LAVA': 'Lava field',
+            'T.SDL': 'Saddle', 'T.UPLD': 'Upland', 'T.MRN': 'Moraine',
+            'T.SAND': 'Sandy area', 'T.SHOR': 'Shore', 'T.PLAT': 'Plateau',
+            'T.SPIT': 'Spit', 'T.PLDR': 'Polder', 'T.INTF': 'Interfluve',
+            'S.FRM': 'Farm', 'S.EST': 'Estate', 'S.HSE': 'House',
+            'S.CH': 'Church', 'S.FRMQ': 'Abandoned farm', 'S.HUT': 'Hut',
+            'S.AIRF': 'Airfield', 'S.FT': 'Fort', 'S.RUIN': 'Ruin',
+            'S.MN': 'Mine', 'S.RSTN': 'Railroad station',
+            'V.FRST': 'Forest', 'V.HTH': 'Heath', 'V.MDW': 'Meadow',
+            'V.GROVE': 'Grove',
+            'L.GRAZ': 'Grazing area', 'L.FLD': 'Field', 'L.LCTY': 'Locality',
+            'A.ADM2': 'Admin division (2nd)', 'A.ADMD': 'Admin division',
+        };
+
+        // Geometry type classification based on feature type
+        const GEOMETRY_CLASSES = {
+            point: ['P.PPL', 'P.PPLX', 'P.PPLL', 'P.PPLA', 'P.PPLA2', 'P.PPLC', 'P.PPLQ',
+                    'T.PK', 'T.PT', 'T.RK', 'T.PASS', 'T.SDL',
+                    'S.FRM', 'S.EST', 'S.HSE', 'S.CH', 'S.FRMQ', 'S.HUT', 'S.FT',
+                    'S.RUIN', 'S.MN', 'S.RSTN', 'S.AIRF', 'S.RSRT', 'S.LDNG',
+                    'S.TOWR', 'S.MSTY', 'S.RSTP',
+                    'H.FLLS', 'H.RPDS', 'H.HBR', 'H.STMM', 'H.STMH',
+                    'H.PND', 'H.NRWS',
+                    'Fyrlykt', 'Fyrstasjon', 'Enebolig/mindre boligbygg', 'Gard',
+                    'Bruk', 'Navnegard', 'Seter/støl', 'Tettsted', 'Foss'],
+            line: ['H.STM', 'H.STMX', 'H.STMA', 'H.STMD', 'H.STMB',
+                   'H.CNL', 'H.CHNM',
+                   'T.RDGE', 'T.CLF', 'T.SHOR', 'T.SPIT',
+                   'Elv', 'Vegstrekning', 'Banestrekning'],
+            area: ['H.LK', 'H.LKS', 'H.BAY', 'H.COVE', 'H.FJD', 'H.INLT',
+                   'H.BOG', 'H.SWMP', 'H.MRSH', 'H.MOOR', 'H.BGHT',
+                   'H.GLCR', 'H.RF', 'H.SHOL', 'H.STRT', 'H.SD', 'H.LGN',
+                   'H.BNK', 'H.LBED', 'H.CAPG', 'H.RVN',
+                   'T.ISL', 'T.ISLS', 'T.ISLX', 'T.ISLET', 'T.ISLT',
+                   'T.MT', 'T.MTS', 'T.HLL', 'T.HLLS', 'T.RKS',
+                   'T.PEN', 'T.PENX', 'T.VAL', 'T.CAPE', 'T.HDLD',
+                   'T.SLP', 'T.PROM', 'T.GRGE', 'T.LAVA', 'T.UPLD',
+                   'T.MRN', 'T.SAND', 'T.PLAT', 'T.PLDR', 'T.INTF',
+                   'V.FRST', 'V.HTH', 'V.MDW', 'V.GROVE',
+                   'L.GRAZ', 'L.FLD', 'L.LCTY',
+                   'A.ADM2', 'A.ADMD',
+                   'Myr', 'Dal', 'Vann', 'Vik i sjø', 'Sund i sjø',
+                   'Fjord', 'Øy i sjø', 'Holme i sjø', 'Nes', 'Nes i sjø',
+                   'Halvøy i sjø', 'Øy', 'Dalføre', 'Verneområde',
+                   'Skogområde', 'Friluftsområde', 'Gruppe av vann',
+                   'Holmegruppe i sjø', 'Administrativ bydel', 'Bydel',
+                   'Kommune', 'Fylke', 'Nasjon', 'By', 'Tettbebyggelse',
+                   'Bygdelag (bygd)', 'Eiendom', 'Annen kulturdetalj'],
+        };
+
+        function getGeometryClass(placeType) {
+            if (!placeType) return 'unknown';
+            for (const [cls, types] of Object.entries(GEOMETRY_CLASSES)) {
+                if (types.includes(placeType)) return cls;
+            }
+            return 'unknown';
+        }
+
+        function escHtml(str) {
+            if (!str) return '';
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+
+        function getPlaceTypeLabel(code) {
+            return PLACE_TYPE_LABELS[code] || code || 'Unknown';
+        }
+
+        async function loadPlace() {
+            const params = new URLSearchParams(window.location.search);
+            const placeId = params.get('id');
+            if (!placeId) {
+                showError('No place ID specified. Use ?id=<sha256> in the URL.');
+                return;
+            }
+
+            try {
+                const resp = await fetch('./data/places_full.json');
+                if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+                const allPlaces = await resp.json();
+                const place = allPlaces.find(p => p.id === placeId);
+                if (!place) {
+                    showError(`Place not found: ${escHtml(placeId.substring(0, 16))}...`);
+                    return;
+                }
+                renderPlace(place);
+            } catch (err) {
+                showError(`Error loading data: ${err.message}`);
+            }
+        }
+
+        function showError(msg) {
+            document.getElementById('content').innerHTML =
+                `<div class="error">${msg}<br><a href="index.html">← Back to Browse</a></div>`;
+        }
+
+        function renderPlace(place) {
+            const geoClass = getGeometryClass(place.place_type);
+            const hasGeometry = place.geometry && place.geometry.type;
+            const geomStatus = hasGeometry ? 'defined' :
+                               (geoClass === 'point' ? 'point' : 'pending');
+
+            let html = `<div class="place-header">`;
+            html += `<h1>${escHtml(place.name_form)}</h1>`;
+            if (place.name_normalized && place.name_normalized !== place.name_form) {
+                html += `<div class="normalized">${escHtml(place.name_normalized)}</div>`;
+            }
+            html += `<div class="badges">`;
+            if (place.country_code) html += `<span class="badge badge-country">${escHtml(place.country_code)}</span>`;
+            if (place.place_type) html += `<span class="badge badge-type">${escHtml(getPlaceTypeLabel(place.place_type))}</span>`;
+            if (place.language_code) html += `<span class="badge badge-lang">${escHtml(place.language_code)}</span>`;
+            if (place.is_current === true) html += `<span class="badge badge-current">Current</span>`;
+            else if (place.is_current === false) html += `<span class="badge badge-historical">Historical</span>`;
+            // Geometry class badge
+            if (geoClass === 'point') html += `<span class="badge badge-point">Point Feature</span>`;
+            else if (geoClass === 'line') html += `<span class="badge badge-line">Linear Feature</span>`;
+            else if (geoClass === 'area') html += `<span class="badge badge-area">Area Feature</span>`;
+            // Geometry status
+            if (geomStatus === 'pending') html += `<span class="badge badge-warning">⚠ Geometry Pending</span>`;
+            else if (geomStatus === 'defined') html += `<span class="badge badge-current">Geometry Defined</span>`;
+            html += `</div></div>`;
+
+            html += `<div class="content-grid">`;
+
+            // --- Core Information ---
+            html += `<div class="card"><h3>Core Information</h3><table class="field-table">`;
+            html += row('Name Form', place.name_form);
+            html += row('Normalized', place.name_normalized);
+            html += row('Country', place.country_code);
+            html += row('Place Type', `${getPlaceTypeLabel(place.place_type)} (${place.place_type || '?'})`);
+            html += row('Language', place.language_code);
+            html += row('Current', place.is_current === true ? 'Yes' : place.is_current === false ? 'No' : '—');
+            html += `</table></div>`;
+
+            // --- Location & Coordinates ---
+            html += `<div class="card"><h3>Location</h3>`;
+            html += `<table class="field-table">`;
+            html += row('Latitude', place.latitude?.toFixed(6));
+            html += row('Longitude', place.longitude?.toFixed(6));
+            if (place.elevation != null) html += row('Elevation', `${place.elevation} m`);
+            html += row('Geometry Class', geoClass === 'point' ? 'Spot location (point)' :
+                        geoClass === 'line' ? 'Linear feature (polyline)' :
+                        geoClass === 'area' ? 'Area feature (polygon)' : 'Unclassified');
+            if (hasGeometry) {
+                html += row('Geometry Type', place.geometry.type);
+                if (place.geometry.coordinates) {
+                    const coordCount = JSON.stringify(place.geometry.coordinates).split(',').length / 2;
+                    html += row('Vertices', Math.round(coordCount).toLocaleString());
+                }
+            } else if (geoClass !== 'point') {
+                html += row('Geometry', '<span style="color:#e67e22">⚠ Not yet defined — needs outline acquisition</span>');
+            }
+            html += `</table>`;
+            if (place.latitude != null && place.longitude != null) {
+                html += `<div id="detail-map" style="margin-top: 12px;"></div>`;
+            }
+            html += `</div>`;
+
+            // --- Source & Provenance ---
+            html += `<div class="card"><h3>Source & Provenance</h3><table class="field-table">`;
+            html += row('Source Dataset', place.source_dataset);
+            html += row('Source ID', place.source_id);
+            html += row('Source License', place.source_license);
+            if (place.source_url) {
+                html += row('Source URL', `<a href="${escHtml(place.source_url)}" target="_blank" rel="noopener">${escHtml(place.source_url)}</a>`);
+            }
+            html += row('Record SHA-256', `<code style="font-size:0.72rem;word-break:break-all;">${escHtml(place.id)}</code>`);
+            html += `</table></div>`;
+
+            // --- Internal / Computed ---
+            html += `<div class="card"><h3>Computed Fields</h3><table class="field-table">`;
+            if (place._phonetic_key) html += row('Phonetic Key', place._phonetic_key);
+            if (place._h3_r7) html += row('H3 (r7)', place._h3_r7);
+            if (place._h3_r9) html += row('H3 (r9)', place._h3_r9);
+            if (place._h3_r11) html += row('H3 (r11)', place._h3_r11);
+            html += `</table></div>`;
+
+            // --- Alternative Names (full width) ---
+            if (place.alternative_names && Object.keys(place.alternative_names).length > 0) {
+                html += `<div class="card full-width"><h3>Alternative Names</h3>`;
+                html += `<ul class="alt-names-list">`;
+                for (const [lang, names] of Object.entries(place.alternative_names)) {
+                    html += `<li class="lang-label">${escHtml(lang === 'und' ? 'Undetermined / Multiple' : lang)}</li>`;
+                    for (const name of names) {
+                        html += `<li>${escHtml(name)}</li>`;
+                    }
+                }
+                html += `</ul></div>`;
+            }
+
+            // --- Geometry (if present, full width) ---
+            if (hasGeometry) {
+                html += `<div class="card full-width"><h3>Geometry (GeoJSON)</h3>`;
+                html += `<div class="raw-json">${escHtml(JSON.stringify(place.geometry, null, 2))}</div>`;
+                html += `</div>`;
+            }
+
+            // --- Raw JSON (full width, collapsed) ---
+            html += `<div class="card full-width"><h3>Full Record (JSON)</h3>`;
+            html += `<div class="raw-json">${escHtml(JSON.stringify(place, null, 2))}</div>`;
+            html += `</div>`;
+
+            html += `</div>`; // end content-grid
+
+            document.getElementById('content').innerHTML = html;
+            document.title = `${place.name_form} — Toponymia Europaea`;
+
+            // Initialize map
+            if (place.latitude != null && place.longitude != null) {
+                setTimeout(() => initMap(place), 50);
+            }
+        }
+
+        function row(label, value) {
+            return `<tr><td>${escHtml(label)}</td><td>${value ?? '—'}</td></tr>`;
+        }
+
+        function initMap(place) {
+            const mapEl = document.getElementById('detail-map');
+            if (!mapEl) return;
+
+            const map = L.map('detail-map').setView([place.latitude, place.longitude], 12);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors',
+                maxZoom: 18,
+            }).addTo(map);
+
+            // If geometry exists, draw it
+            if (place.geometry && place.geometry.type) {
+                const geojson = {
+                    type: 'Feature',
+                    geometry: place.geometry,
+                    properties: { name: place.name_form },
+                };
+                const layer = L.geoJSON(geojson, {
+                    style: { color: '#e74c3c', weight: 3, fillOpacity: 0.15 },
+                }).addTo(map);
+                map.fitBounds(layer.getBounds(), { padding: [30, 30] });
+            } else {
+                // Just a marker at the point
+                L.marker([place.latitude, place.longitude]).addTo(map)
+                    .bindPopup(`<strong>${escHtml(place.name_form)}</strong>`)
+                    .openPopup();
+            }
+        }
+
+        loadPlace();
+    </script>
+</body>
+</html>

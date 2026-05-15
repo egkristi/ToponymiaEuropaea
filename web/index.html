@@ -210,7 +210,7 @@
 
             body.innerHTML = page.map(p => `
                 <tr>
-                    <td><strong>${escHtml(p.name_form)}</strong></td>
+                    <td><strong><a href="place.html?id=${encodeURIComponent(p.id || '')}" style="color:#1a1a2e;text-decoration:none;border-bottom:1px dashed #aaa;">${escHtml(p.name_form)}</a></strong></td>
                     <td>${escHtml(p.name_normalized || '')}</td>
                     <td><span class="badge badge-country">${escHtml(p.country_code || '')}</span></td>
                     <td><span class="badge badge-type">${escHtml(p.place_type || '')}</span></td>

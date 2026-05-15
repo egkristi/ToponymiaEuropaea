@@ -370,6 +370,7 @@ The litmus test (May 2025) proved the pipeline works mechanically. Data populati
 11. **Milestones 7–8** — Infrastructure and community (partial: #3, #35–38 remain)
 12. **Milestone 15** — Research output pipeline (preregistration → publication)
 13. **Milestone 16** — Linked Data & academic interoperability
+14. **Milestone 17** — Geometry & spatial extent (outline acquisition for 1,898 area/line features)
 
 ---
 
@@ -451,6 +452,49 @@ From raw statistical results to publishable academic output.
 | 15.5 | **LaTeX paper pipeline** | ⬚ | MEDIUM | Extend templates/paper.tex. Results → tables/figures → compiled PDF. |
 | 15.6 | **First research paper: Norse cult-site distribution** | ⬚ | **HIGH** | Demonstrate framework on testable question: Do *hov-/vé-/hǫrgr-* names cluster at specific landscape features? Target: NORNA/ICOS proceedings. |
 | 15.7 | **Negative results documentation** | ⬚ | MEDIUM | Publish null results (e.g., "ley lines show no significant alignment"). Equally valuable. |
+
+---
+
+## Milestone 17 — Geometry & Spatial Extent
+
+Place names often refer to features with spatial extent: rivers (polylines), lakes/islands (polygons), mountain ranges (polygons), valleys (polygons), administrative regions (polygons). This milestone adds outline geometry to the databank so features can be rendered with their actual shape rather than just a centroid point.
+
+### 17.1 — Schema & Classification (✅ DONE)
+
+| # | Item | Status | Notes |
+|---|------|--------|-------|
+| 17.1.1 | **Geometry type classification** | ✅ | All 3018 records classified: 1120 point, 209 line, 1689 area |
+| 17.1.2 | **Schema support for GeoJSON geometry** | ✅ | `geometry` field (GeoJSON Geometry object), `_geometry_class`, `_geometry_status` |
+| 17.1.3 | **Classification pipeline** | ✅ | `geometry_classify.py` — automatic classification from place_type |
+| 17.1.4 | **Detail page with geometry rendering** | ✅ | `place.html` shows geometry on Leaflet map when present |
+
+### 17.2 — Geometry Acquisition
+
+| # | Item | Status | Priority | Notes |
+|---|------|--------|----------|-------|
+| 17.2.1 | **OSM geometry fetcher** | ⬚ | **HIGH** | Query Overpass API for matching features by name+type+bbox. Extract way/relation geometry as GeoJSON. |
+| 17.2.2 | **Wikidata geometry fetcher** | ⬚ | MEDIUM | Use P625 (coordinate) + P3896 (geoshape) properties. Good coverage for lakes, islands, countries. |
+| 17.2.3 | **National mapping authority geometry** | ⬚ | MEDIUM | Kartverket N50 (NO), Lantmäteriet (SE): official outlines for rivers, lakes, coastlines. |
+| 17.2.4 | **Geometry simplification** | ⬚ | MEDIUM | Douglas-Peucker or Visvalingam simplification for storage efficiency. Target: <50 vertices for display. |
+| 17.2.5 | **Geometry validation** | ⬚ | HIGH | Ensure valid GeoJSON (closed rings, right-hand rule, no self-intersections). Shapely-based validator. |
+| 17.2.6 | **Manual geometry upload** | ⬚ | LOW | JSONL patch format for contributor-submitted geometries from GIS tools (QGIS export). |
+
+### 17.3 — Integration & Display
+
+| # | Item | Status | Priority | Notes |
+|---|------|--------|----------|-------|
+| 17.3.1 | **Map page: render outlines** | ⬚ | HIGH | Show polygon/polyline geometry on the interactive map instead of just markers. |
+| 17.3.2 | **Spatial queries with geometry** | ⬚ | MEDIUM | "Within" queries: find all places within a river's watershed, island's boundary, etc. |
+| 17.3.3 | **Area calculation** | ⬚ | LOW | Compute and store area (km²) for polygon features, length (km) for linear features. |
+| 17.3.4 | **Geometry coverage dashboard** | ⬚ | LOW | Track percentage of pending geometries resolved over time. |
+
+### Current Status
+
+- **1,120** records are spot locations (point) — no geometry needed
+- **209** records are linear features — need polyline geometry
+- **1,689** records are area features — need polygon geometry
+- **1,898 total** records flagged as "geometry pending" (⚠)
+- **0** records have defined geometry (acquisition not yet started)
 
 ---
 

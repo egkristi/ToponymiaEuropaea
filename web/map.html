@@ -401,6 +401,7 @@
         let allPlaces = [];
         let currentFeatures = [];
         let markerMap = new Map(); // index -> marker
+        let geometryLayer = null; // currently displayed geometry overlay
 
         // --- Helpers ---
         function getMarkerColor(placeType) {
@@ -455,6 +456,7 @@
                     html += `</div>`;
                 }
             }
+            html += `<div style="margin-top:8px;"><a href="place.html?id=${encodeURIComponent(props.id || '')}" style="color:#3498db;font-size:0.78rem;">View full details →</a></div>`;
             html += `</div>`;
             return html;
         }
@@ -515,6 +517,11 @@
         function plotOnMap(places) {
             clusterGroup.clearLayers();
             markerMap.clear();
+            // Clear any geometry overlay from previous selection
+            if (geometryLayer) {
+                map.removeLayer(geometryLayer);
+                geometryLayer = null;
+            }
 
             places.forEach((place, idx) => {
                 if (place.latitude == null || place.longitude == null) return;
@@ -529,6 +536,28 @@
                 });
                 const coords = [place.longitude, place.latitude];
                 marker.bindPopup(getPopupContent(place, coords));
+                // Show geometry overlay on marker click
+                marker.on('click', () => {
+                    if (geometryLayer) {
+                        map.removeLayer(geometryLayer);
+                        geometryLayer = null;
+                    }
+                    if (place.geometry && place.geometry.type) {
+                        geometryLayer = L.geoJSON({
+                            type: 'Feature',
+                            geometry: place.geometry,
+                            properties: { name: place.name_form },
+                        }, {
+                            style: {
+                                color: '#e74c3c',
+                                weight: 3,
+                                opacity: 0.8,
+                                fillColor: '#e74c3c',
+                                fillOpacity: 0.15,
+                            },
+                        }).addTo(map);
+                    }
+                });
                 clusterGroup.addLayer(marker);
                 markerMap.set(idx, marker);
             });
@@ -561,9 +590,9 @@
                 const coords = (place.latitude != null && place.longitude != null)
                     ? `${place.latitude.toFixed(4)}, ${place.longitude.toFixed(4)}` : '';
                 return `<div class="result-item" data-idx="${idx}">
-                    <div class="name">${escapeHtml(place.name_form)}${normalized}</div>
+                    <div class="name"><a href="place.html?id=${encodeURIComponent(place.id || '')}" style="color:inherit;text-decoration:none;" title="View details">${escapeHtml(place.name_form)}</a>${normalized}</div>
                     <div class="meta">${escapeHtml(meta)}</div>
-                    <div class="coords">${coords}</div>
+                    <div class="coords">${coords} <a href="place.html?id=${encodeURIComponent(place.id || '')}" style="color:#3498db;font-size:0.7rem;margin-left:8px;">details</a></div>
                 </div>`;
             }).join('');
 
@@ -583,8 +612,34 @@
             const place = currentFeatures[idx];
             if (!place || place.latitude == null || place.longitude == null) return;
 
+            // Clear any previous geometry overlay
+            if (geometryLayer) {
+                map.removeLayer(geometryLayer);
+                geometryLayer = null;
+            }
+
             const latlng = [place.latitude, place.longitude];
-            map.flyTo(latlng, 14, { duration: 1.2 });
+
+            // If place has geometry, draw it and fit bounds
+            if (place.geometry && place.geometry.type) {
+                const geojson = {
+                    type: 'Feature',
+                    geometry: place.geometry,
+                    properties: { name: place.name_form },
+                };
+                geometryLayer = L.geoJSON(geojson, {
+                    style: {
+                        color: '#e74c3c',
+                        weight: 3,
+                        opacity: 0.8,
+                        fillColor: '#e74c3c',
+                        fillOpacity: 0.15,
+                    },
+                }).addTo(map);
+                map.fitBounds(geometryLayer.getBounds(), { padding: [40, 40], maxZoom: 14 });
+            } else {
+                map.flyTo(latlng, 14, { duration: 1.2 });
+            }
 
             // Open popup on the marker
             const marker = markerMap.get(idx);

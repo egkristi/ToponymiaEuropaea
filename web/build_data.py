@@ -23,15 +23,21 @@ PLACE_FIELDS = [
     "source_url",
     "alternative_names",
     "is_current",
+    "geometry",
 ]
 
 
-def load_places() -> list[dict]:
-    """Load all place records from the databank JSONL files."""
+def load_places() -> tuple[list[dict], list[dict]]:
+    """Load all place records from the databank JSONL files.
+
+    Returns (lightweight_places, full_places) where lightweight contains
+    only display fields + id, and full contains all fields.
+    """
     places = []
+    places_full = []
     places_dir = DATABANK_DIR / "places"
     if not places_dir.exists():
-        return places
+        return places, places_full
 
     for country_dir in sorted(places_dir.iterdir()):
         if not country_dir.is_dir():
@@ -47,12 +53,21 @@ def load_places() -> list[dict]:
                     # Add country_code from directory structure if not present
                     if "country_code" not in record:
                         record["country_code"] = country_code
-                    # Keep only display-relevant fields
-                    place = {
-                        k: record[k] for k in PLACE_FIELDS if k in record
-                    }
+                    # Use _sha256 as stable unique ID
+                    place_id = record.get("_sha256", "")
+                    # Keep only display-relevant fields + id
+                    place = {"id": place_id}
+                    place.update(
+                        {k: record[k] for k in PLACE_FIELDS if k in record}
+                    )
                     places.append(place)
-    return places
+                    # Full record with all fields (rename _sha256 to id)
+                    full = {"id": place_id}
+                    full.update(
+                        {k: v for k, v in record.items() if k != "_sha256"}
+                    )
+                    places_full.append(full)
+    return places, places_full
 
 
 def load_sources() -> list[dict]:
@@ -98,7 +113,7 @@ def main():
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
     print("Loading places...")
-    places = load_places()
+    places, places_full = load_places()
     print(f"  {len(places)} records loaded")
 
     print("Loading sources...")
@@ -114,6 +129,13 @@ def main():
         json.dump(places, f, ensure_ascii=False, separators=(",", ":"))
     size_kb = places_path.stat().st_size / 1024
     print(f"  {places_path} ({size_kb:.0f} KB)")
+
+    # Write places_full.json (all fields for detail page)
+    places_full_path = OUTPUT_DIR / "places_full.json"
+    with places_full_path.open("w") as f:
+        json.dump(places_full, f, ensure_ascii=False, separators=(",", ":"))
+    size_kb_full = places_full_path.stat().st_size / 1024
+    print(f"  {places_full_path} ({size_kb_full:.0f} KB)")
 
     # Write stats.json
     stats_path = OUTPUT_DIR / "stats.json"
