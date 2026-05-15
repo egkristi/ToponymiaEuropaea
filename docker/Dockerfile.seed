@@ -1,0 +1,16 @@
+FROM python:3.12-slim
+
+WORKDIR /app
+
+# Install uv for fast dependency resolution
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
+
+# Copy project files
+COPY pyproject.toml uv.lock ./
+COPY src/ ./src/
+
+# Install dependencies (include dev deps for duckdb/pyarrow)
+RUN uv sync --frozen
+
+# Run seed script
+CMD ["uv", "run", "python", "-m", "toponymia.seed"]
