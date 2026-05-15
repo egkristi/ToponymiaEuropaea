@@ -65,6 +65,76 @@
             font-size: 0.9rem;
         }
         .search-bar button:hover { background: #16213e; }
+        .filters-panel {
+            padding: 12px 24px;
+            background: #fff;
+            border-bottom: 1px solid #eee;
+            display: none;
+            flex-wrap: wrap;
+            gap: 16px;
+            align-items: flex-end;
+        }
+        .filters-panel.open { display: flex; }
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .filter-group label {
+            font-size: 0.72rem;
+            font-weight: 600;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+        .filter-group select,
+        .filter-group input {
+            padding: 8px 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 0.85rem;
+            min-width: 130px;
+        }
+        .filter-group input[type="number"] { width: 90px; min-width: unset; }
+        .elevation-inputs { display: flex; gap: 6px; align-items: center; }
+        .elevation-inputs span { font-size: 0.8rem; color: #888; }
+        .toggle-filters {
+            padding: 6px 14px;
+            background: transparent;
+            color: #555;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+        .toggle-filters:hover { background: #f0f0f0; }
+        .active-filters {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            padding: 0 24px 10px;
+        }
+        .filter-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 3px 8px;
+            background: #eaf2f8;
+            color: #2980b9;
+            border-radius: 3px;
+            font-size: 0.72rem;
+            font-weight: 500;
+        }
+        .filter-tag button {
+            background: none;
+            border: none;
+            color: #2980b9;
+            cursor: pointer;
+            font-size: 0.85rem;
+            padding: 0 2px;
+            line-height: 1;
+        }
+        .filter-tag button:hover { color: #c0392b; }
         .results {
             padding: 20px 24px;
         }
@@ -144,7 +214,63 @@
             <option value="IS">Iceland</option>
         </select>
         <button id="search-btn">Search</button>
+        <button class="toggle-filters" id="toggle-filters-btn">Filters ▾</button>
     </div>
+    <div class="filters-panel" id="filters-panel">
+        <div class="filter-group">
+            <label>Source</label>
+            <select id="source-select">
+                <option value="">All sources</option>
+                <option value="geonames">GeoNames</option>
+                <option value="kartverket">Kartverket (SSR)</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label>Language</label>
+            <select id="language-select">
+                <option value="">All languages</option>
+                <option value="und">Undetermined</option>
+                <option value="nor">Norwegian</option>
+                <option value="fkv">Kven Finnish</option>
+                <option value="sma">Southern Sámi</option>
+                <option value="sme">Northern Sámi</option>
+                <option value="smj">Lule Sámi</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label>Feature category</label>
+            <select id="type-category-select">
+                <option value="">All categories</option>
+                <option value="settlement">Settlements</option>
+                <option value="water">Water features</option>
+                <option value="terrain">Terrain / landforms</option>
+                <option value="transport">Transport</option>
+                <option value="admin">Administrative</option>
+                <option value="vegetation">Vegetation</option>
+                <option value="other">Other</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label>Elevation (m)</label>
+            <div class="elevation-inputs">
+                <input type="number" id="elev-min" placeholder="Min" step="50">
+                <span>–</span>
+                <input type="number" id="elev-max" placeholder="Max" step="50">
+            </div>
+        </div>
+        <div class="filter-group">
+            <label>Sort by</label>
+            <select id="sort-select">
+                <option value="name">Name (A–Z)</option>
+                <option value="name-desc">Name (Z–A)</option>
+                <option value="elev-asc">Elevation ↑</option>
+                <option value="elev-desc">Elevation ↓</option>
+                <option value="lat-north">Latitude (N→S)</option>
+                <option value="lat-south">Latitude (S→N)</option>
+            </select>
+        </div>
+    </div>
+    <div class="active-filters" id="active-filters"></div>
     <div class="results">
         <div class="results-info" id="results-info">Loading...</div>
         <table>
@@ -171,6 +297,70 @@
         let filtered = [];
         let currentOffset = 0;
 
+        // Feature type classification
+        const TYPE_CATEGORIES = {
+            settlement: [
+                'S.FRM', 'S.HTL', 'S.HSE', 'S.HSEC', 'S.HUT', 'S.EST', 'S.ESTX', 'S.RSTN',
+                'S.AIRP', 'S.CH', 'S.CSTL', 'S.CMTY', 'S.LTHSE', 'S.MKT', 'S.SCH', 'S.UNIV',
+                'P.PPL', 'P.PPLA', 'P.PPLA2', 'P.PPLA3', 'P.PPLC', 'P.PPLX',
+                'Gard', 'Bruk', 'By', 'Bydel', 'Bygdelag (bygd)', 'Eiendom',
+                'Enebolig/mindre boligbygg', 'Administrativ bydel', 'Tettbebyggelse/tettsted',
+                'Tettsted', 'Grend', 'Kirkested', 'Kirke', 'Nedlagt bruk/plass'
+            ],
+            water: [
+                'H.BAY', 'H.BGHT', 'H.BNK', 'H.BOG', 'H.CAPG', 'H.CHNM', 'H.CNL',
+                'H.COVE', 'H.FLLS', 'H.FJD', 'H.FISH', 'H.GULF', 'H.HBR', 'H.INLT',
+                'H.LK', 'H.LKI', 'H.LKN', 'H.LKO', 'H.LKS', 'H.LKSB', 'H.MRSH',
+                'H.OCN', 'H.RCH', 'H.RF', 'H.RSV', 'H.SD', 'H.SEA', 'H.STM',
+                'H.STMA', 'H.STMD', 'H.STMI', 'H.STMM', 'H.STMS', 'H.SWMP',
+                'Elv', 'Fjord', 'Foss', 'Gruppe av vann', 'Innsjø/vann', 'Sjø/hav',
+                'Vik/bukt', 'Bekk', 'Kanal', 'Myr', 'Sund', 'Tjern/pytt', 'Brønn/kilde'
+            ],
+            terrain: [
+                'T.BCH', 'T.CAPE', 'T.CLF', 'T.CNYN', 'T.DSRT', 'T.DUNE', 'T.GRGE',
+                'T.HLL', 'T.HLLS', 'T.ISL', 'T.ISLS', 'T.MT', 'T.MTS', 'T.PASS',
+                'T.PEN', 'T.PLN', 'T.PT', 'T.RDG', 'T.RK', 'T.SLP', 'T.VLC', 'T.VAL',
+                'Dal', 'Dalføre', 'Fjell/fjellområde', 'Halvøy/nes', 'Holme/skjær',
+                'Marka', 'Strand', 'Øy', 'Ås/høyde', 'Bre', 'Vidde', 'Skog'
+            ],
+            transport: [
+                'S.RSTN', 'S.AIRP', 'S.FY', 'S.PIER',
+                'Banestrekning', 'Fyrlykt', 'Fyrstasjon', 'Vei'
+            ],
+            admin: [
+                'A.ADM1', 'A.ADM2', 'A.ADM3', 'A.ADMD', 'A.PCL',
+                'Fylke', 'Kommune', 'Grunnkrets', 'Sogn'
+            ],
+            vegetation: [
+                'V.FRST', 'V.HTH', 'V.MDW', 'V.SCRB',
+                'Friluftsområde', 'Skog', 'Naturreservat'
+            ]
+        };
+
+        function getTypeCategory(placeType) {
+            if (!placeType) return 'other';
+            for (const [cat, types] of Object.entries(TYPE_CATEGORIES)) {
+                if (types.some(t => placeType === t || placeType.startsWith(t.split('.')[0] + '.'))) {
+                    return cat;
+                }
+            }
+            // Fallback: check GeoNames prefix
+            if (placeType.startsWith('S.')) return 'settlement';
+            if (placeType.startsWith('H.')) return 'water';
+            if (placeType.startsWith('T.')) return 'terrain';
+            if (placeType.startsWith('A.')) return 'admin';
+            if (placeType.startsWith('V.')) return 'vegetation';
+            if (placeType.startsWith('R.')) return 'transport';
+            return 'other';
+        }
+
+        function getSource(place) {
+            const url = place.source_url || '';
+            if (url.includes('geonames')) return 'geonames';
+            if (url.includes('kartverket')) return 'kartverket';
+            return '';
+        }
+
         async function init() {
             const info = document.getElementById('results-info');
             info.textContent = 'Loading data...';
@@ -181,22 +371,87 @@
                 filtered = allPlaces;
                 info.textContent = `${allPlaces.length.toLocaleString()} places loaded`;
                 renderTable();
+                populateLanguageFilter();
             } catch (err) {
                 info.textContent = `Error loading data: ${err.message}`;
             }
         }
 
+        function populateLanguageFilter() {
+            const langs = {};
+            for (const p of allPlaces) {
+                const lc = p.language_code || '';
+                if (lc) langs[lc] = (langs[lc] || 0) + 1;
+            }
+            const sel = document.getElementById('language-select');
+            // Keep existing options (static), they cover known codes
+        }
+
         function applyFilters() {
             const name = document.getElementById('search-input').value.trim().toLowerCase();
             const country = document.getElementById('country-select').value;
+            const source = document.getElementById('source-select').value;
+            const language = document.getElementById('language-select').value;
+            const typeCategory = document.getElementById('type-category-select').value;
+            const elevMin = document.getElementById('elev-min').value;
+            const elevMax = document.getElementById('elev-max').value;
+            const sortBy = document.getElementById('sort-select').value;
+
             filtered = allPlaces.filter(p => {
                 if (name && !(p.name_form || '').toLowerCase().includes(name) &&
                     !(p.name_normalized || '').toLowerCase().includes(name)) return false;
                 if (country && p.country_code !== country) return false;
+                if (source && getSource(p) !== source) return false;
+                if (language && p.language_code !== language) return false;
+                if (typeCategory && getTypeCategory(p.place_type) !== typeCategory) return false;
+                if (elevMin !== '' && (p.elevation === undefined || p.elevation === -9999.0 || p.elevation < Number(elevMin))) return false;
+                if (elevMax !== '' && (p.elevation === undefined || p.elevation === -9999.0 || p.elevation > Number(elevMax))) return false;
                 return true;
             });
+
+            // Sort
+            filtered.sort((a, b) => {
+                switch (sortBy) {
+                    case 'name': return (a.name_normalized || a.name_form || '').localeCompare(b.name_normalized || b.name_form || '');
+                    case 'name-desc': return (b.name_normalized || b.name_form || '').localeCompare(a.name_normalized || a.name_form || '');
+                    case 'elev-asc': return ((a.elevation === -9999 ? -Infinity : a.elevation) || -Infinity) - ((b.elevation === -9999 ? -Infinity : b.elevation) || -Infinity);
+                    case 'elev-desc': return ((b.elevation === -9999 ? -Infinity : b.elevation) || -Infinity) - ((a.elevation === -9999 ? -Infinity : a.elevation) || -Infinity);
+                    case 'lat-north': return (b.latitude || 0) - (a.latitude || 0);
+                    case 'lat-south': return (a.latitude || 0) - (b.latitude || 0);
+                    default: return 0;
+                }
+            });
+
             currentOffset = 0;
             renderTable();
+            renderActiveFilters();
+        }
+
+        function renderActiveFilters() {
+            const container = document.getElementById('active-filters');
+            const tags = [];
+            const country = document.getElementById('country-select');
+            const source = document.getElementById('source-select');
+            const language = document.getElementById('language-select');
+            const typeCategory = document.getElementById('type-category-select');
+            const elevMin = document.getElementById('elev-min').value;
+            const elevMax = document.getElementById('elev-max').value;
+            const name = document.getElementById('search-input').value.trim();
+
+            if (name) tags.push({label: `Name: "${name}"`, clear: () => { document.getElementById('search-input').value = ''; applyFilters(); }});
+            if (country.value) tags.push({label: country.options[country.selectedIndex].text, clear: () => { country.value = ''; applyFilters(); }});
+            if (source.value) tags.push({label: source.options[source.selectedIndex].text, clear: () => { source.value = ''; applyFilters(); }});
+            if (language.value) tags.push({label: language.options[language.selectedIndex].text, clear: () => { language.value = ''; applyFilters(); }});
+            if (typeCategory.value) tags.push({label: typeCategory.options[typeCategory.selectedIndex].text, clear: () => { typeCategory.value = ''; applyFilters(); }});
+            if (elevMin) tags.push({label: `Elev ≥ ${elevMin}m`, clear: () => { document.getElementById('elev-min').value = ''; applyFilters(); }});
+            if (elevMax) tags.push({label: `Elev ≤ ${elevMax}m`, clear: () => { document.getElementById('elev-max').value = ''; applyFilters(); }});
+
+            container.innerHTML = tags.map((t, i) =>
+                `<span class="filter-tag">${escHtml(t.label)}<button data-idx="${i}">&times;</button></span>`
+            ).join('');
+            container.querySelectorAll('button').forEach(btn => {
+                btn.addEventListener('click', () => tags[Number(btn.dataset.idx)].clear());
+            });
         }
 
         function renderTable() {
@@ -217,7 +472,7 @@
                     <td>${escHtml(p.language_code || '')}</td>
                     <td>${p.latitude?.toFixed(4) ?? ''}</td>
                     <td>${p.longitude?.toFixed(4) ?? ''}</td>
-                    <td>${escHtml(p.source_id || '')}</td>
+                    <td>${escHtml(getSource(p) || '')}</td>
                 </tr>
             `).join('');
 
@@ -255,8 +510,21 @@
 
         document.getElementById('search-btn').addEventListener('click', applyFilters);
         document.getElementById('country-select').addEventListener('change', applyFilters);
+        document.getElementById('source-select').addEventListener('change', applyFilters);
+        document.getElementById('language-select').addEventListener('change', applyFilters);
+        document.getElementById('type-category-select').addEventListener('change', applyFilters);
+        document.getElementById('sort-select').addEventListener('change', applyFilters);
+        document.getElementById('elev-min').addEventListener('change', applyFilters);
+        document.getElementById('elev-max').addEventListener('change', applyFilters);
         document.getElementById('search-input').addEventListener('keypress', (e) => {
             if (e.key === 'Enter') applyFilters();
+        });
+
+        document.getElementById('toggle-filters-btn').addEventListener('click', () => {
+            const panel = document.getElementById('filters-panel');
+            const btn = document.getElementById('toggle-filters-btn');
+            panel.classList.toggle('open');
+            btn.textContent = panel.classList.contains('open') ? 'Filters ▴' : 'Filters ▾';
         });
 
         init();
