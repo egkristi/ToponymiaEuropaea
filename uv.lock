@@ -3086,6 +3086,8 @@ warehouse = [
 [package.dev-dependencies]
 dev = [
     { name = "abydos" },
+    { name = "duckdb" },
+    { name = "pyarrow" },
 ]
 
 [package.metadata]
@@ -3129,7 +3131,11 @@ requires-dist = [
 provides-extras = ["geospatial", "nlp", "warehouse", "bayesian", "ml", "api", "dev", "docs"]
 
 [package.metadata.requires-dev]
-dev = [{ name = "abydos", specifier = ">=0.5.0" }]
+dev = [
+    { name = "abydos", specifier = ">=0.5.0" },
+    { name = "duckdb", specifier = ">=1.5.2" },
+    { name = "pyarrow", specifier = ">=24.0.0" },
+]
 
 [[package]]
 name = "torch"
