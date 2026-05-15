@@ -445,7 +445,8 @@
             if (props.country_code) html += `<span>${escapeHtml(props.country_code)}</span>`;
             if (props.language_code) html += `<span>Lang: ${escapeHtml(props.language_code)}</span>`;
             if (props.source_id) html += `<span>Src: ${escapeHtml(props.source_id)}</span>`;
-            if (props.elevation) html += `<span>${props.elevation}m</span>`;
+            if (props.elevation) html += `<span>↑ ${props.elevation} m</span>`;
+            if (props._depth_m) html += `<span>↓ ${props._depth_m} m</span>`;
             html += `</div>`;
             html += `<div class="popup-coords">${coords[1].toFixed(5)}, ${coords[0].toFixed(5)}</div>`;
             if (props.alternative_names) {

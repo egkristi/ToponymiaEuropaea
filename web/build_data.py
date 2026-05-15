@@ -19,6 +19,7 @@ PLACE_FIELDS = [
     "latitude",
     "longitude",
     "elevation",
+    "_depth_m",
     "source_id",
     "source_url",
     "alternative_names",
