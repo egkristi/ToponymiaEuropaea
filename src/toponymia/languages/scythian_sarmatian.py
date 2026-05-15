@@ -101,35 +101,41 @@ class ScythianSarmatianModule(BaseLanguageModule):
             if form_lower.startswith("dn"):
                 # Dnieper / Dniester pattern
                 remainder = form[2:]
-                results.append(
-                    SegmentationResult(
-                        segments=["Dn-", remainder],
-                        language=self.language_code,
-                        confidence=0.7,
-                        notes=(f"Iranian *dānu- 'river' (compressed form) + '{remainder}'"),
-                    )
+                results.extend(
+                    [
+                        SegmentationResult(
+                            component="Dn-", position=0, morph_type="prefix", confidence=0.7
+                        ),
+                        SegmentationResult(
+                            component=remainder, position=1, morph_type="stem", confidence=0.7
+                        ),
+                    ]
                 )
             elif form_lower.startswith("dan"):
                 remainder = form[3:]
-                results.append(
-                    SegmentationResult(
-                        segments=["Dan-", remainder],
-                        language=self.language_code,
-                        confidence=0.65,
-                        notes=f"Iranian *dānu- 'river' + '{remainder}'",
-                    )
+                results.extend(
+                    [
+                        SegmentationResult(
+                            component="Dan-", position=0, morph_type="prefix", confidence=0.65
+                        ),
+                        SegmentationResult(
+                            component=remainder, position=1, morph_type="stem", confidence=0.65
+                        ),
+                    ]
                 )
 
         # Check for -don suffix (common in Ossetic/Sarmatian territory)
         if form_lower.endswith("don") and len(form_lower) > 4:
             stem = form[: len(form) - 3]
-            results.append(
-                SegmentationResult(
-                    segments=[stem, "don"],
-                    language=self.language_code,
-                    confidence=0.6,
-                    notes=f"'{stem}' + Sarmatian/Ossetic -don 'water, river'",
-                )
+            results.extend(
+                [
+                    SegmentationResult(
+                        component=stem, position=0, morph_type="compound_modifier", confidence=0.6
+                    ),
+                    SegmentationResult(
+                        component="don", position=1, morph_type="compound_head", confidence=0.6
+                    ),
+                ]
             )
 
         # Other Iranian suffixes
@@ -141,14 +147,22 @@ class ScythianSarmatianModule(BaseLanguageModule):
         for suffix in sorted_suffixes:
             if form_lower.endswith(suffix) and len(form_lower) > len(suffix) + 2:
                 stem = form[: len(form) - len(suffix)]
-                meaning = self.ELEMENT_MEANINGS.get(suffix, "")
-                results.append(
-                    SegmentationResult(
-                        segments=[stem, suffix],
-                        language=self.language_code,
-                        confidence=0.45,
-                        notes=(f"Possible Sarmatian: '{stem}' + '-{suffix}' ({meaning})"),
-                    )
+                self.ELEMENT_MEANINGS.get(suffix, "")
+                results.extend(
+                    [
+                        SegmentationResult(
+                            component=stem,
+                            position=0,
+                            morph_type="compound_modifier",
+                            confidence=0.45,
+                        ),
+                        SegmentationResult(
+                            component=suffix,
+                            position=1,
+                            morph_type="compound_head",
+                            confidence=0.45,
+                        ),
+                    ]
                 )
                 break
 
@@ -189,31 +203,26 @@ class ScythianSarmatianModule(BaseLanguageModule):
             evidence.append("Ossetic-type æ vowel")
             score += 0.15
 
-        return [
-            LanguageClassification(
-                language=self.language_code,
-                confidence=min(score, 1.0),
-                evidence=evidence,
-            )
-        ]
+        return LanguageClassification(
+            language_code=self.language_code,
+            confidence=min(score, 1.0),
+            evidence=evidence,
+        )
 
-    def etymologize(self, form: str) -> list[EtymologyCandidate]:
+    def etymologize(self, components: list[SegmentationResult]) -> list[EtymologyCandidate]:
         """Suggest Scythian-Sarmatian etymologies for a toponym."""
         candidates: list[EtymologyCandidate] = []
+        form = components[0].component if components else ""
         form_lower = form.lower()
 
         # High-confidence: known Iranian river name elements
         if form_lower.startswith(("don", "dn", "dan", "tana")):
             candidates.append(
                 EtymologyCandidate(
-                    language=self.language_code,
-                    proto_form="*dānu-",
+                    lemma="*dānu-",
                     meaning="river, water (Eastern Iranian; cf. Avestan dānu-)",
+                    language_code=self.language_code,
                     confidence=0.7,
-                    notes=(
-                        "Major European river names from Iranian "
-                        "*dānu-: Don, Dnieper, Dniester, Danube(?)"
-                    ),
                 )
             )
 
@@ -223,11 +232,10 @@ class ScythianSarmatianModule(BaseLanguageModule):
                     continue  # already handled above
                 candidates.append(
                     EtymologyCandidate(
-                        language=self.language_code,
-                        proto_form=f"*{element}",
+                        lemma=f"*{element}",
                         meaning=meaning,
+                        language_code=self.language_code,
                         confidence=0.4,
-                        notes=(f"Possible Scythian-Sarmatian '{element}' in '{form}'"),
                     )
                 )
 

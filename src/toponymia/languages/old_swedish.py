@@ -146,27 +146,34 @@ class OldSwedishModule(BaseLanguageModule):
         for suffix in sorted_suffixes:
             if form_lower.endswith(suffix) and len(form_lower) > len(suffix) + 1:
                 stem = form[: len(form) - len(suffix)]
-                meaning = self.ELEMENT_MEANINGS.get(suffix, "")
-                results.append(
-                    SegmentationResult(
-                        segments=[stem, suffix],
-                        language=self.language_code,
-                        confidence=0.7,
-                        notes=(f"Old Swedish: '{stem}' + '-{suffix}' ({meaning})"),
-                    )
+                self.ELEMENT_MEANINGS.get(suffix, "")
+                results.extend(
+                    [
+                        SegmentationResult(
+                            component=stem,
+                            position=0,
+                            morph_type="compound_modifier",
+                            confidence=0.7,
+                        ),
+                        SegmentationResult(
+                            component=suffix, position=1, morph_type="compound_head", confidence=0.7
+                        ),
+                    ]
                 )
                 break
 
         for prefix in sorted_prefixes:
             if form_lower.startswith(prefix) and len(form_lower) > len(prefix) + 1:
                 remainder = form[len(prefix) :]
-                results.append(
-                    SegmentationResult(
-                        segments=[prefix, remainder],
-                        language=self.language_code,
-                        confidence=0.6,
-                        notes=(f"Old Swedish prefix '{prefix}' + '{remainder}'"),
-                    )
+                results.extend(
+                    [
+                        SegmentationResult(
+                            component=prefix, position=0, morph_type="prefix", confidence=0.6
+                        ),
+                        SegmentationResult(
+                            component=remainder, position=1, morph_type="stem", confidence=0.6
+                        ),
+                    ]
                 )
                 break
 
@@ -205,28 +212,26 @@ class OldSwedishModule(BaseLanguageModule):
             evidence.append("Swedish reduced -sta (< ON staðir; apocope)")
             score += 0.4
 
-        return [
-            LanguageClassification(
-                language=self.language_code,
-                confidence=min(score, 1.0),
-                evidence=evidence,
-            )
-        ]
+        return LanguageClassification(
+            language_code=self.language_code,
+            confidence=min(score, 1.0),
+            evidence=evidence,
+        )
 
-    def etymologize(self, form: str) -> list[EtymologyCandidate]:
+    def etymologize(self, components: list[SegmentationResult]) -> list[EtymologyCandidate]:
         """Suggest Old Swedish etymologies for a toponym."""
         candidates: list[EtymologyCandidate] = []
+        form = components[0].component if components else ""
         form_lower = form.lower()
 
         for element, meaning in self.ELEMENT_MEANINGS.items():
             if element in form_lower and len(element) >= 3:
                 candidates.append(
                     EtymologyCandidate(
-                        language=self.language_code,
-                        proto_form=f"*{element}",
+                        lemma=f"*{element}",
                         meaning=meaning,
+                        language_code=self.language_code,
                         confidence=0.6,
-                        notes=(f"Old Swedish element '{element}' in '{form}'"),
                     )
                 )
 

@@ -99,14 +99,14 @@ class VolgaBulgarModule(BaseLanguageModule):
         form_lower = form.lower()
 
         # Check known Bulgar city/place names
-        for element, meaning in self.FULL_ELEMENTS.items():
+        for element, _meaning in self.FULL_ELEMENTS.items():
             if element in form_lower:
                 results.append(
                     SegmentationResult(
-                        segments=[element],
-                        language=self.language_code,
+                        component=element,
+                        position=0,
+                        morph_type="stem",
                         confidence=0.75,
-                        notes=f"Known Volga Bulgar toponym: {meaning}",
                     )
                 )
                 return results
@@ -126,28 +126,38 @@ class VolgaBulgarModule(BaseLanguageModule):
         for prefix in sorted_prefixes:
             if form_lower.startswith(prefix) and len(form_lower) > len(prefix) + 1:
                 remainder = form[len(prefix) :]
-                meaning = self.ELEMENT_MEANINGS.get(prefix, "")
-                results.append(
-                    SegmentationResult(
-                        segments=[prefix, remainder],
-                        language=self.language_code,
-                        confidence=0.45,
-                        notes=(f"Volga Bulgar prefix '{prefix}' ({meaning}) + '{remainder}'"),
-                    )
+                self.ELEMENT_MEANINGS.get(prefix, "")
+                results.extend(
+                    [
+                        SegmentationResult(
+                            component=prefix, position=0, morph_type="prefix", confidence=0.45
+                        ),
+                        SegmentationResult(
+                            component=remainder, position=1, morph_type="stem", confidence=0.45
+                        ),
+                    ]
                 )
                 break
 
         for suffix in sorted_suffixes:
             if form_lower.endswith(suffix) and len(form_lower) > len(suffix) + 2:
                 stem = form[: len(form) - len(suffix)]
-                meaning = self.ELEMENT_MEANINGS.get(suffix, "")
-                results.append(
-                    SegmentationResult(
-                        segments=[stem, suffix],
-                        language=self.language_code,
-                        confidence=0.45,
-                        notes=(f"Volga Bulgar: '{stem}' + '-{suffix}' ({meaning})"),
-                    )
+                self.ELEMENT_MEANINGS.get(suffix, "")
+                results.extend(
+                    [
+                        SegmentationResult(
+                            component=stem,
+                            position=0,
+                            morph_type="compound_modifier",
+                            confidence=0.45,
+                        ),
+                        SegmentationResult(
+                            component=suffix,
+                            position=1,
+                            morph_type="compound_head",
+                            confidence=0.45,
+                        ),
+                    ]
                 )
                 break
 
@@ -181,28 +191,26 @@ class VolgaBulgarModule(BaseLanguageModule):
                 score += 0.35
                 break
 
-        return [
-            LanguageClassification(
-                language=self.language_code,
-                confidence=min(score, 1.0),
-                evidence=evidence,
-            )
-        ]
+        return LanguageClassification(
+            language_code=self.language_code,
+            confidence=min(score, 1.0),
+            evidence=evidence,
+        )
 
-    def etymologize(self, form: str) -> list[EtymologyCandidate]:
+    def etymologize(self, components: list[SegmentationResult]) -> list[EtymologyCandidate]:
         """Suggest Volga Bulgar etymologies for a toponym."""
         candidates: list[EtymologyCandidate] = []
+        form = components[0].component if components else ""
         form_lower = form.lower()
 
         for element, meaning in self.ELEMENT_MEANINGS.items():
             if element in form_lower and len(element) >= 3:
                 candidates.append(
                     EtymologyCandidate(
-                        language=self.language_code,
-                        proto_form=f"*{element}",
+                        lemma=f"*{element}",
                         meaning=meaning,
+                        language_code=self.language_code,
                         confidence=0.4,
-                        notes=(f"Volga Bulgar (Oghur Turkic) element '{element}' in '{form}'"),
                     )
                 )
 

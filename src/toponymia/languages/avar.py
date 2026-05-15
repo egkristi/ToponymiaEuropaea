@@ -92,20 +92,21 @@ class AvarModule(BaseLanguageModule):
         form_lower = form.lower()
 
         # Check for known Avar-associated elements
-        for element, meaning in self.FULL_ELEMENTS.items():
+        for element, _meaning in self.FULL_ELEMENTS.items():
             if element in form_lower:
                 idx = form_lower.index(element)
                 prefix_part = form[:idx] if idx > 0 else ""
                 suffix_part = form[idx + len(element) :]
                 segments = [s for s in [prefix_part, element, suffix_part] if s]
-                results.append(
-                    SegmentationResult(
-                        segments=segments,
-                        language=self.language_code,
-                        confidence=0.5,
-                        notes=f"Possible Avar element '{element}': {meaning}",
+                for pos, seg in enumerate(segments):
+                    results.append(
+                        SegmentationResult(
+                            component=seg,
+                            position=pos,
+                            morph_type="stem" if seg == element else "compound_modifier",
+                            confidence=0.5,
+                        )
                     )
-                )
                 break
 
         # General prefix/suffix analysis
@@ -117,13 +118,15 @@ class AvarModule(BaseLanguageModule):
         for prefix in sorted_prefixes:
             if form_lower.startswith(prefix) and len(form_lower) > len(prefix) + 1:
                 remainder = form[len(prefix) :]
-                results.append(
-                    SegmentationResult(
-                        segments=[prefix, remainder],
-                        language=self.language_code,
-                        confidence=0.35,
-                        notes=(f"Possible Avar/steppe prefix '{prefix}' + '{remainder}'"),
-                    )
+                results.extend(
+                    [
+                        SegmentationResult(
+                            component=prefix, position=0, morph_type="prefix", confidence=0.35
+                        ),
+                        SegmentationResult(
+                            component=remainder, position=1, morph_type="stem", confidence=0.35
+                        ),
+                    ]
                 )
                 break
 
@@ -160,32 +163,26 @@ class AvarModule(BaseLanguageModule):
             evidence.append(f"Multiple steppe elements: {', '.join(matches)}")
             score += 0.3
 
-        return [
-            LanguageClassification(
-                language=self.language_code,
-                confidence=min(score, 1.0),
-                evidence=evidence,
-            )
-        ]
+        return LanguageClassification(
+            language_code=self.language_code,
+            confidence=min(score, 1.0),
+            evidence=evidence,
+        )
 
-    def etymologize(self, form: str) -> list[EtymologyCandidate]:
+    def etymologize(self, components: list[SegmentationResult]) -> list[EtymologyCandidate]:
         """Suggest Avar etymologies for a toponym."""
         candidates: list[EtymologyCandidate] = []
+        form = components[0].component if components else ""
         form_lower = form.lower()
 
         for element, meaning in self.ELEMENT_MEANINGS.items():
             if element in form_lower and len(element) >= 3:
                 candidates.append(
                     EtymologyCandidate(
-                        language=self.language_code,
-                        proto_form=f"*{element}",
+                        lemma=f"*{element}",
                         meaning=meaning,
+                        language_code=self.language_code,
                         confidence=0.35,
-                        notes=(
-                            f"Possible Avar (Pannonian) element '{element}' "
-                            f"in '{form}'. Avar linguistic attribution is "
-                            "uncertain due to limited attestation."
-                        ),
                     )
                 )
 
