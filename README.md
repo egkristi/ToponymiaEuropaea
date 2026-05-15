@@ -14,13 +14,14 @@
 
 | Metric | Value |
 |--------|-------|
-| **Databank records** | 3,018 (5 Nordic countries, 2 sources) |
+| **Databank records** | 2,936 (5 Nordic countries, 2 sources) |
 | **Gold-standard kernel** | 8 verified records with full etymologies |
-| **Data sources** | GeoNames (2,507 records), Kartverket SSR (504 records) |
+| **Data sources** | GeoNames (2,514 records), Kartverket SSR (422 records) |
+| **Data connectors** | 16 implemented (national registries, gazetteers, terrain, climate, imagery) |
 | **Language modules** | 201 auto-discovered (covering all European languages + ancient/extinct) |
 | **Perspective modules** | 15 coded (of 21 documented) |
 | **Statistical tests** | 12 families (spatial, correspondence, astronomical, religious, temporal, migration, robustness, Bayesian, sensory, Ripley's K, name change rate, catastrophe) |
-| **Tests passing** | 4,138+ (incl. 3,184 parametrized module tests) |
+| **Tests passing** | 4,221 (incl. 3,184 parametrized module tests) |
 | **Type safety** | mypy strict, 0 errors |
 | **CI pipeline** | Lint + format + mypy + tests (3.12/3.13) + ontology + databank validation |
 
@@ -47,6 +48,9 @@
 - **15 perspective modules** — terrain, hydro, archaeological, religious, astronomical, colour, acoustic, mortality, migration, economic, historical, ecological, legal, temporal, medicinal
 - **Attestation curation workflow** — schema validation, contributor templates, quality control checklist
 - **GDPR compliance** — jurisdiction-specific policy for historical person-names in place etymologies
+- **Bathymetry enrichment** — GEBCO/EMODnet/NVE depth data for water features
+- **Geolocated image links** — Wikimedia Commons geotagged photographs linked to place records
+- **Geometry classification** — automatic point/line/area classification for all 2,936 records
 
 **Language coverage (201 modules):**
 
@@ -775,15 +779,21 @@ The project uses a **connector architecture** where each data source is a plugin
 
 | Source | Coverage | License | Status |
 |--------|----------|---------|--------|
-| GeoNames | Global (12M+ names) | CC-BY | Implemented |
-| Wikidata | Global | CC0 | Implemented |
-| OpenStreetMap | Global | ODbL | Implemented |
-| Copernicus DEM | Global (30m) | Open | Implemented |
-| Kartverket SSR (Norway) | Norway | NLOD | Implemented |
-| Lantmäteriet (Sweden) | Sweden | CC0 | Planned |
-| GST (Denmark) | Denmark | Open | Planned |
-| MML (Finland) | Finland | CC-BY | Planned |
-| Ordnance Survey (UK) | UK | OGL | Planned |
+| GeoNames | Global (12M+ names) | CC-BY | ✅ Implemented |
+| Wikidata | Global | CC0 | ✅ Implemented |
+| OpenStreetMap | Global | ODbL | ✅ Implemented |
+| Copernicus DEM | Global (30m) | Open | ✅ Implemented |
+| Kartverket SSR (Norway) | Norway | NLOD | ✅ Implemented |
+| Lantmäteriet (Sweden) | Sweden | CC0 | ✅ Implemented |
+| Maanmittauslaitos (Finland) | Finland | CC-BY-4.0 | ✅ Implemented |
+| Ordnance Survey (UK) | UK | OGL-3.0 | ✅ Implemented |
+| IGN (France) | France | Licence Ouverte 2.0 | ✅ Implemented |
+| Diplomatarium | Medieval charters | Varies | ✅ Implemented |
+| Rundata | Scandinavian runes | Open | ✅ Implemented |
+| Historical Map OCR | Europe (scanned maps) | Varies | ✅ Implemented |
+| Climate (CRU/PAGES2k) | Global | Open | ✅ Implemented |
+| Bathymetry (GEBCO/EMODnet/NVE) | Global oceans + Nordic lakes | Open | ✅ Implemented |
+| Geoimage (Wikimedia Commons) | Global (geotagged photos) | CC-BY-SA / CC0 | ✅ Implemented |
 | Pleiades | Ancient world | CC-BY | Planned |
 
 ### Adding a New Source
@@ -941,7 +951,7 @@ toponymia-europaea/
 │       ├── paper.py                  # Research paper LaTeX generator
 │       ├── api/                      # FastAPI application
 │       │   └── app.py               # REST endpoints (/places, /search, /stats)
-│       ├── connectors/               # Data source plugins (14 connectors)
+│       ├── connectors/               # Data source plugins (16 connectors)
 │       │   ├── base.py               # BaseConnector interface
 │       │   ├── geonames.py           # GeoNames gazetteer
 │       │   ├── kartverket.py         # Norwegian SSR (api.kartverket.no)
@@ -955,17 +965,20 @@ toponymia-europaea/
 │       │   ├── rundata.py           # Scandinavian runic inscriptions
 │       │   ├── dem.py               # DEM/terrain data (SRTM/Copernicus)
 │       │   ├── climate.py           # Historical climate (CRU, PAGES2k)
-│       │   └── historical_map_ocr.py # OCR from scanned historical maps
+│       │   ├── historical_map_ocr.py # OCR from scanned historical maps
+│       │   ├── bathymetry.py        # Ocean/lake depth (GEBCO, EMODnet, NVE)
+│       │   └── geoimage.py          # Geolocated images (Wikimedia Commons)
 │       ├── core/                     # Core domain model
 │       │   ├── database.py           # Database connection
 │       │   └── onboarding.py         # Data promotion/demotion workflow
-│       ├── pipelines/                # Analysis and data pipeline stages (18 modules)
+│       ├── pipelines/                # Analysis and data pipeline stages (21 modules)
 │       │   ├── normalize.py          # Unicode NFC, substitutions, ASCII fallback
 │       │   ├── segment.py            # Morphological segmentation
 │       │   ├── analyze.py            # Databank → analysis bridge
 │       │   ├── databank.py           # Signing, verification, sorting
 │       │   ├── integrity.py          # SHA-256 integrity and MANIFEST
 │       │   ├── validate.py           # Schema validation
+│       │   ├── attestation_validate.py # Attestation schema validation
 │       │   ├── lemma.py              # Name lemma registry and detection
 │       │   ├── phonetic.py           # Nordic phonetic normalizer
 │       │   ├── dedup.py              # Cross-source deduplication
@@ -976,13 +989,16 @@ toponymia-europaea/
 │       │   ├── analytical.py         # Parquet/DuckDB export and queries
 │       │   ├── sync.py              # JSONL → Postgres → Parquet sync
 │       │   ├── coordinates.py        # Multi-source coordinate resolution
-│       │   └── etymology.py          # Wikidata P138 etymology extraction
+│       │   ├── etymology.py          # Wikidata P138 etymology extraction
+│       │   ├── geometry_classify.py  # Point/line/area geometry classification
+│       │   ├── bathymetry_enrich.py  # Depth enrichment for water features
+│       │   └── geoimage_enrich.py    # Geolocated image link enrichment
 │       ├── languages/                # Language-specific modules (201 auto-discovered)
 │       │   ├── base.py              # BaseLanguageModule interface
 │       │   ├── old_norse.py         # Reference implementation (120+ elements)
 │       │   ├── ...                  # 199 more: all European, ancient, Caucasian,
 │       │   └── ...                  #   Near Eastern, and Central Asian languages
-│       ├── statistics/               # Statistical testing framework (15 modules)
+│       ├── statistics/               # Statistical testing framework (16 modules)
 │       │   ├── base.py              # BaseTest, PlaceData, StatFamily, StatStatus
 │       │   ├── correspondence.py    # Permutation-based correspondence
 │       │   ├── spatial.py           # Nearest-neighbour spatial clustering
@@ -998,7 +1014,7 @@ toponymia-europaea/
 │       │   ├── sacred_geometry.py   # Ley-line hypothesis test
 │       │   ├── catastrophe_clustering.py # Disaster names vs. hazard maps
 │       │   └── sensory_correspondence.py # Sound environment correlation
-│       └── perspectives/             # Perspective analysis (10 implementations)
+│       └── perspectives/             # Perspective analysis (15 implementations)
 │           ├── base.py              # BasePerspective interface
 │           ├── terrain.py           # Terrain correspondence (DEM features)
 │           ├── hydrological.py      # River/lake/fjord proximity
@@ -1009,22 +1025,30 @@ toponymia-europaea/
 │           ├── acoustic.py          # Sound environment correlation
 │           ├── mortality.py         # Hazard map correlation
 │           ├── migration.py         # Origin tracing by name distribution
-│           └── economic.py          # Trade route correlation
+│           ├── economic.py          # Trade route correlation
+│           ├── historical.py        # Settlement wave detection
+│           ├── ecological.py        # Flora/fauna distribution
+│           ├── legal.py             # Thing-sites, administrative boundaries
+│           ├── temporal_cycles.py   # Seasonal/calendar correlations
+│           └── medicinal.py         # Healing wells, thermal springs
 ├── databank/                         # Git-native JSONL persistence (source of truth)
 │   ├── MANIFEST.sha256              # Integrity checksums for all data files
 │   ├── sources.jsonl                # Source metadata registry
 │   ├── schema/
-│   │   └── place.v1.json            # JSON Schema for place records
+│   │   ├── place.v1.json            # JSON Schema for place records
+│   │   └── attestation.v1.json     # JSON Schema for attestations
 │   ├── kernel/                      # Gold-standard verified records
 │   │   ├── gold.jsonl               # 8 manually verified etymologies
-│   │   └── criteria.json            # Validation criteria
-│   └── places/                      # 3,018 records across 5 countries
-│       ├── DK/geonames.jsonl        # 500 Danish records
+│   │   ├── criteria.json            # Validation criteria
+│   │   └── README.md               # Kernel documentation
+│   └── places/                      # 2,936 records across 5 countries
+│       ├── MANIFEST.sha256          # Places-specific integrity checksums
+│       ├── DK/geonames.jsonl        # 507 Danish records
 │       ├── FI/geonames.jsonl        # 500 Finnish records
 │       ├── IS/geonames.jsonl        # 500 Icelandic records
 │       ├── NO/geonames.jsonl        # 500 Norwegian (GeoNames) records
-│       ├── NO/kartverket.jsonl      # 504 Norwegian (Kartverket SSR) records
-│       └── SE/geonames.jsonl        # 500 Swedish records
+│       ├── NO/kartverket.jsonl      # 422 Norwegian (Kartverket SSR) records
+│       └── SE/geonames.jsonl        # 507 Swedish records
 ├── docker/                           # Container build files
 │   ├── Dockerfile.api               # API service container
 │   ├── Dockerfile.seed              # Seed/migration container
@@ -1041,15 +1065,19 @@ toponymia-europaea/
 │       └── v1.0.0/
 │           ├── name_types.skos.ttl  # SKOS name type hierarchy
 │           └── perspectives.skos.ttl
-├── web/                              # Static web frontend
+├── web/                              # Static web frontend (GitHub Pages)
 │   ├── index.html                   # Public browse interface
 │   ├── map.html                     # Interactive map (Leaflet/MapLibre)
-│   └── dashboard.html               # Statistical results dashboard
+│   ├── place.html                   # Place detail page with geometry
+│   ├── dashboard.html               # Statistical results dashboard
+│   ├── docs.html                    # Documentation browser
+│   ├── build_data.py               # Databank → static JSON export
+│   └── data/                        # Pre-built JSON for frontend
 ├── benchmarks/
 │   └── phonetic_evaluation.py       # BMPM vs Nordic normalizer benchmark
 ├── templates/
 │   └── paper.tex                    # Research paper LaTeX template
-├── tests/                            # 4,000+ tests, mypy strict clean
+├── tests/                            # 4,221 tests, mypy strict clean
 │   ├── conftest.py
 │   ├── test_api/                    # API endpoint tests
 │   ├── test_cli/                    # CLI command tests
@@ -1057,12 +1085,13 @@ toponymia-europaea/
 │   ├── test_core/                   # Core domain tests
 │   ├── test_languages/              # Language module tests (3,184 parametrized)
 │   ├── test_perspectives/           # Perspective module tests
-│   ├── test_pipelines/              # Pipeline tests (17 test files)
+│   ├── test_pipelines/              # Pipeline tests (18 test files)
 │   └── test_statistics/             # Statistical test validation (13 test files)
 ├── docs/
 │   ├── methodology.md              # Research methodology
 │   ├── adding_a_language.md        # Guide: new language modules
 │   ├── adding_a_source.md          # Guide: new data connectors
+│   ├── attestation_workflow.md     # Attestation curation workflow
 │   ├── ethics.md                   # Ethical considerations
 │   ├── backup_strategy.md          # Database backup strategy
 │   ├── LICENSING.md                # License compatibility matrix

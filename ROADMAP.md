@@ -4,7 +4,7 @@ This roadmap tracks the project's development from initial framework to producti
 
 **Legend:** ✅ Done | 🔄 In Progress | ⬚ Not Started
 
-**Current status:** 4,000+ tests passing, 0 warnings, CI green (lint + mypy strict + test py3.12/3.13 + ontology + databank validation). 3,018 records (5 Nordic countries × 2 sources). 201 language modules with auto-discovery registry. 10 perspective modules. Gold-standard kernel (8 records). Full 3-layer persistence (JSONL → PostgreSQL → Parquet). End-to-end: `toponymia analyze element nes --country NO` runs databank → segmentation → statistical test → results.
+**Current status:** 4,221 tests passing, 0 warnings, CI green (lint + mypy strict + test py3.12/3.13 + ontology + databank validation). 2,936 records (5 Nordic countries × 2 sources). 201 language modules with auto-discovery registry. 15 perspective modules. Gold-standard kernel (8 records). Full 3-layer persistence (JSONL → PostgreSQL → Parquet). End-to-end: `toponymia analyze element nes --country NO` runs databank → segmentation → statistical test → results.
 
 ---
 
@@ -124,6 +124,8 @@ Connect to additional authoritative data sources.
 | 4.8 | Rundata connector | ✅ | Scandinavian runic inscription DB |
 | 4.9 | DEM/terrain data connector | ✅ | Elevation, slope, aspect from SRTM/Copernicus |
 | 4.10 | Climate data connector | ✅ | Historical climate (CRU, PAGES2k) |
+| 4.11 | Bathymetry data connector | ✅ | GEBCO, EMODnet, NVE lake depth. Supports coastal/lake depth queries. |
+| 4.12 | Geoimage connector | ✅ | Wikimedia Commons geosearch. Geographically referenced images for places. |
 
 ---
 
@@ -327,7 +329,7 @@ The litmus test (May 2025) proved the pipeline works mechanically. Data populati
 **Milestone 11.4.3 COMPLETE** — Phonetic index field on all records.
 **Issues #10–13 closed** — mypy fixed, Danish/Swedish modules added, data populated.
 
-**Status: 4,000+ tests passing (incl. 3,184 parametrized module tests), mypy strict clean, 3,018 databank records, 201 language modules with auto-discovery registry, 10 perspective modules, 8 gold-standard kernel records.**
+**Status: 4,221 tests passing (incl. 3,184 parametrized module tests), mypy strict clean, 2,936 databank records, 201 language modules with auto-discovery registry, 15 perspective modules, 8 gold-standard kernel records.**
 
 **Milestone 11.2 COMPLETE** — Full 3-layer persistence: JSONL kernel, PostgreSQL+PostGIS, Parquet/DuckDB, sync pipeline with checksums.
 **Milestone 11.6 (4/5) COMPLETE** — Coordinate resolution, license matrix, ODbL compliance. Only GDPR analysis remains.
@@ -366,7 +368,7 @@ The litmus test (May 2025) proved the pipeline works mechanically. Data populati
 
 8. ~~**Milestone 4.2–4.4** — Nordic/UK registry connectors~~ ✅
 9. ~~**Milestone 6.1–6.2** — API and basic visualization~~ ✅
-10. ~~**Milestone 5.1–5.10** — All 10 perspective implementations~~ ✅
+10. ~~**Milestone 5.1–5.15** — All 15 perspective implementations~~ ✅
 11. **Milestones 7–8** — Infrastructure and community (partial: #3, #35–38 remain)
 12. **Milestone 15** — Research output pipeline (preregistration → publication)
 13. **Milestone 16** — Linked Data & academic interoperability
@@ -421,7 +423,7 @@ Move beyond regex/dictionary-based morpheme detection. Enable automated analysis
 
 ## Milestone 14 — Continental Data Scaling (100K+ records)
 
-Scale from 3,018 records (5 Nordic countries) to continental coverage. Prerequisite for statistically meaningful cross-regional analysis.
+Scale from 2,936 records (5 Nordic countries) to continental coverage. Prerequisite for statistically meaningful cross-regional analysis.
 
 | # | Item | Status | Priority | Notes |
 |---|------|--------|----------|-------|
@@ -463,7 +465,7 @@ Place names often refer to features with spatial extent: rivers (polylines), lak
 
 | # | Item | Status | Notes |
 |---|------|--------|-------|
-| 17.1.1 | **Geometry type classification** | ✅ | All 3018 records classified: 1120 point, 209 line, 1689 area |
+| 17.1.1 | **Geometry type classification** | ✅ | All 2,936 records classified: 1,120 point, 209 line, 1,689 area |
 | 17.1.2 | **Schema support for GeoJSON geometry** | ✅ | `geometry` field (GeoJSON Geometry object), `_geometry_class`, `_geometry_status` |
 | 17.1.3 | **Classification pipeline** | ✅ | `geometry_classify.py` — automatic classification from place_type |
 | 17.1.4 | **Detail page with geometry rendering** | ✅ | `place.html` shows geometry on Leaflet map when present |
@@ -498,6 +500,21 @@ Place names often refer to features with spatial extent: rivers (polylines), lak
 
 ---
 
+## Milestone 18 — Data Enrichment Pipelines (In Progress)
+
+Enrich existing databank records with external data to support richer analysis and user presentation.
+
+| # | Item | Status | Priority | Notes |
+|---|------|--------|----------|-------|
+| 18.1 | **Bathymetry enrichment** | ✅ | HIGH | GEBCO, EMODnet, NVE lake depth. `_depth_m`, `_depth_source` fields. `bathymetry_enrich.py` pipeline. |
+| 18.2 | **Geolocated image links** | ✅ | HIGH | Wikimedia Commons geosearch. `_image_links` field with title, URL, license, distance. `geoimage_enrich.py` pipeline. |
+| 18.3 | **Elevation enrichment** | ⬚ | MEDIUM | DEM connector already exists; bulk-enrich records missing elevation from Copernicus 30m DEM. |
+| 18.4 | **Climate zone classification** | ⬚ | MEDIUM | Assign Köppen climate zone to each record using climate connector. |
+| 18.5 | **Land cover classification** | ⬚ | LOW | Corine Land Cover / Copernicus data for habitat context. |
+| 18.6 | **Nearest water feature distance** | ⬚ | MEDIUM | Compute distance to nearest river/lake/coast for hydrological perspective support. |
+
+---
+
 ## Milestone 16 — Linked Data & Academic Interoperability
 
 Connect the framework to the wider academic data ecosystem.
@@ -520,9 +537,9 @@ Connect the framework to the wider academic data ecosystem.
 - **v0.2.0** — Expanded dictionaries (120+ ON entries), attestation analysis, analysis bridge, end-to-end workflow command, dependency trim. Pipeline runs from CLI.
 - **v0.3.0** — 3018 records (5 Nordic countries, 2 sources), 14 language modules, H3 spatial indexing, phonetic dedup, diachronic linking, Bayesian etymology framework + comparison test, language contact/political renaming tests, Ripley's K spatial + name change rate + sacred geometry + catastrophe clustering + sensory correspondence tests, Kartverket + Lantmäteriet + MML + OS + IGN connectors. 707 tests, mypy strict clean.
 - **v0.4.0** — 201 language modules (all European, ancient/extinct, and adjacent civilizations), 820+ tests, full CI pipeline, comprehensive linguistic coverage from Proto-Indo-European to modern minority languages.
-- **v0.5.0** (current) — Full 3-layer persistence (JSONL+Postgres+Parquet), sync pipeline, Wikidata etymology extraction, Docker Compose stack, coordinate resolution, license matrix. 4000+ tests.
+- **v0.5.0** (current) — Full 3-layer persistence (JSONL+Postgres+Parquet), sync pipeline, Wikidata etymology extraction, Docker Compose stack, coordinate resolution, license matrix, 15 perspectives (historical through medicinal), bathymetry + geoimage enrichment pipelines, geometry classification, 16 data connectors, attestation validation pipeline. 4,221 tests, 2,936 records.
 - **v0.6.0** — Historical sources and attestation curation. Norske Gaardnavne, Diplomatarium Norvegicum, UK/Ireland and Iberian seed data. 50K+ records.
-- **v0.7.0** — Next wave perspectives (12.1–12.5: historical, ecological, legal, temporal, medicinal). NLP layer bootstrap (13.1–13.2: morpheme segmentation, cognate detection). 21 total perspective modules.
+- **v0.7.0** — NLP layer bootstrap (13.1–13.2: morpheme segmentation, cognate detection). Continental data scaling. Geometry acquisition pipeline.
 - **v0.8.0** — Continental data scaling (100K+ records). Cross-disciplinary perspectives (12.6–12.11). Full NLP pipeline (13.3–13.6).
 - **v0.9.0** — Research output pipeline. Preregistration, results matrix, reproducible notebooks, automated figures.
 - **v1.0.0** — First publishable research result produced and submitted. Linked Data export. DOI for datasets.
