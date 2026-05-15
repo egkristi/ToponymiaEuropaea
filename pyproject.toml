@@ -146,3 +146,8 @@ exclude_lines = [
     "if TYPE_CHECKING:",
     "if __name__ == .__main__.",
 ]
+
+[dependency-groups]
+dev = [
+    "abydos>=0.5.0",
+]
