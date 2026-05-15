@@ -6,6 +6,7 @@
 
 [![License: CC BY-NC-SA 4.0](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey.svg)](LICENSE)
 [![Python 3.12+](https://img.shields.io/badge/Python-3.12+-green.svg)](https://python.org)
+[![Live Demo](https://img.shields.io/badge/Demo-GitHub%20Pages-blue.svg)](https://egkristi.github.io/ToponymiaEuropaea/)
 
 ---
 
