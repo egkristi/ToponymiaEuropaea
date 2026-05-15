@@ -323,3 +323,45 @@ async def test_geojson_coordinates_order(client: httpx.AsyncClient) -> None:
     coords = data["features"][0]["geometry"]["coordinates"]
     assert coords[0] == pytest.approx(18.0686)
     assert coords[1] == pytest.approx(59.3293)
+
+
+@pytest.mark.asyncio
+async def test_bbox_returns_places_within_bounds(client: httpx.AsyncClient) -> None:
+    """Bbox endpoint returns only places inside the bounding box."""
+    # Box covering Oslo area (lat 59-60, lon 10-11)
+    resp = await client.get(
+        "/api/v1/places/bbox",
+        params={"min_lat": 59.0, "max_lat": 60.0, "min_lon": 10.0, "max_lon": 11.0},
+    )
+    assert resp.status_code == 200
+    data = resp.json()
+    names = {p["name_form"] for p in data}
+    assert "Oslo" in names
+    assert "Oslofjorden" in names
+    assert "Bergen" not in names
+    assert "Stockholm" not in names
+
+
+@pytest.mark.asyncio
+async def test_bbox_with_country_filter(client: httpx.AsyncClient) -> None:
+    """Bbox endpoint respects country filter."""
+    # Large box covering all Nordics, but filter to DK only
+    resp = await client.get(
+        "/api/v1/places/bbox",
+        params={"min_lat": 50.0, "max_lat": 70.0, "min_lon": 0.0, "max_lon": 30.0, "country": "DK"},
+    )
+    assert resp.status_code == 200
+    data = resp.json()
+    assert len(data) == 1
+    assert data[0]["name_form"] == "København"
+
+
+@pytest.mark.asyncio
+async def test_bbox_empty_when_no_places(client: httpx.AsyncClient) -> None:
+    """Bbox with no places inside returns empty list."""
+    resp = await client.get(
+        "/api/v1/places/bbox",
+        params={"min_lat": 0.0, "max_lat": 1.0, "min_lon": 0.0, "max_lon": 1.0},
+    )
+    assert resp.status_code == 200
+    assert resp.json() == []

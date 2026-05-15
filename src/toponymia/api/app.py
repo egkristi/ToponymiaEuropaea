@@ -231,6 +231,31 @@ async def list_places(
     return filtered[offset : offset + limit]
 
 
+@app.get("/api/v1/places/bbox")
+async def places_in_bbox(
+    min_lat: float = Query(description="Minimum latitude"),
+    max_lat: float = Query(description="Maximum latitude"),
+    min_lon: float = Query(description="Minimum longitude"),
+    max_lon: float = Query(description="Maximum longitude"),
+    limit: int = Query(default=5000, ge=1, le=10000),
+    country: str | None = Query(default=None),
+    name: str | None = Query(default=None),
+) -> list[dict[str, Any]]:
+    """Return places within a geographic bounding box."""
+    filtered = _filter_places(get_places(), country=country, name=name)
+    results = [
+        p
+        for p in filtered
+        if (
+            p.get("latitude") is not None
+            and p.get("longitude") is not None
+            and min_lat <= p["latitude"] <= max_lat
+            and min_lon <= p["longitude"] <= max_lon
+        )
+    ]
+    return results[:limit]
+
+
 @app.get("/api/v1/places/{sha256}")
 async def get_place_by_sha256(sha256: str) -> dict[str, Any]:
     """Get a single place by its _sha256 hash."""

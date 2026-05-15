@@ -7,106 +7,363 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
           integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
           crossorigin="">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css">
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
             integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
             crossorigin=""></script>
+    <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-        #map { height: calc(100vh - 60px); width: 100%; }
-        .controls {
-            height: 60px;
+
+        .app-layout {
             display: flex;
-            align-items: center;
-            padding: 0 20px;
-            gap: 12px;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 360px;
+            min-width: 360px;
             background: #1a1a2e;
             color: #eee;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid #333;
+            transition: margin-left 0.3s;
         }
-        .controls h1 {
+        .sidebar.collapsed { margin-left: -360px; }
+
+        .sidebar-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid #333;
+        }
+        .sidebar-header h1 {
             font-size: 1.1rem;
             font-weight: 600;
-            margin-right: auto;
+            margin-bottom: 4px;
         }
-        .controls select, .controls input, .controls button {
-            padding: 6px 12px;
+        .sidebar-header p {
+            font-size: 0.75rem;
+            color: #888;
+        }
+
+        .search-section {
+            padding: 16px 20px;
+            border-bottom: 1px solid #333;
+        }
+        .search-section .search-row {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+        .search-section input[type="text"] {
+            flex: 1;
+            padding: 8px 12px;
+            border: 1px solid #444;
+            border-radius: 6px;
+            background: #16213e;
+            color: #eee;
+            font-size: 0.9rem;
+        }
+        .search-section input[type="text"]::placeholder { color: #666; }
+        .search-section button {
+            padding: 8px 14px;
+            border: none;
+            border-radius: 6px;
+            background: #0f3460;
+            color: #eee;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+        .search-section button:hover { background: #1a5276; }
+
+        .filters {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+        .filters label {
+            font-size: 0.72rem;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: block;
+            margin-bottom: 3px;
+        }
+        .filters select {
+            width: 100%;
+            padding: 6px 8px;
             border: 1px solid #444;
             border-radius: 4px;
             background: #16213e;
             color: #eee;
+            font-size: 0.82rem;
+        }
+
+        .results-section {
+            flex: 1;
+            overflow-y: auto;
+            padding: 0;
+        }
+        .results-header {
+            padding: 12px 20px;
+            font-size: 0.78rem;
+            color: #888;
+            border-bottom: 1px solid #2a2a4a;
+            position: sticky;
+            top: 0;
+            background: #1a1a2e;
+            z-index: 1;
+        }
+        .result-item {
+            padding: 12px 20px;
+            border-bottom: 1px solid #2a2a4a;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+        .result-item:hover { background: #16213e; }
+        .result-item.active { background: #0f3460; border-left: 3px solid #3498db; }
+        .result-item .name {
+            font-size: 0.92rem;
+            font-weight: 500;
+            margin-bottom: 2px;
+        }
+        .result-item .name .normalized {
+            font-weight: 400;
+            color: #aaa;
+            font-style: italic;
+        }
+        .result-item .meta {
+            font-size: 0.75rem;
+            color: #777;
+        }
+        .result-item .coords {
+            font-size: 0.7rem;
+            color: #555;
+            font-family: monospace;
+        }
+
+        .no-results {
+            padding: 40px 20px;
+            text-align: center;
+            color: #666;
             font-size: 0.85rem;
         }
-        .controls button {
-            background: #0f3460;
+
+        /* Map area */
+        .map-container {
+            flex: 1;
+            position: relative;
+        }
+        #map { height: 100%; width: 100%; }
+
+        .toggle-sidebar {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            z-index: 1000;
+            background: #1a1a2e;
+            color: #eee;
+            border: none;
+            border-radius: 6px;
+            padding: 8px 12px;
             cursor: pointer;
-            font-weight: 500;
+            font-size: 1rem;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
         }
-        .controls button:hover { background: #1a5276; }
-        .controls #status {
-            font-size: 0.8rem;
+        .toggle-sidebar:hover { background: #16213e; }
+
+        /* Legend */
+        .legend {
+            position: absolute;
+            bottom: 30px;
+            right: 10px;
+            z-index: 1000;
+            background: rgba(26, 26, 46, 0.92);
+            color: #eee;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+        .legend h4 {
+            margin-bottom: 6px;
+            font-size: 0.78rem;
             color: #aaa;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
-        .leaflet-popup-content { font-size: 0.85rem; line-height: 1.4; }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 4px;
+        }
+        .legend-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            border: 1px solid rgba(255,255,255,0.4);
+        }
+
+        /* Status bar */
+        .status-bar {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            background: rgba(26, 26, 46, 0.9);
+            color: #aaa;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.78rem;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+        }
+
+        /* Leaflet popups */
+        .leaflet-popup-content { font-size: 0.85rem; line-height: 1.5; }
         .leaflet-popup-content strong { color: #1a1a2e; }
-        .place-popup { max-width: 280px; }
-        .place-popup .meta { color: #666; font-size: 0.78rem; margin-top: 4px; }
+        .place-popup { max-width: 300px; }
+        .place-popup .popup-title { font-size: 1rem; margin-bottom: 4px; }
+        .place-popup .popup-meta { color: #555; font-size: 0.78rem; margin-top: 6px; }
+        .place-popup .popup-meta span { display: inline-block; margin-right: 10px; }
+        .place-popup .popup-coords {
+            font-family: monospace;
+            font-size: 0.72rem;
+            color: #888;
+            margin-top: 4px;
+        }
+        .place-popup .popup-alt-names {
+            margin-top: 6px;
+            font-size: 0.78rem;
+            color: #666;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar { width: 100%; min-width: 100%; position: absolute; z-index: 2000; height: 50vh; }
+            .sidebar.collapsed { margin-left: 0; transform: translateY(-100%); }
+        }
     </style>
 </head>
 <body>
-    <div class="controls">
-        <h1>Toponymia Europaea</h1>
-        <label for="country">Country:</label>
-        <select id="country">
-            <option value="">All</option>
-            <option value="NO">Norway</option>
-            <option value="SE">Sweden</option>
-            <option value="DK">Denmark</option>
-            <option value="FI">Finland</option>
-            <option value="IS">Iceland</option>
-        </select>
-        <label for="name-filter">Name:</label>
-        <input id="name-filter" type="text" placeholder="Filter by name...">
-        <button id="load-btn">Load</button>
-        <span id="status">Ready</span>
+    <div class="app-layout">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h1>Toponymia Europaea</h1>
+                <p>European Place-Name Databank &mdash; Map Explorer</p>
+            </div>
+
+            <div class="search-section">
+                <div class="search-row">
+                    <input type="text" id="search-input" placeholder="Search place names..." autofocus>
+                    <button id="search-btn">Search</button>
+                </div>
+                <div class="filters">
+                    <div>
+                        <label for="filter-country">Country</label>
+                        <select id="filter-country">
+                            <option value="">All countries</option>
+                            <option value="NO">Norway</option>
+                            <option value="SE">Sweden</option>
+                            <option value="DK">Denmark</option>
+                            <option value="FI">Finland</option>
+                            <option value="IS">Iceland</option>
+                            <option value="GB">United Kingdom</option>
+                            <option value="IE">Ireland</option>
+                            <option value="DE">Germany</option>
+                            <option value="NL">Netherlands</option>
+                            <option value="FR">France</option>
+                            <option value="ES">Spain</option>
+                            <option value="PT">Portugal</option>
+                            <option value="IT">Italy</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="filter-type">Place type</label>
+                        <select id="filter-type">
+                            <option value="">All types</option>
+                            <option value="P.">Populated places</option>
+                            <option value="H.">Hydrographic</option>
+                            <option value="T.">Terrain/Relief</option>
+                            <option value="S.">Structures</option>
+                            <option value="A.">Administrative</option>
+                            <option value="L.">Localities</option>
+                            <option value="V.">Vegetation</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="results-section" id="results-section">
+                <div class="results-header" id="results-header">
+                    Enter a name to search, or click "Search" to load all places
+                </div>
+                <div id="results-list"></div>
+            </div>
+        </aside>
+
+        <div class="map-container">
+            <button class="toggle-sidebar" id="toggle-sidebar" title="Toggle sidebar">&#9776;</button>
+            <div id="map"></div>
+            <div class="legend">
+                <h4>Place Types</h4>
+                <div class="legend-item"><span class="legend-dot" style="background:#e74c3c"></span> Populated (P.)</div>
+                <div class="legend-item"><span class="legend-dot" style="background:#3498db"></span> Hydrographic (H.)</div>
+                <div class="legend-item"><span class="legend-dot" style="background:#27ae60"></span> Terrain (T.)</div>
+                <div class="legend-item"><span class="legend-dot" style="background:#f39c12"></span> Structures (S.)</div>
+                <div class="legend-item"><span class="legend-dot" style="background:#9b59b6"></span> Administrative (A.)</div>
+                <div class="legend-item"><span class="legend-dot" style="background:#3388ff"></span> Other</div>
+            </div>
+            <div class="status-bar" id="status-bar">Ready &mdash; search for place names to explore</div>
+        </div>
     </div>
-    <div id="map"></div>
 
     <script>
         const API_BASE = window.location.origin;
 
-        const map = L.map('map').setView([63.0, 15.0], 5);
+        // --- Map setup ---
+        const map = L.map('map', {
+            zoomControl: true,
+            preferCanvas: true,
+        }).setView([60.0, 12.0], 5);
 
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-            maxZoom: 18,
+        // Tile layers
+        const osmLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+            maxZoom: 19,
+        });
+        const topoLayer = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenTopoMap contributors',
+            maxZoom: 17,
+        });
+        osmLayer.addTo(map);
+
+        L.control.layers({
+            'OpenStreetMap': osmLayer,
+            'Topographic': topoLayer,
         }).addTo(map);
 
-        let geojsonLayer = null;
+        // Marker cluster group
+        const clusterGroup = L.markerClusterGroup({
+            maxClusterRadius: 50,
+            spiderfyOnMaxZoom: true,
+            showCoverageOnHover: false,
+            chunkedLoading: true,
+        });
+        map.addLayer(clusterGroup);
 
-        function getPopupContent(props) {
-            let html = `<div class="place-popup">`;
-            html += `<strong>${props.name_form || 'Unknown'}</strong>`;
-            if (props.name_normalized && props.name_normalized !== props.name_form) {
-                html += ` <em>(${props.name_normalized})</em>`;
-            }
-            html += `<div class="meta">`;
-            if (props.place_type) html += `Type: ${props.place_type}<br>`;
-            if (props.country_code) html += `Country: ${props.country_code}<br>`;
-            if (props.language_code) html += `Language: ${props.language_code}<br>`;
-            if (props.source_id) html += `Source ID: ${props.source_id}<br>`;
-            if (props.elevation) html += `Elevation: ${props.elevation}m<br>`;
-            if (props.alternative_names) {
-                const altNames = Object.values(props.alternative_names).flat();
-                if (altNames.length > 0) {
-                    html += `Alt names: ${altNames.slice(0, 5).join(', ')}`;
-                    if (altNames.length > 5) html += ` (+${altNames.length - 5} more)`;
-                    html += `<br>`;
-                }
-            }
-            html += `</div></div>`;
-            return html;
-        }
+        // Track all loaded features for sidebar linkage
+        let currentFeatures = [];
+        let markerMap = new Map(); // sha256 -> marker
 
+        // --- Helpers ---
         function getMarkerColor(placeType) {
             if (!placeType) return '#3388ff';
             if (placeType.startsWith('P.')) return '#e74c3c';
@@ -117,63 +374,263 @@
             return '#3388ff';
         }
 
-        async function loadData() {
-            const country = document.getElementById('country').value;
-            const name = document.getElementById('name-filter').value.trim();
-            const status = document.getElementById('status');
+        function getPlaceTypeLabel(placeType) {
+            if (!placeType) return 'Unknown';
+            if (placeType.startsWith('P.')) return 'Populated';
+            if (placeType.startsWith('H.')) return 'Hydrographic';
+            if (placeType.startsWith('T.')) return 'Terrain';
+            if (placeType.startsWith('S.')) return 'Structure';
+            if (placeType.startsWith('A.')) return 'Administrative';
+            if (placeType.startsWith('L.')) return 'Locality';
+            if (placeType.startsWith('V.')) return 'Vegetation';
+            return placeType;
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+
+        function getPopupContent(props, coords) {
+            let html = `<div class="place-popup">`;
+            html += `<div class="popup-title"><strong>${escapeHtml(props.name_form || 'Unknown')}</strong>`;
+            if (props.name_normalized && props.name_normalized !== props.name_form) {
+                html += ` <em>(${escapeHtml(props.name_normalized)})</em>`;
+            }
+            html += `</div>`;
+            html += `<div class="popup-meta">`;
+            if (props.place_type) html += `<span>${escapeHtml(getPlaceTypeLabel(props.place_type))}</span>`;
+            if (props.country_code) html += `<span>${escapeHtml(props.country_code)}</span>`;
+            if (props.language_code) html += `<span>Lang: ${escapeHtml(props.language_code)}</span>`;
+            if (props.source_id) html += `<span>Src: ${escapeHtml(props.source_id)}</span>`;
+            if (props.elevation) html += `<span>${props.elevation}m</span>`;
+            html += `</div>`;
+            html += `<div class="popup-coords">${coords[1].toFixed(5)}, ${coords[0].toFixed(5)}</div>`;
+            if (props.alternative_names) {
+                const altNames = Object.values(props.alternative_names).flat();
+                if (altNames.length > 0) {
+                    html += `<div class="popup-alt-names">Also: ${altNames.slice(0, 6).map(n => escapeHtml(n)).join(', ')}`;
+                    if (altNames.length > 6) html += ` (+${altNames.length - 6})`;
+                    html += `</div>`;
+                }
+            }
+            html += `</div>`;
+            return html;
+        }
+
+        function setStatus(msg) {
+            document.getElementById('status-bar').textContent = msg;
+        }
+
+        // --- Data loading & display ---
+        async function searchPlaces() {
+            const query = document.getElementById('search-input').value.trim();
+            const country = document.getElementById('filter-country').value;
+            const placeType = document.getElementById('filter-type').value;
 
             const params = new URLSearchParams();
             if (country) params.set('country', country);
-            if (name) params.set('name', name);
+            if (query) params.set('name', query);
+            params.set('limit', '5000');
 
-            status.textContent = 'Loading...';
+            setStatus('Loading...');
+            document.getElementById('results-header').textContent = 'Searching...';
 
             try {
-                const url = `${API_BASE}/api/v1/export/geojson?${params.toString()}`;
+                const url = `${API_BASE}/api/v1/places?${params.toString()}`;
                 const resp = await fetch(url);
                 if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-                const data = await resp.json();
+                let data = await resp.json();
 
-                if (geojsonLayer) {
-                    map.removeLayer(geojsonLayer);
+                // Client-side place_type filter
+                if (placeType) {
+                    data = data.filter(p => (p.place_type || '').startsWith(placeType));
                 }
 
-                geojsonLayer = L.geoJSON(data, {
-                    pointToLayer: (feature, latlng) => {
-                        const color = getMarkerColor(feature.properties.place_type);
-                        return L.circleMarker(latlng, {
-                            radius: 6,
-                            fillColor: color,
-                            color: '#fff',
-                            weight: 1,
-                            opacity: 1,
-                            fillOpacity: 0.8,
-                        });
-                    },
-                    onEachFeature: (feature, layer) => {
-                        layer.bindPopup(getPopupContent(feature.properties));
-                    },
-                }).addTo(map);
+                displayResults(data);
+                plotOnMap(data);
 
-                const count = data.features.length;
-                status.textContent = `${count.toLocaleString()} places loaded`;
-
-                if (count > 0) {
-                    map.fitBounds(geojsonLayer.getBounds(), { padding: [20, 20] });
-                }
+                const total = data.length;
+                setStatus(`${total.toLocaleString()} place${total !== 1 ? 's' : ''} found`);
+                document.getElementById('results-header').textContent =
+                    `${total.toLocaleString()} result${total !== 1 ? 's' : ''}` +
+                    (query ? ` for "${query}"` : '') +
+                    (country ? ` in ${country}` : '');
             } catch (err) {
-                status.textContent = `Error: ${err.message}`;
-                console.error('Failed to load data:', err);
+                setStatus(`Error: ${err.message}`);
+                document.getElementById('results-header').textContent = 'Error loading results';
+                console.error('Search failed:', err);
             }
         }
 
-        document.getElementById('load-btn').addEventListener('click', loadData);
-        document.getElementById('name-filter').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') loadData();
+        function plotOnMap(places) {
+            clusterGroup.clearLayers();
+            markerMap.clear();
+
+            places.forEach(place => {
+                if (place.latitude == null || place.longitude == null) return;
+                const color = getMarkerColor(place.place_type);
+                const marker = L.circleMarker([place.latitude, place.longitude], {
+                    radius: 7,
+                    fillColor: color,
+                    color: '#fff',
+                    weight: 1.5,
+                    opacity: 1,
+                    fillOpacity: 0.85,
+                });
+                const coords = [place.longitude, place.latitude];
+                marker.bindPopup(getPopupContent(place, coords));
+                clusterGroup.addLayer(marker);
+                if (place._sha256) {
+                    markerMap.set(place._sha256, marker);
+                }
+            });
+
+            if (places.length > 0) {
+                const bounds = clusterGroup.getBounds();
+                if (bounds.isValid()) {
+                    map.fitBounds(bounds, { padding: [40, 40], maxZoom: 12 });
+                }
+            }
+        }
+
+        function displayResults(places) {
+            currentFeatures = places;
+            const listEl = document.getElementById('results-list');
+
+            if (places.length === 0) {
+                listEl.innerHTML = '<div class="no-results">No places found. Try a different search.</div>';
+                return;
+            }
+
+            listEl.innerHTML = places.map((place, idx) => {
+                const normalized = (place.name_normalized && place.name_normalized !== place.name_form)
+                    ? ` <span class="normalized">(${escapeHtml(place.name_normalized)})</span>` : '';
+                const meta = [
+                    place.country_code,
+                    getPlaceTypeLabel(place.place_type),
+                    place.source_id,
+                ].filter(Boolean).join(' · ');
+                const coords = (place.latitude != null && place.longitude != null)
+                    ? `${place.latitude.toFixed(4)}, ${place.longitude.toFixed(4)}` : '';
+                return `<div class="result-item" data-idx="${idx}">
+                    <div class="name">${escapeHtml(place.name_form)}${normalized}</div>
+                    <div class="meta">${escapeHtml(meta)}</div>
+                    <div class="coords">${coords}</div>
+                </div>`;
+            }).join('');
+
+            // Click handlers for result items
+            listEl.querySelectorAll('.result-item').forEach(el => {
+                el.addEventListener('click', () => {
+                    const idx = parseInt(el.dataset.idx, 10);
+                    flyToPlace(idx);
+                    // Highlight active
+                    listEl.querySelectorAll('.result-item').forEach(e => e.classList.remove('active'));
+                    el.classList.add('active');
+                });
+            });
+        }
+
+        function flyToPlace(idx) {
+            const place = currentFeatures[idx];
+            if (!place || place.latitude == null || place.longitude == null) return;
+
+            const latlng = [place.latitude, place.longitude];
+            map.flyTo(latlng, 14, { duration: 1.2 });
+
+            // Open popup on the marker
+            const marker = markerMap.get(place._sha256);
+            if (marker) {
+                // Unspiderfy cluster if needed
+                clusterGroup.zoomToShowLayer(marker, () => {
+                    marker.openPopup();
+                });
+            } else {
+                // Fallback: create a temporary popup at location
+                L.popup()
+                    .setLatLng(latlng)
+                    .setContent(getPopupContent(place, [place.longitude, place.latitude]))
+                    .openOn(map);
+            }
+        }
+
+        // --- Spatial search: load places visible in current map bounds ---
+        async function loadVisibleArea() {
+            const bounds = map.getBounds();
+            const params = new URLSearchParams();
+            params.set('min_lat', bounds.getSouth().toFixed(5));
+            params.set('max_lat', bounds.getNorth().toFixed(5));
+            params.set('min_lon', bounds.getWest().toFixed(5));
+            params.set('max_lon', bounds.getEast().toFixed(5));
+
+            const country = document.getElementById('filter-country').value;
+            if (country) params.set('country', country);
+            const placeType = document.getElementById('filter-type').value;
+            params.set('limit', '5000');
+
+            setStatus('Loading visible area...');
+
+            try {
+                const url = `${API_BASE}/api/v1/places/bbox?${params.toString()}`;
+                const resp = await fetch(url);
+                if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+                let data = await resp.json();
+
+                if (placeType) {
+                    data = data.filter(p => (p.place_type || '').startsWith(placeType));
+                }
+
+                displayResults(data);
+                plotOnMap(data);
+                setStatus(`${data.length.toLocaleString()} places in view`);
+                document.getElementById('results-header').textContent =
+                    `${data.length.toLocaleString()} places in current view`;
+            } catch (err) {
+                // Fallback to regular search if bbox endpoint not available
+                if (err.message.includes('404')) {
+                    setStatus('Bbox endpoint not available — use search');
+                } else {
+                    setStatus(`Error: ${err.message}`);
+                }
+            }
+        }
+
+        // --- Event handlers ---
+        document.getElementById('search-btn').addEventListener('click', searchPlaces);
+        document.getElementById('search-input').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') searchPlaces();
         });
 
-        // Auto-load on page open
-        loadData();
+        document.getElementById('toggle-sidebar').addEventListener('click', () => {
+            document.getElementById('sidebar').classList.toggle('collapsed');
+        });
+
+        // Load on filter change
+        document.getElementById('filter-country').addEventListener('change', () => {
+            if (currentFeatures.length > 0 || document.getElementById('search-input').value.trim()) {
+                searchPlaces();
+            }
+        });
+        document.getElementById('filter-type').addEventListener('change', () => {
+            if (currentFeatures.length > 0 || document.getElementById('search-input').value.trim()) {
+                searchPlaces();
+            }
+        });
+
+        // Keyboard shortcut: Ctrl+K to focus search
+        document.addEventListener('keydown', (e) => {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+                e.preventDefault();
+                document.getElementById('search-input').focus();
+                document.getElementById('search-input').select();
+            }
+        });
+
+        // Initial load
+        searchPlaces();
     </script>
 </body>
 </html>
