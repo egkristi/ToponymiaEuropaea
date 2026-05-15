@@ -1,0 +1,175 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/egkristi/ToponymiaEuropaea/databank/schema/attestation.v1.json",
+  "title": "Toponymia Europaea Attestation Record",
+  "description": "A single historical name attestation from a primary source. Used for batch imports and validation.",
+  "type": "object",
+  "required": ["form", "language_code", "year_from", "source"],
+  "properties": {
+    "place_id": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Stable place identifier (Wikidata QID, source-specific ID, or internal UUID)"
+    },
+    "form": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Exact attested name form as written in the source (Unicode NFC-normalized)"
+    },
+    "normalized": {
+      "type": "string",
+      "description": "Normalized lowercase form for matching and deduplication"
+    },
+    "language_code": {
+      "type": "string",
+      "pattern": "^[a-z]{2,3}$",
+      "description": "ISO 639-3 language code of the attested form (e.g., 'non' for Old Norse, 'ang' for Old English)"
+    },
+    "script": {
+      "type": ["string", "null"],
+      "pattern": "^[A-Z][a-z]{3}$",
+      "description": "ISO 15924 script code (e.g., 'Latn', 'Runr', 'Cyrl')"
+    },
+    "year_from": {
+      "type": "integer",
+      "minimum": -3000,
+      "maximum": 2100,
+      "description": "Earliest year of attestation (CE; negative for BCE)"
+    },
+    "year_to": {
+      "type": ["integer", "null"],
+      "minimum": -3000,
+      "maximum": 2100,
+      "description": "Latest year of attestation if date range (CE; null = point date)"
+    },
+    "date_precision": {
+      "type": ["string", "null"],
+      "enum": ["exact", "decade", "quarter_century", "century", "estimated", null],
+      "description": "Precision of the date assignment"
+    },
+    "source": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Citation string for the attestation (e.g., 'DN I 23, 1234' or 'Rygh NG XII p. 45')"
+    },
+    "source_id": {
+      "type": ["string", "null"],
+      "description": "Reference to source entry in sources.jsonl"
+    },
+    "source_page": {
+      "type": ["string", "null"],
+      "description": "Page, folio, or entry reference within the source"
+    },
+    "context": {
+      "type": ["string", "null"],
+      "description": "Surrounding text, reason for naming, or historical context"
+    },
+    "phonetic": {
+      "type": ["string", "null"],
+      "description": "IPA or phonetic transcription of the attested form"
+    },
+    "confidence": {
+      "type": ["number", "null"],
+      "minimum": 0.0,
+      "maximum": 1.0,
+      "description": "Confidence in the reading/transcription (0.0 = uncertain, 1.0 = certain)"
+    },
+    "is_current": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether this form is currently in use"
+    },
+    "lemma": {
+      "type": ["string", "null"],
+      "description": "Canonical lemma form extracted from this attestation (e.g., 'heim', 'berg', 'by')"
+    },
+    "lemma_language": {
+      "type": ["string", "null"],
+      "pattern": "^[a-z]{2,3}$",
+      "description": "ISO 639-3 language code of the lemma if different from attestation"
+    },
+    "components": {
+      "type": ["array", "null"],
+      "description": "Morphological decomposition of the name form",
+      "items": {
+        "type": "object",
+        "required": ["component", "position", "morph_type"],
+        "properties": {
+          "component": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The morpheme text"
+          },
+          "position": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Zero-based position in the name (left to right)"
+          },
+          "morph_type": {
+            "type": "string",
+            "enum": ["prefix", "stem", "suffix", "compound_head", "compound_modifier", "infix", "genitive"],
+            "description": "Morphological role of this component"
+          },
+          "lemma": {
+            "type": ["string", "null"],
+            "description": "Dictionary form of this component"
+          },
+          "meaning": {
+            "type": ["string", "null"],
+            "description": "English gloss or semantic meaning"
+          },
+          "language_code": {
+            "type": ["string", "null"],
+            "pattern": "^[a-z]{2,3}$",
+            "description": "Language code if different from parent attestation"
+          }
+        }
+      }
+    },
+    "collector": {
+      "type": ["string", "null"],
+      "description": "Person or system that created this record"
+    },
+    "collection_method": {
+      "type": ["string", "null"],
+      "enum": ["manual_transcription", "ocr", "automated_extraction", "field_recording", "database_export", null],
+      "description": "How this attestation was obtained from the source"
+    },
+    "notes": {
+      "type": ["string", "null"],
+      "description": "Free-text notes about this attestation (anomalies, editorial remarks)"
+    }
+  },
+  "additionalProperties": true,
+  "examples": [
+    {
+      "place_id": "Q1522648",
+      "form": "Ásgarðr",
+      "normalized": "asgardr",
+      "language_code": "non",
+      "year_from": 1320,
+      "year_to": null,
+      "date_precision": "exact",
+      "source": "DN V 67, 1320",
+      "source_id": "DN_V",
+      "confidence": 0.95,
+      "lemma": "garðr",
+      "lemma_language": "non",
+      "components": [
+        {"component": "ás", "position": 0, "morph_type": "compound_modifier", "meaning": "god/ridge"},
+        {"component": "garðr", "position": 1, "morph_type": "compound_head", "meaning": "farm/enclosure"}
+      ]
+    },
+    {
+      "place_id": "Q1234567",
+      "form": "Biarmalandia",
+      "normalized": "biarmalandia",
+      "language_code": "lat",
+      "year_from": 890,
+      "date_precision": "estimated",
+      "source": "Historia Norwegiae, ca. 1170 (describing earlier events)",
+      "confidence": 0.7,
+      "context": "Latinized form of ON Bjarmaland, possibly referring to Perm region"
+    }
+  ]
+}
