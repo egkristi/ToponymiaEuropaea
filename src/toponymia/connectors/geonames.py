@@ -23,6 +23,48 @@ from toponymia.connectors.base import BaseConnector, BoundingBox, ConnectorResul
 
 logger = logging.getLogger(__name__)
 
+# Default primary language for GeoNames records by country code (ISO 639-3).
+# GeoNames doesn't tag the primary name with a language, so we infer from country.
+_COUNTRY_DEFAULT_LANGUAGE: dict[str, str] = {
+    "NO": "nor",
+    "SE": "swe",
+    "DK": "dan",
+    "FI": "fin",
+    "IS": "isl",
+    "GB": "eng",
+    "IE": "eng",
+    "FR": "fra",
+    "DE": "deu",
+    "NL": "nld",
+    "BE": "nld",
+    "AT": "deu",
+    "CH": "deu",
+    "ES": "spa",
+    "PT": "por",
+    "IT": "ita",
+    "PL": "pol",
+    "CZ": "ces",
+    "SK": "slk",
+    "HU": "hun",
+    "RO": "ron",
+    "BG": "bul",
+    "RS": "srp",
+    "HR": "hrv",
+    "SI": "slv",
+    "BA": "bos",
+    "ME": "srp",
+    "MK": "mkd",
+    "AL": "sqi",
+    "GR": "ell",
+    "TR": "tur",
+    "EE": "est",
+    "LV": "lav",
+    "LT": "lit",
+    "RU": "rus",
+    "UA": "ukr",
+    "BY": "bel",
+}
+
 # GeoNames TSV column indices
 _GEONAME_ID = 0
 _NAME = 1
@@ -94,11 +136,13 @@ class GeoNamesConnector(BaseConnector):
 
                 # Parse alternative names
                 alt_names: dict[str, list[str]] = {}
+                country_cc = row[_COUNTRY_CODE].upper()
+                primary_lang = _COUNTRY_DEFAULT_LANGUAGE.get(country_cc, "und")
                 if row[_ALTERNATENAMES]:
                     for alt in row[_ALTERNATENAMES].split(","):
                         alt = alt.strip()
                         if alt:
-                            alt_names.setdefault("und", []).append(alt)
+                            alt_names.setdefault(primary_lang, []).append(alt)
 
                 yield ConnectorResult(
                     latitude=lat,
@@ -106,7 +150,7 @@ class GeoNamesConnector(BaseConnector):
                     elevation_m=elevation,
                     name_form=row[_NAME],
                     name_normalized=row[_ASCIINAME] or row[_NAME],
-                    language_code="und",  # GeoNames doesn't specify language per main name
+                    language_code=primary_lang,
                     place_type=f"{row[_FEATURE_CLASS]}.{row[_FEATURE_CODE]}",
                     source_id=row[_GEONAME_ID],
                     geonames_id=int(row[_GEONAME_ID]),
