@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Kernel Inclusion Criteria",
+  "description": "Machine-readable criteria for gold-standard kernel inclusion",
+  "criteria": {
+    "min_sources": 1,
+    "max_uncertainty_m": 100,
+    "required_fields": [
+      "name_form",
+      "latitude",
+      "longitude",
+      "source_id",
+      "language_code",
+      "verified_by",
+      "verified_date",
+      "etymology",
+      "segmentation",
+      "sources"
+    ],
+    "etymology_required_fields": [
+      "lemma",
+      "meaning",
+      "language_code"
+    ],
+    "segmentation_item_fields": [
+      "component",
+      "morph_type",
+      "meaning"
+    ]
+  }
+}
