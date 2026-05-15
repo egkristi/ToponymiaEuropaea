@@ -36,6 +36,12 @@
 - JSONL archival snapshots attached to releases with checksums
 - 199 language modules spanning 7,000+ years of European linguistic history
 - Phonetic algorithm evaluation benchmark (decision: custom normalizer outperforms BMPM for Nordic toponyms)
+- **Parquet/DuckDB analytical layer** — SQL queries over databank without loading into memory
+- **Docker Compose 3-layer stack** — PostgreSQL+PostGIS, API service, seed pipeline
+- **Sync pipeline** — JSONL → PostgreSQL → Parquet with checksum verification at each stage
+- **Wikidata etymology extraction** — P138 (named after) for 18 European countries with databank matching
+- **Multi-source coordinate resolution** — priority hierarchy, conflict detection (100m/1km thresholds)
+- **License compatibility matrix** — ODbL/CC-BY/CC0 compliance documentation
 
 **Language coverage (201 modules):**
 

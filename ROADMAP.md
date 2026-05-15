@@ -224,7 +224,7 @@ The framework has 15 seed records. To produce real research, it needs real data.
 | 10.1 | Bulk GeoNames import (Norway) | ✅ | 500 records ingested, sorted, signed, verified |
 | 10.2 | Kartverket SSR bulk import | ✅ | **HIGH** | Connector updated to new API, 500 Oslo records ingested. CLI: `toponymia ingest kartverket` |
 | 10.3 | Bulk GeoNames import (Nordic) | ✅ | 500 each for SE, FI, DK, IS — 2500 total records |
-| 10.4 | Wikidata etymology extraction | ⬚ | MEDIUM | P138 (named after) for all European settlements |
+| 10.4 | Wikidata etymology extraction | ✅ | MEDIUM | P138 pipeline: 18 countries, coordinate matching, JSONL export. See `src/toponymia/pipelines/etymology.py` |
 | 10.5 | Norske Gaardnavne (Rygh) digitized | ⬚ | HIGH | 19th-century authoritative Norwegian farm-name corpus |
 | 10.6 | EPNS volumes (England) | ⬚ | MEDIUM | English Place-Name Society historical records |
 | 10.7 | Attestations from Diplomatarium Norvegicum | ⬚ | HIGH | Medieval charter attestations with dates |
@@ -260,12 +260,12 @@ The current model links attestations to places, but **names as types** (e.g., "B
 
 | # | Item | Status | Priority | Notes |
 |---|------|--------|----------|-------|
-| 11.2.1 | Curated JSONL kernel (gold-standard records) | ⬚ | **HIGH** | Keep in git: ontology, seed data, manually verified. Tens of thousands max. |
-| 11.2.2 | PostgreSQL+PostGIS as operational store | ⬚ | **HIGH** | All published records, transactional writes from ingest. Local dev via Docker. |
-| 11.2.3 | Parquet/DuckDB analytical layer | ⬚ | **HIGH** | Immutable snapshots for statistical runs (permutation tests over millions of rows) |
-| 11.2.4 | Sync pipeline: JSONL → Postgres → Parquet | ⬚ | HIGH | Unidirectional flow with checksums |
-| 11.2.5 | Local dev setup: `docker compose up` → full 3-layer | ⬚ | HIGH | Simulate production locally for testing |
-| 11.2.6 | JSONL export on release (archival snapshots) | ⬚ | MEDIUM | Git-tagged exports for reproducibility |
+| 11.2.1 | Curated JSONL kernel (gold-standard records) | ✅ | **HIGH** | `databank/kernel/gold.jsonl` with 8 manually verified records. Issue #34. |
+| 11.2.2 | PostgreSQL+PostGIS as operational store | ✅ | **HIGH** | Schema in `docker/initdb/02-schema.sql`, spatial indexes, upsert sync. Issue #22. |
+| 11.2.3 | Parquet/DuckDB analytical layer | ✅ | **HIGH** | `src/toponymia/pipelines/analytical.py` — export, partition, DuckDB SQL. Issue #23. |
+| 11.2.4 | Sync pipeline: JSONL → Postgres → Parquet | ✅ | HIGH | `src/toponymia/pipelines/sync.py` — checksums, manifest verify, full_sync(). Issue #25. |
+| 11.2.5 | Local dev setup: `docker compose up` → full 3-layer | ✅ | HIGH | `docker-compose.yml` with db, api, seed services. Issue #26. |
+| 11.2.6 | JSONL export on release (archival snapshots) | ✅ | MEDIUM | CI workflow creates JSONL archives on tagged releases. Issue #31. |
 
 ### 11.3 — Spatial Indexing (H3/S2)
 
@@ -305,10 +305,10 @@ Current `interpretations` table stores flat probabilities. For proper Bayesian h
 
 | # | Item | Status | Priority | Notes |
 |---|------|--------|----------|-------|
-| 11.6.1 | Multi-source coordinate strategy | ⬚ | MEDIUM | When Kartverket, GeoNames, Wikidata disagree — explicit resolution |
-| 11.6.2 | Source priority hierarchy for geo | ⬚ | MEDIUM | National authority > GeoNames > OSM > Wikidata |
-| 11.6.3 | License compatibility matrix | ⬚ | MEDIUM | CC-BY + ODbL + CC0 → output license determination |
-| 11.6.4 | ODbL share-alike compliance | ⬚ | MEDIUM | OSM-derived data must maintain ODbL chain |
+| 11.6.1 | Multi-source coordinate strategy | ✅ | MEDIUM | `src/toponymia/pipelines/coordinates.py` — haversine, conflict detection. Issue #32. |
+| 11.6.2 | Source priority hierarchy for geo | ✅ | MEDIUM | National authority > gazetteer > GeoNames > OSM > Wikidata. See `docs/decisions/003-coordinate-resolution.md` |
+| 11.6.3 | License compatibility matrix | ✅ | MEDIUM | `docs/LICENSING.md` — full source mapping + compatibility matrix. Issue #33. |
+| 11.6.4 | ODbL share-alike compliance | ✅ | MEDIUM | Documented in LICENSING.md: derived datasets inherit ODbL for OSM-sourced records. |
 | 11.6.5 | GDPR for historical person-names | ⬚ | LOW | Jurisdiction-specific "dead enough" thresholds |
 
 ---
@@ -329,6 +329,10 @@ The litmus test (May 2025) proved the pipeline works mechanically. Data populati
 
 **Status: 4,000+ tests passing (incl. 3,184 parametrized module tests), mypy strict clean, 3018 databank records, 199 language modules with auto-discovery registry, 8 gold-standard kernel records.**
 
+**Milestone 11.2 COMPLETE** — Full 3-layer persistence: JSONL kernel, PostgreSQL+PostGIS, Parquet/DuckDB, sync pipeline with checksums.
+**Milestone 11.6 (4/5) COMPLETE** — Coordinate resolution, license matrix, ODbL compliance. Only GDPR analysis remains.
+**Issue #19 COMPLETE** — Wikidata P138 etymology extraction pipeline (18 European countries).
+
 ### Immediate priorities (current sprint)
 
 1. ~~**Milestone 11.4.4** — Cross-source deduplication pipeline~~ ✅
@@ -341,13 +345,19 @@ The litmus test (May 2025) proved the pipeline works mechanically. Data populati
 8. ~~**Issue #31** — JSONL archival snapshots attached to releases~~ ✅
 9. ~~**Issue #34** — Gold-standard kernel with validation tooling~~ ✅
 10. ~~**Issue #27** — Evaluate Beider-Morse Phonetic Matching (decision: keep Nordic normalizer)~~ ✅
+11. ~~**Issue #33** — License compatibility matrix (docs/LICENSING.md)~~ ✅
+12. ~~**Issue #32** — Multi-source coordinate resolution strategy~~ ✅
+13. ~~**Issue #23** — Parquet/DuckDB analytical layer~~ ✅
+14. ~~**Issue #26** — Docker Compose full 3-layer stack~~ ✅
+15. ~~**Issue #19** — Wikidata etymology extraction (P138)~~ ✅
+16. ~~**Issue #22** — PostgreSQL+PostGIS operational store~~ ✅
+17. ~~**Issue #25** — Sync pipeline: JSONL → Postgres → Parquet~~ ✅
 
 ### Next phase
 
-4. **Milestone 11.2.5** — Local 3-layer dev setup (simulate production)
-5. **Milestone 11.2.1–11.2.3** — Layered persistence (JSONL kernel + Postgres + Parquet)
-6. **Milestone 10.5/10.7** — Historical sources (Norske Gaardnavne, Diplomatarium Norvegicum)
-7. **Milestone 2.8–2.11** — Additional language modules (Old Slavic, Basque, OHG, Arabic)
+1. **Milestone 10.5/10.7** — Historical sources (Norske Gaardnavne, Diplomatarium Norvegicum)
+2. **Milestone 2.8–2.11** — Additional language modules (Old Slavic, Basque, OHG, Arabic)
+3. **Milestone 10.8–10.9** — Seed data for UK/Ireland and Iberia
 
 ### Later
 
@@ -363,8 +373,8 @@ The litmus test (May 2025) proved the pipeline works mechanically. Data populati
 - **v0.1.0** — Framework foundation, architecture, proof-of-concept.
 - **v0.2.0** — Expanded dictionaries (120+ ON entries), attestation analysis, analysis bridge, end-to-end workflow command, dependency trim. Pipeline runs from CLI.
 - **v0.3.0** — 3018 records (5 Nordic countries, 2 sources), 14 language modules, H3 spatial indexing, phonetic dedup, diachronic linking, Bayesian etymology framework + comparison test, language contact/political renaming tests, Ripley's K spatial + name change rate + sacred geometry + catastrophe clustering + sensory correspondence tests, Kartverket + Lantmäteriet + MML + OS + IGN connectors. 707 tests, mypy strict clean.
-- **v0.4.0** (current) — 201 language modules (all European, ancient/extinct, and adjacent civilizations), 820+ tests, full CI pipeline, comprehensive linguistic coverage from Proto-Indo-European to modern minority languages.
-- **v0.5.0** — Historical sources (Norske Gaardnavne, Diplomatarium Norvegicum), Celtic/Latin modules.
+- **v0.4.0** — 201 language modules (all European, ancient/extinct, and adjacent civilizations), 820+ tests, full CI pipeline, comprehensive linguistic coverage from Proto-Indo-European to modern minority languages.
+- **v0.5.0** (current) — Full 3-layer persistence (JSONL+Postgres+Parquet), sync pipeline, Wikidata etymology extraction, Docker Compose stack, coordinate resolution, license matrix. 4000+ tests.
 - **v0.6.0** — API and visualization layer, 6+ perspective modules
 - **v0.7.0** — Full Bayesian updating, publication-ready research outputs
 - **v1.0.0** — First publishable research result produced using the framework
