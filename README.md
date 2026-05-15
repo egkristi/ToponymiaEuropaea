@@ -9,16 +9,17 @@
 
 ---
 
-## Current Status (v0.3.0)
+## Current Status (v0.4.0)
 
 | Metric | Value |
 |--------|-------|
 | **Databank records** | 3,018 (5 Nordic countries, 2 sources) |
 | **Data sources** | GeoNames (2,507 records), Kartverket SSR (504 records) |
-| **Language modules** | 10 (Old Norse, Proto-Germanic, Northern Sámi, Finnish, Danish, Swedish, Old English, Irish/Scottish Gaelic, Welsh, Latin) |
-| **Statistical tests** | 7 families (spatial, correspondence, astronomical, religious, temporal, migration, robustness) |
-| **Tests passing** | 508 |
+| **Language modules** | 201 (covering all European languages, ancient/extinct, and adjacent civilizations) |
+| **Statistical tests** | 12 families (spatial, correspondence, astronomical, religious, temporal, migration, robustness, Bayesian, sensory, Ripley's K, name change rate, catastrophe) |
+| **Tests passing** | 820+ |
 | **Type safety** | mypy strict, 0 errors |
+| **CI pipeline** | Lint + format + mypy + tests (3.12/3.13) + ontology + databank validation |
 
 **Key capabilities:**
 - Cross-source deduplication pipeline (phonetic blocking + H3 spatial verification)
@@ -28,6 +29,28 @@
 - Name lemma detection and frequency analysis across 5 countries
 - SHA-256 integrity signing with MANIFEST verification
 - Full CLI: ingest, analyze, test, databank, lemma commands
+- Bayesian etymology framework with hypothesis sets and evidence updating
+- 201 language modules spanning 7,000+ years of European linguistic history
+
+**Language coverage (201 modules):**
+
+| Category | Languages |
+|----------|-----------|
+| **Germanic** | Old Norse, Proto-Germanic, Old English, Old High German, Danish, Swedish, Norwegian, Icelandic, Faroese, Low German, Luxembourgish, Yiddish, Old Saxon, Middle High German, Middle English, Middle Dutch |
+| **Celtic** | Irish/Gaelic, Welsh, Breton, Cornish, Manx, Scots Gaelic, Cumbric, Gaulish, Celtiberian, Lepontic, Galatian, Proto-Celtic |
+| **Romance** | Latin, Portuguese, Galician, Spanish, Catalan, Occitan, French, Italian, Romanian, Sardinian, Corsican, Aragonese, Asturian, Mirandese, Friulian, Ladin, Romansh, Aromanian, Dalmatian, Mozarabic, Old Provencal, Ladino |
+| **Slavic** | Old Slavic, Russian, Ukrainian, Belarusian, Polish, Czech, Slovak, Serbian, Croatian, Slovenian, Bulgarian, Macedonian, Upper/Lower Sorbian, Kashubian, Old East Slavic, Polabian |
+| **Baltic** | Lithuanian, Latvian, Old Prussian, Curonian, Semigallian, Selonian, Galindian, Sudovian, Proto-Balto-Slavic |
+| **Uralic/Finnic** | Finnish, Northern Sami, South/Lule/Pite/Ume/Skolt/Kildin Sami, Estonian, Hungarian, Karelian, Veps, Livonian, Voro, Erzya, Moksha, Mari, Udmurt, Komi |
+| **Turkic** | Turkish, Azerbaijani, Gagauz, Crimean Tatar, Chuvash, Uzbek, Kazakh, Turkmen |
+| **Ancient/Pre-Roman** | Etruscan, Iberian, Tartessian, Rhaetian, Ancient Ligurian, Lusitanian, Basque |
+| **Italic** | Oscan, Umbrian, Faliscan, Proto-Italic |
+| **Greek/Anatolian** | Ancient Greek, Mycenaean, Modern Greek, Hittite, Luwian, Lydian, Lycian, Phrygian |
+| **Paleo-Balkan** | Thracian, Dacian, Illyrian, Messapian, Venetic |
+| **Caucasian** | Georgian, Armenian, Abkhaz, Adyghe, Chechen, Avar, Lezgian, Svan, Laz, Urartian |
+| **Semitic/Near East** | Arabic/Moorish, Hebrew, Aramaic, Phoenician, Punic, Ugaritic, Akkadian, Sumerian |
+| **Iranian** | Ossetian, Kurdish, Old Persian, Sogdian, Bactrian, Khwarezmian, Parthian, Avestan, Proto-Indo-Iranian |
+| **Other** | Maltese, Romani, Hunnic, Pecheneg, Crimean Gothic, Langobardic, Burgundian, Vandalic, Hurrian, Elamite, and more |
 
 ---
 
@@ -922,7 +945,7 @@ toponymia-europaea/
 │       │   ├── spatial.py            # H3 hierarchical spatial indexing
 │       │   ├── validate.py           # Schema validation
 │       │   └── ...
-│       ├── languages/                # Language-specific modules
+│       ├── languages/                # Language-specific modules (201 modules)
 │       │   ├── __init__.py
 │       │   ├── base.py              # BaseLanguageModule interface
 │       │   ├── old_norse.py         # 120+ elements, compound analysis
@@ -930,7 +953,9 @@ toponymia-europaea/
 │       │   ├── northern_sami.py     # Northern Sámi (sme)
 │       │   ├── finnish.py           # Finnish (suomi), vowel harmony
 │       │   ├── danish.py            # Danish (dan)
-│       │   └── swedish.py           # Swedish (swe)
+│       │   ├── swedish.py           # Swedish (swe)
+│       │   ├── ...                  # + 193 more: all European, ancient, Caucasian,
+│       │   └── ...                  #   Near Eastern, and Central Asian languages
 │       ├── statistics/               # Statistical testing framework
 │       │   ├── __init__.py
 │       │   ├── base.py              # BaseTest, PlaceData, StatFamily, StatStatus
@@ -969,7 +994,7 @@ toponymia-europaea/
 │       └── v1.0.0/
 │           ├── name_types.skos.ttl
 │           └── perspectives.skos.ttl
-├── tests/                            # 826 tests, mypy strict clean
+├── tests/                            # 820+ tests, mypy strict clean
 │   ├── conftest.py
 │   ├── test_cli/                    # CLI command tests
 │   ├── test_connectors/             # Connector tests (incl. Kartverket)

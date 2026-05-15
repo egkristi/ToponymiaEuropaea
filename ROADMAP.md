@@ -4,7 +4,7 @@ This roadmap tracks the project's development from initial framework to producti
 
 **Legend:** ✅ Done | 🔄 In Progress | ⬚ Not Started
 
-**Current status:** 393 tests passing, 0 warnings, CI green (lint + mypy strict + test py3.12/3.13 + ontology + databank validation). 2500 GeoNames records (5 Nordic countries × 500). 7 language modules. End-to-end: `toponymia analyze element nes --country NO` runs databank → segmentation → statistical test → results.
+**Current status:** 820+ tests passing, 0 warnings, CI green (lint + mypy strict + test py3.12/3.13 + ontology + databank validation). 3018 records (5 Nordic countries × 2 sources). 201 language modules. End-to-end: `toponymia analyze element nes --country NO` runs databank → segmentation → statistical test → results.
 
 ---
 
@@ -58,7 +58,7 @@ Implement the 5-stage onboarding process in code.
 
 ---
 
-## Milestone 2 — Language Modules
+## Milestone 2 — Language Modules (Complete)
 
 Add language modules for major European toponymic traditions.
 
@@ -77,6 +77,13 @@ Add language modules for major European toponymic traditions.
 | 2.11 | Arabic/Moorish module | ✅ | ArabicMoorishModule: 13 prefixes, 7 suffixes, 31 elements; al-Andalus substrate. 18 tests. |
 | 2.12 | Danish module | ✅ | -by, -torp/-drup, -toft, -lev, -løse. Segment, classify, etymologize. 22 tests. |
 | 2.13 | Swedish module | ✅ | -torp, -rud, -ås, -tuna, -köping. Segment, classify, etymologize. 23 tests. |
+| 2.14 | Norwegian module | ✅ | Norwegian-specific phonology (nob/nno) |
+| 2.15 | All Nordic languages | ✅ | Icelandic, Faroese, + 7 Sami varieties |
+| 2.16 | All European living languages | ✅ | 76 modules: Romance, Slavic, Baltic, Uralic, Turkic, Caucasian, Greek, etc. |
+| 2.17 | Ancient/extinct languages | ✅ | 65+ modules: Pre-Roman, Anatolian, Paleo-Balkan, Medieval, Proto-languages |
+| 2.18 | Adjacent civilizations | ✅ | 35 modules: Near East, Caucasus, Central Asian Turkic/Iranian |
+
+**Total: 201 language modules implementing BaseLanguageModule (segment/classify/etymologize).**
 
 ---
 
@@ -311,6 +318,7 @@ Current `interpretations` table stores flat probabilities. For proper Bayesian h
 The litmus test (May 2025) proved the pipeline works mechanically. Data population (May 2026) delivered 3000 records across 5 countries with 7 language modules. The bottleneck is now **architectural scaling** and **data volume**.
 
 **Milestone 9 is COMPLETE** — all 13 items done.
+**Milestone 2 is COMPLETE** — 201 language modules covering all of Europe and adjacent civilizations.
 **Milestone 10.2 COMPLETE** — Kartverket SSR import (500 Oslo records, connector updated to new API).
 **Milestone 10.1/10.3 COMPLETE** — GeoNames bulk import (2500 records, 5 Nordic countries).
 **Milestone 11.1 COMPLETE** — Name lemma entity, JSONL schema, CLI commands.
@@ -319,7 +327,7 @@ The litmus test (May 2025) proved the pipeline works mechanically. Data populati
 **Milestone 11.4.3 COMPLETE** — Phonetic index field on all records.
 **Issues #10–13 closed** — mypy fixed, Danish/Swedish modules added, data populated.
 
-**Status: 826 tests passing, mypy strict clean, 3018 databank records.**
+**Status: 820+ tests passing, mypy strict clean, 3018 databank records, 201 language modules.**
 
 ### Immediate priorities (current sprint)
 
@@ -349,8 +357,8 @@ The litmus test (May 2025) proved the pipeline works mechanically. Data populati
 
 - **v0.1.0** — Framework foundation, architecture, proof-of-concept.
 - **v0.2.0** — Expanded dictionaries (120+ ON entries), attestation analysis, analysis bridge, end-to-end workflow command, dependency trim. Pipeline runs from CLI.
-- **v0.3.0** (current) — 3018 records (5 Nordic countries, 2 sources), 14 language modules, H3 spatial indexing, phonetic dedup, diachronic linking, Bayesian etymology framework + comparison test, language contact/political renaming tests, Ripley's K spatial + name change rate + sacred geometry + catastrophe clustering + sensory correspondence tests, Kartverket + Lantmäteriet + MML + OS + IGN connectors. 707 tests, mypy strict clean.
-- **v0.4.0** — Cross-source deduplication, three-layer persistence, Bayesian etymology framework.
+- **v0.3.0** — 3018 records (5 Nordic countries, 2 sources), 14 language modules, H3 spatial indexing, phonetic dedup, diachronic linking, Bayesian etymology framework + comparison test, language contact/political renaming tests, Ripley's K spatial + name change rate + sacred geometry + catastrophe clustering + sensory correspondence tests, Kartverket + Lantmäteriet + MML + OS + IGN connectors. 707 tests, mypy strict clean.
+- **v0.4.0** (current) — 201 language modules (all European, ancient/extinct, and adjacent civilizations), 820+ tests, full CI pipeline, comprehensive linguistic coverage from Proto-Indo-European to modern minority languages.
 - **v0.5.0** — Historical sources (Norske Gaardnavne, Diplomatarium Norvegicum), Celtic/Latin modules.
 - **v0.6.0** — API and visualization layer, 6+ perspective modules
 - **v0.7.0** — Full Bayesian updating, publication-ready research outputs
