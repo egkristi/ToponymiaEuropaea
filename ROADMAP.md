@@ -230,7 +230,7 @@ The framework has 15 seed records. To produce real research, it needs real data.
 | 10.7 | Attestations from Diplomatarium Norvegicum | ⬚ | HIGH | Medieval charter attestations with dates |
 | 10.8 | Seed data for UK/Ireland | ⬚ | MEDIUM | GeoNames + OS data for Celtic language analysis |
 | 10.9 | Seed data for Iberia | ⬚ | MEDIUM | Arabic/Moorish substrate layer validation |
-| 10.10 | Historical attestation curation workflow | ⬚ | HIGH | How contributors add dated attestations from primary sources |
+| 10.10 | Historical attestation curation workflow | ✅ | HIGH | How contributors add dated attestations from primary sources |
 
 ---
 
@@ -309,7 +309,7 @@ Current `interpretations` table stores flat probabilities. For proper Bayesian h
 | 11.6.2 | Source priority hierarchy for geo | ✅ | MEDIUM | National authority > gazetteer > GeoNames > OSM > Wikidata. See `docs/decisions/003-coordinate-resolution.md` |
 | 11.6.3 | License compatibility matrix | ✅ | MEDIUM | `docs/LICENSING.md` — full source mapping + compatibility matrix. Issue #33. |
 | 11.6.4 | ODbL share-alike compliance | ✅ | MEDIUM | Documented in LICENSING.md: derived datasets inherit ODbL for OSM-sourced records. |
-| 11.6.5 | GDPR for historical person-names | ⬚ | LOW | Jurisdiction-specific "dead enough" thresholds |
+| 11.6.5 | GDPR for historical person-names | ✅ | LOW | Jurisdiction-specific "dead enough" thresholds |
 
 ---
 
@@ -357,8 +357,8 @@ The litmus test (May 2025) proved the pipeline works mechanically. Data populati
 
 1. **Milestone 10.5/10.7** — Historical sources (Norske Gaardnavne, Diplomatarium Norvegicum)
 2. **Milestone 10.8–10.9** — Seed data for UK/Ireland and Iberia
-3. **Milestone 10.10** — Historical attestation curation workflow
-4. **Milestone 12** — Next wave of perspective modules (11 remaining)
+3. ~~**Milestone 10.10** — Historical attestation curation workflow~~ ✅
+4. **Milestone 12** — Next wave of perspective modules (6 remaining in 12B)
 5. **Milestone 13** — NLP & machine learning layer
 6. **Milestone 14** — Continental data scaling (100K+ records)
 
@@ -381,11 +381,11 @@ The first 10 coded perspectives (terrain, hydrological, archaeological, religiou
 
 | # | Item | Status | Priority | Notes |
 |---|------|--------|----------|-------|
-| 12.1 | **Historical/Diachronic perspective** (B) | ⬚ | **HIGH** | Settlement wave detection, period-specific name formation patterns. Requires dated attestations (→ #21, #24). Outputs: chronological density maps, period-assignment confidence. |
-| 12.2 | **Ecological/Biological perspective** (D) | ⬚ | **HIGH** | Flora/fauna elements vs. actual species distribution (pollen data, historical surveys). Link *bjørk-/birk-* to birch pollen zones, *ulv-/varg-* to wolf range. Connector: GBIF biodiversity data. |
-| 12.3 | **Legal/Administrative perspective** (J) | ⬚ | MEDIUM | Thing-sites, parish boundaries, hundred divisions. Spatial clustering of *ting-/thing-*, *by-* (village unit), *herad-*. Connector: historical administrative boundaries. |
-| 12.4 | **Temporal/Calendar perspective** (T) | ⬚ | MEDIUM | Seasonal names vs. climate data. Do *vår-* names cluster at lower elevations? Do market-day names align with historical fair calendars? Testable with existing DEM + climate connector. |
-| 12.5 | **Medicinal/Healing perspective** (S) | ⬚ | MEDIUM | Healing wells vs. actual mineral springs (geological survey data). *Bad-/Bath-/Spa-* names vs. thermal spring locations. Connector: geological survey APIs. |
+| 12.1 | **Historical/Diachronic perspective** (B) | ✅ | **HIGH** | Settlement wave detection, period-specific name formation patterns. Requires dated attestations (→ #21, #24). Outputs: chronological density maps, period-assignment confidence. |
+| 12.2 | **Ecological/Biological perspective** (D) | ✅ | **HIGH** | Flora/fauna elements vs. actual species distribution (pollen data, historical surveys). Link *bjørk-/birk-* to birch pollen zones, *ulv-/varg-* to wolf range. Connector: GBIF biodiversity data. |
+| 12.3 | **Legal/Administrative perspective** (J) | ✅ | MEDIUM | Thing-sites, parish boundaries, hundred divisions. Spatial clustering of *ting-/thing-*, *by-* (village unit), *herad-*. Connector: historical administrative boundaries. |
+| 12.4 | **Temporal/Calendar perspective** (T) | ✅ | MEDIUM | Seasonal names vs. climate data. Do *vår-* names cluster at lower elevations? Do market-day names align with historical fair calendars? Testable with existing DEM + climate connector. |
+| 12.5 | **Medicinal/Healing perspective** (S) | ✅ | MEDIUM | Healing wells vs. actual mineral springs (geological survey data). *Bad-/Bath-/Spa-* names vs. thermal spring locations. Connector: geological survey APIs. |
 
 ### 12B — Cross-Disciplinary Perspectives (require novel methods or external datasets)
 

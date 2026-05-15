@@ -17,9 +17,9 @@
 | **Gold-standard kernel** | 8 verified records with full etymologies |
 | **Data sources** | GeoNames (2,507 records), Kartverket SSR (504 records) |
 | **Language modules** | 201 auto-discovered (covering all European languages + ancient/extinct) |
-| **Perspective modules** | 10 coded (of 21 documented) |
+| **Perspective modules** | 15 coded (of 21 documented) |
 | **Statistical tests** | 12 families (spatial, correspondence, astronomical, religious, temporal, migration, robustness, Bayesian, sensory, Ripley's K, name change rate, catastrophe) |
-| **Tests passing** | 4,000+ (incl. 3,184 parametrized module tests) |
+| **Tests passing** | 4,138+ (incl. 3,184 parametrized module tests) |
 | **Type safety** | mypy strict, 0 errors |
 | **CI pipeline** | Lint + format + mypy + tests (3.12/3.13) + ontology + databank validation |
 
@@ -43,6 +43,9 @@
 - **Wikidata etymology extraction** — P138 (named after) for 18 European countries with databank matching
 - **Multi-source coordinate resolution** — priority hierarchy, conflict detection (100m/1km thresholds)
 - **License compatibility matrix** — ODbL/CC-BY/CC0 compliance documentation
+- **15 perspective modules** — terrain, hydro, archaeological, religious, astronomical, colour, acoustic, mortality, migration, economic, historical, ecological, legal, temporal, medicinal
+- **Attestation curation workflow** — schema validation, contributor templates, quality control checklist
+- **GDPR compliance** — jurisdiction-specific policy for historical person-names in place etymologies
 
 **Language coverage (201 modules):**
 
