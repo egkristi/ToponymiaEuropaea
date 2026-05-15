@@ -17,6 +17,7 @@
 | **Gold-standard kernel** | 8 verified records with full etymologies |
 | **Data sources** | GeoNames (2,507 records), Kartverket SSR (504 records) |
 | **Language modules** | 201 auto-discovered (covering all European languages + ancient/extinct) |
+| **Perspective modules** | 10 coded (of 21 documented) |
 | **Statistical tests** | 12 families (spatial, correspondence, astronomical, religious, temporal, migration, robustness, Bayesian, sensory, Ripley's K, name change rate, catastrophe) |
 | **Tests passing** | 4,000+ (incl. 3,184 parametrized module tests) |
 | **Type safety** | mypy strict, 0 errors |

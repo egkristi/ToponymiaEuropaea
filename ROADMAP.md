@@ -358,6 +358,9 @@ The litmus test (May 2025) proved the pipeline works mechanically. Data populati
 1. **Milestone 10.5/10.7** — Historical sources (Norske Gaardnavne, Diplomatarium Norvegicum)
 2. **Milestone 10.8–10.9** — Seed data for UK/Ireland and Iberia
 3. **Milestone 10.10** — Historical attestation curation workflow
+4. **Milestone 12** — Next wave of perspective modules (11 remaining)
+5. **Milestone 13** — NLP & machine learning layer
+6. **Milestone 14** — Continental data scaling (100K+ records)
 
 ### Later
 
@@ -365,6 +368,105 @@ The litmus test (May 2025) proved the pipeline works mechanically. Data populati
 9. ~~**Milestone 6.1–6.2** — API and basic visualization~~ ✅
 10. ~~**Milestone 5.1–5.10** — All 10 perspective implementations~~ ✅
 11. **Milestones 7–8** — Infrastructure and community (partial: #3, #35–38 remain)
+12. **Milestone 15** — Research output pipeline (preregistration → publication)
+13. **Milestone 16** — Linked Data & academic interoperability
+
+---
+
+## Milestone 12 — Next Wave Perspectives (11 remaining of 21)
+
+The first 10 coded perspectives (terrain, hydrological, archaeological, religious, astronomical, colour, acoustic, mortality, migration, economic) address the most data-ready dimensions. The remaining 11 cover domains that require either new external datasets, novel analysis methods, or cross-disciplinary synthesis.
+
+### 12A — Quantitative Perspectives (testable with near-term data)
+
+| # | Item | Status | Priority | Notes |
+|---|------|--------|----------|-------|
+| 12.1 | **Historical/Diachronic perspective** (B) | ⬚ | **HIGH** | Settlement wave detection, period-specific name formation patterns. Requires dated attestations (→ #21, #24). Outputs: chronological density maps, period-assignment confidence. |
+| 12.2 | **Ecological/Biological perspective** (D) | ⬚ | **HIGH** | Flora/fauna elements vs. actual species distribution (pollen data, historical surveys). Link *bjørk-/birk-* to birch pollen zones, *ulv-/varg-* to wolf range. Connector: GBIF biodiversity data. |
+| 12.3 | **Legal/Administrative perspective** (J) | ⬚ | MEDIUM | Thing-sites, parish boundaries, hundred divisions. Spatial clustering of *ting-/thing-*, *by-* (village unit), *herad-*. Connector: historical administrative boundaries. |
+| 12.4 | **Temporal/Calendar perspective** (T) | ⬚ | MEDIUM | Seasonal names vs. climate data. Do *vår-* names cluster at lower elevations? Do market-day names align with historical fair calendars? Testable with existing DEM + climate connector. |
+| 12.5 | **Medicinal/Healing perspective** (S) | ⬚ | MEDIUM | Healing wells vs. actual mineral springs (geological survey data). *Bad-/Bath-/Spa-* names vs. thermal spring locations. Connector: geological survey APIs. |
+
+### 12B — Cross-Disciplinary Perspectives (require novel methods or external datasets)
+
+| # | Item | Status | Priority | Notes |
+|---|------|--------|----------|-------|
+| 12.6 | **Cultural/Social perspective** (G) | ⬚ | MEDIUM | Personal name extraction, ethnonym distribution (*Finn-*, *Kvæn-*, *Lapp-*), occupational names (*Smed-*, *Møller-*). Requires NER for historical documents (→ Milestone 13). |
+| 12.7 | **Literary/Textual perspective** (K) | ⬚ | MEDIUM | Cross-reference with saga locations, runic inscriptions, medieval charters. Frequency of place-name mentions in historical texts as significance proxy. Connectors: Rundata (✅), Diplomatarium (✅). |
+| 12.8 | **PIE/Deep-Time substrate perspective** (U) | ⬚ | HIGH | Old European hydronymy (Krahe), non-IE substrate detection. Statistical test: Do substrate elements cluster along rivers more than expected? Cross-reference with archaeological culture boundaries. |
+| 12.9 | **Esoteric/Geomantic perspective** (P) | ⬚ | LOW | Extend sacred_geometry statistical test to full perspective. Numerological patterns, ley-line hypothesis as rigorous spatial test. Primarily exploratory/negative-result research. |
+| 12.10 | **Cognition/Semiotics perspective** (L) | ⬚ | LOW | Metaphor analysis (body-part names for landscape), spatial cognition across cultures. Requires NLP semantic field detection (→ Milestone 13). |
+| 12.11 | **Genetics/Palaeoclimate perspective** (M) | ⬚ | LOW | Correlation between linguistic layers and aDNA distributions. Requires external aDNA datasets (Allen Ancient DNA Resource). Climate epochs vs. name formation. Long-term research goal. |
+
+**Note:** Perspectives A (Linguistics) and N (Methodology) are framework-level concerns, not coded modules.
+
+---
+
+## Milestone 13 — NLP & Machine Learning Layer
+
+Move beyond regex/dictionary-based morpheme detection. Enable automated analysis at scale.
+
+| # | Item | Status | Priority | Notes |
+|---|------|--------|----------|-------|
+| 13.1 | **Transformer-based morpheme segmentation** | ⬚ | **HIGH** | Fine-tune on known segmentations from language modules. Handle compounds (Þór+s+hof) without dictionary lookup. |
+| 13.2 | **Cross-lingual cognate detection** | ⬚ | **HIGH** | Automated PIE root matching across language modules. Sound correspondence rules as learned embeddings. E.g., detect that Perun/Perkūnas/Fjǫrgyn share *\*perkʷ-*. |
+| 13.3 | **Named Entity Recognition for historical texts** | ⬚ | MEDIUM | SpaCy/transformer NER trained on medieval charters, sagas, diplomas. Extract place-name mentions with dates. Feeds perspectives B, G, K. |
+| 13.4 | **Automated name-type classification** | ⬚ | MEDIUM | Character-level CNN/RNN to classify name types (habitative, topographic, theophoric, anthroponymic) without explicit rules. Validate against language module classifications. |
+| 13.5 | **Substrate detection via distributional analysis** | ⬚ | HIGH | Identify non-IE elements by statistical anomaly in phonotactics. Names that don't fit any known language module → candidate substrate. Feeds perspective U. |
+| 13.6 | **Semantic embedding space for name elements** | ⬚ | MEDIUM | Embed name elements in shared space. Cluster semantically similar elements across languages (*berg/fjell/montagna/góra* → "mountain" cluster). Enable cross-lingual queries. |
+| 13.7 | **OCR post-correction for historical maps** | ⬚ | LOW | Improve historical_map_ocr connector output using language-model-based correction. Reduce error rate for extracting names from 17th–19th century maps. |
+
+---
+
+## Milestone 14 — Continental Data Scaling (100K+ records)
+
+Scale from 3,018 records (5 Nordic countries) to continental coverage. Prerequisite for statistically meaningful cross-regional analysis.
+
+| # | Item | Status | Priority | Notes |
+|---|------|--------|----------|-------|
+| 14.1 | **Norske Gaardnavne (Rygh) digitized corpus** | ⬚ | **HIGH** | 19th-century authoritative Norwegian farm-name corpus. ~60,000 names with etymologies. Issue #20. |
+| 14.2 | **Diplomatarium Norvegicum attestations** | ⬚ | **HIGH** | Medieval charter attestations with dates. ~10,000 dated forms. Issue #21. |
+| 14.3 | **EPNS volumes (England)** | ⬚ | HIGH | English Place-Name Society. County-by-county historical analysis. Issue #28. |
+| 14.4 | **UK/Ireland seed data** | ⬚ | HIGH | OS Names + Logainm.ie. Celtic substrate validation. Issue #29. |
+| 14.5 | **Iberian seed data** | ⬚ | HIGH | IGN Spain + Arabic/Mozarabic substrate layer. Issue #30. |
+| 14.6 | **Central European expansion** | ⬚ | MEDIUM | Germany (BKG), Poland (GUGiK), Czechia (ČÚZK). Slavic-Germanic contact zone. |
+| 14.7 | **Baltic states** | ⬚ | MEDIUM | Lithuania, Latvia, Estonia. Baltic/Finnic/Slavic layer interaction. |
+| 14.8 | **Balkans & Southeast Europe** | ⬚ | LOW | Complex stratigraphy: Illyrian → Latin → Slavic → Ottoman → modern. |
+| 14.9 | **Historical attestation curation workflow** | ⬚ | **HIGH** | Web interface for contributors to add dated attestations. Issue #24. |
+| 14.10 | **Automated source discovery** | ⬚ | MEDIUM | Crawl/detect national gazetteer APIs and open datasets. |
+| 14.11 | **Quality gate automation (ML-assisted)** | ⬚ | MEDIUM | ML classifier for onboarding stages 2–3. Flag dubious records, auto-promote high-confidence ones. |
+
+---
+
+## Milestone 15 — Research Output Pipeline
+
+From raw statistical results to publishable academic output.
+
+| # | Item | Status | Priority | Notes |
+|---|------|--------|----------|-------|
+| 15.1 | **Preregistration workflow** | ⬚ | **HIGH** | Declare hypotheses before running tests. Enforce exploratory/confirmatory separation in output. |
+| 15.2 | **Results matrix generator** | ⬚ | **HIGH** | Structured output: effect size, confidence, robustness passes, confound controls. |
+| 15.3 | **Reproducible research notebooks** | ⬚ | HIGH | Jupyter notebooks that pull from databank → run tests → produce figures. Version-pinned. |
+| 15.4 | **Automated figure generation** | ⬚ | MEDIUM | Publication-ready maps, distributions, alignment diagrams. Matplotlib/Plotly → PDF/SVG. |
+| 15.5 | **LaTeX paper pipeline** | ⬚ | MEDIUM | Extend templates/paper.tex. Results → tables/figures → compiled PDF. |
+| 15.6 | **First research paper: Norse cult-site distribution** | ⬚ | **HIGH** | Demonstrate framework on testable question: Do *hov-/vé-/hǫrgr-* names cluster at specific landscape features? Target: NORNA/ICOS proceedings. |
+| 15.7 | **Negative results documentation** | ⬚ | MEDIUM | Publish null results (e.g., "ley lines show no significant alignment"). Equally valuable. |
+
+---
+
+## Milestone 16 — Linked Data & Academic Interoperability
+
+Connect the framework to the wider academic data ecosystem.
+
+| # | Item | Status | Priority | Notes |
+|---|------|--------|----------|-------|
+| 16.1 | **RDF/Linked Data export** | ⬚ | MEDIUM | Export places, names, interpretations as RDF triples. SKOS concept scheme already exists. |
+| 16.2 | **Pleiades cross-references** | ⬚ | MEDIUM | Link ancient place names to Pleiades gazetteer of ancient world. |
+| 16.3 | **LOD gazetteer interoperability** | ⬚ | MEDIUM | GeoNames LOD, DBpedia, Wikidata Q-ID cross-references. |
+| 16.4 | **IIIF integration for manuscript sources** | ⬚ | LOW | Link attestations to IIIF manifests of source manuscripts. |
+| 16.5 | **Collaboration with national registries** | ⬚ | MEDIUM | Formal data sharing agreements. Issue #38. |
+| 16.6 | **Graph database layer (optional)** | ⬚ | LOW | Neo4j/NetworkX for etymological family trees, name diffusion networks. |
+| 16.7 | **DOI for datasets** | ⬚ | MEDIUM | Zenodo deposit for versioned databank releases. Citeable datasets. |
 
 ---
 
@@ -375,6 +477,8 @@ The litmus test (May 2025) proved the pipeline works mechanically. Data populati
 - **v0.3.0** — 3018 records (5 Nordic countries, 2 sources), 14 language modules, H3 spatial indexing, phonetic dedup, diachronic linking, Bayesian etymology framework + comparison test, language contact/political renaming tests, Ripley's K spatial + name change rate + sacred geometry + catastrophe clustering + sensory correspondence tests, Kartverket + Lantmäteriet + MML + OS + IGN connectors. 707 tests, mypy strict clean.
 - **v0.4.0** — 201 language modules (all European, ancient/extinct, and adjacent civilizations), 820+ tests, full CI pipeline, comprehensive linguistic coverage from Proto-Indo-European to modern minority languages.
 - **v0.5.0** (current) — Full 3-layer persistence (JSONL+Postgres+Parquet), sync pipeline, Wikidata etymology extraction, Docker Compose stack, coordinate resolution, license matrix. 4000+ tests.
-- **v0.6.0** — API and visualization layer, all 10 perspective modules implemented
-- **v0.7.0** — Full Bayesian updating, publication-ready research outputs
-- **v1.0.0** — First publishable research result produced using the framework
+- **v0.6.0** — Historical sources and attestation curation. Norske Gaardnavne, Diplomatarium Norvegicum, UK/Ireland and Iberian seed data. 50K+ records.
+- **v0.7.0** — Next wave perspectives (12.1–12.5: historical, ecological, legal, temporal, medicinal). NLP layer bootstrap (13.1–13.2: morpheme segmentation, cognate detection). 21 total perspective modules.
+- **v0.8.0** — Continental data scaling (100K+ records). Cross-disciplinary perspectives (12.6–12.11). Full NLP pipeline (13.3–13.6).
+- **v0.9.0** — Research output pipeline. Preregistration, results matrix, reproducible notebooks, automated figures.
+- **v1.0.0** — First publishable research result produced and submitted. Linked Data export. DOI for datasets.
