@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Toponymia Europaea — Documentation</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: #f5f6fa;
+            color: #2c3e50;
+            line-height: 1.7;
+        }
+        header {
+            background: #1a1a2e;
+            color: #eee;
+            padding: 16px 24px;
+        }
+        header h1 { font-size: 1.2rem; font-weight: 600; margin-bottom: 4px; }
+        header p { font-size: 0.8rem; color: #aaa; }
+        nav.top-nav {
+            background: #16213e;
+            padding: 10px 24px;
+            display: flex;
+            gap: 16px;
+        }
+        nav.top-nav a {
+            color: #ccc;
+            text-decoration: none;
+            font-size: 0.85rem;
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+        nav.top-nav a:hover, nav.top-nav a.active { color: #fff; background: #0f3460; }
+
+        .layout {
+            display: flex;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Sidebar TOC */
+        .sidebar {
+            width: 280px;
+            min-width: 280px;
+            background: #fff;
+            border-right: 1px solid #eee;
+            padding: 20px 0;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow-y: auto;
+        }
+        .sidebar h3 {
+            padding: 8px 20px;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #888;
+            margin-top: 12px;
+        }
+        .sidebar a {
+            display: block;
+            padding: 5px 20px;
+            font-size: 0.82rem;
+            color: #555;
+            text-decoration: none;
+            border-left: 3px solid transparent;
+        }
+        .sidebar a:hover { color: #1a1a2e; background: #f8f9fa; border-left-color: #3498db; }
+        .sidebar a.active { color: #1a1a2e; font-weight: 600; border-left-color: #1a1a2e; }
+
+        /* Main content */
+        .content {
+            flex: 1;
+            padding: 32px 48px;
+            max-width: 900px;
+        }
+        .content h1 {
+            font-size: 2rem;
+            margin-bottom: 8px;
+            color: #1a1a2e;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 12px;
+        }
+        .content h2 {
+            font-size: 1.4rem;
+            margin-top: 40px;
+            margin-bottom: 12px;
+            color: #1a1a2e;
+            padding-top: 16px;
+            border-top: 1px solid #eee;
+        }
+        .content h3 {
+            font-size: 1.1rem;
+            margin-top: 24px;
+            margin-bottom: 8px;
+            color: #2c3e50;
+        }
+        .content h4 {
+            font-size: 0.95rem;
+            margin-top: 16px;
+            margin-bottom: 6px;
+            color: #555;
+        }
+        .content p {
+            margin-bottom: 12px;
+        }
+        .content ul, .content ol {
+            margin-bottom: 12px;
+            padding-left: 24px;
+        }
+        .content li {
+            margin-bottom: 4px;
+        }
+        .content code {
+            background: #f0f2f5;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 0.85rem;
+            font-family: "SF Mono", "Fira Code", monospace;
+        }
+        .content pre {
+            background: #1a1a2e;
+            color: #e0e0e0;
+            padding: 16px 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-size: 0.82rem;
+            margin-bottom: 16px;
+            line-height: 1.5;
+        }
+        .content pre code {
+            background: none;
+            padding: 0;
+            color: inherit;
+        }
+        .content table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 16px;
+            font-size: 0.85rem;
+        }
+        .content th, .content td {
+            padding: 8px 12px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        .content th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #555;
+        }
+        .content blockquote {
+            border-left: 4px solid #3498db;
+            padding: 12px 20px;
+            margin: 16px 0;
+            background: #f8f9ff;
+            border-radius: 0 6px 6px 0;
+        }
+        .content .note {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            border-radius: 6px;
+            padding: 12px 16px;
+            margin: 16px 0;
+            font-size: 0.85rem;
+        }
+        .content .warning {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            border-radius: 6px;
+            padding: 12px 16px;
+            margin: 16px 0;
+            font-size: 0.85rem;
+        }
+        .badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 3px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        .badge-required { background: #f8d7da; color: #721c24; }
+        .badge-optional { background: #d4edda; color: #155724; }
+
+        @media (max-width: 900px) {
+            .layout { flex-direction: column; }
+            .sidebar { width: 100%; min-width: 100%; height: auto; position: static; border-right: none; border-bottom: 1px solid #eee; }
+            .content { padding: 24px 16px; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Toponymia Europaea</h1>
+        <p>Comprehensive Documentation</p>
+    </header>
+    <nav class="top-nav">
+        <a href="index.html">Browse</a>
+        <a href="map.html">Map</a>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="docs.html" class="active">Documentation</a>
+    </nav>
+
+    <div class="layout">
+        <aside class="sidebar">
+            <h3>Getting Started</h3>
+            <a href="#overview">Overview</a>
+            <a href="#quickstart">Quick Start</a>
+            <a href="#architecture">Architecture</a>
+
+            <h3>Research</h3>
+            <a href="#perspectives">21 Perspectives</a>
+            <a href="#methodology">Methodology</a>
+            <a href="#statistics">Statistical Methods</a>
+            <a href="#preregistration">Preregistration</a>
+
+            <h3>Contributing Data</h3>
+            <a href="#adding-source">Adding a Data Source</a>
+            <a href="#attestations">Historical Attestations</a>
+            <a href="#quality">Data Quality Stages</a>
+
+            <h3>Contributing Code</h3>
+            <a href="#adding-language">Adding a Language Module</a>
+            <a href="#contributing">Pull Request Process</a>
+            <a href="#dev-setup">Development Setup</a>
+
+            <h3>Ethics & Policy</h3>
+            <a href="#ethics">Ethics Framework</a>
+            <a href="#gdpr">GDPR & Privacy</a>
+            <a href="#indigenous">Indigenous Languages</a>
+            <a href="#licensing">License Compatibility</a>
+
+            <h3>Operations</h3>
+            <a href="#backup">Backup Strategy</a>
+            <a href="#decisions">Architecture Decisions</a>
+        </aside>
+
+        <main class="content">
+
+<!-- ═══════════════════════════════════════ -->
+<h1 id="overview">Toponymia Europaea Documentation</h1>
+
+<p>An open, data-driven research framework for the systematic analysis of European place names across linguistic, historical, geographical, ecological, and cultural dimensions.</p>
+
+<blockquote>
+<strong>The standard is absolute:</strong> Every contribution must be scientific, verifiable, testable, and provable. Data requires references. Code requires tests. Claims require evidence.
+</blockquote>
+
+<h3>What This System Does</h3>
+<ul>
+    <li><strong>Ingests</strong> place-name data from 14 connectors (GeoNames, Kartverket, Wikidata, OSM, Lantmäteriet, etc.)</li>
+    <li><strong>Normalizes</strong> across scripts, orthographies, and languages (201 language modules)</li>
+    <li><strong>Segments</strong> compound names into morphological components with confidence scores</li>
+    <li><strong>Classifies</strong> language origin using phonological, morphological, and statistical evidence</li>
+    <li><strong>Analyses</strong> through 21 independent research perspectives (15 coded modules)</li>
+    <li><strong>Tests</strong> hypotheses using 12 statistical test families with mandatory robustness checks</li>
+    <li><strong>Validates</strong> data integrity via SHA-256 checksums, schema validation, and 4,000+ automated tests</li>
+</ul>
+
+<!-- ═══════════════════════════════════════ -->
+<h2 id="quickstart">Quick Start</h2>
+
+<h3>Installation</h3>
+<pre><code>git clone https://github.com/egkristi/ToponymiaEuropaea.git
+cd ToponymiaEuropaea
+uv sync --extra dev
+pre-commit install</code></pre>
+
+<h3>Run Tests</h3>
+<pre><code>uv run pytest tests/ --ignore=tests/test_pipelines/test_dedup.py</code></pre>
+
+<h3>Lint & Format</h3>
+<pre><code>uv run ruff check --fix src/ tests/
+uv run ruff format src/ tests/</code></pre>
+
+<h3>Analyse a Place Name</h3>
+<pre><code>uv run python -c "
+from toponymia.languages.norwegian import NorwegianModule
+m = NorwegianModule()
+print(m.classify('Trondheim'))
+print(m.segment('Trondheim'))
+print(m.etymologize(m.segment('Trondheim')))
+"</code></pre>
+
+<h3>Ingest Data</h3>
+<pre><code># Fetch from GeoNames
+uv run toponymia ingest geonames --country NO
+
+# Validate the databank
+uv run toponymia databank validate</code></pre>
+
+<h3>Docker Compose (Full Stack)</h3>
+<pre><code>docker compose up -d
+# API at http://localhost:8000
+# PostGIS + seed + Parquet analytical layer</code></pre>
+
+<!-- ═══════════════════════════════════════ -->
+<h2 id="architecture">Architecture</h2>
+
+<h3>Design Principles</h3>
+<ul>
+    <li><strong>Scientific rigour first</strong> — every claim is testable, every result is reproducible</li>
+    <li><strong>Uncertainty is not optional</strong> — confidence intervals, not point estimates</li>
+    <li><strong>Data provenance is sacred</strong> — every record carries source, license, and timestamp</li>
+    <li><strong>Modularity over monoliths</strong> — language modules, connectors, perspectives are independently extensible</li>
+    <li><strong>Fail loudly</strong> — validation errors halt pipelines, not produce bad data</li>
+</ul>
+
+<h3>Pipeline Overview</h3>
+<pre><code>Source → Connector → Normalize → Validate → Dedup → Databank
+                                                        ↓
+                                              Segment → Classify → Etymologize
+                                                        ↓
+                                              Perspective Analyses → Statistical Tests
+                                                        ↓
+                                              Results (with confidence intervals)</code></pre>
+
+<h3>Persistence Model</h3>
+<table>
+    <tr><th>Layer</th><th>Format</th><th>Purpose</th></tr>
+    <tr><td>Canonical</td><td>JSONL (Git-tracked)</td><td>Version-controlled source of truth</td></tr>
+    <tr><td>Analytical</td><td>Parquet + DuckDB</td><td>Fast columnar queries</td></tr>
+    <tr><td>Operational</td><td>PostgreSQL + PostGIS</td><td>Spatial queries, API serving</td></tr>
+    <tr><td>Integrity</td><td>SHA-256 MANIFEST</td><td>Tamper detection, CI verification</td></tr>
+</table>
+
+<!-- ═══════════════════════════════════════ -->
+<h2 id="perspectives">21 Research Perspectives</h2>
+
+<p>The framework analyses place names along <strong>21 complementary perspectives</strong>. Each is independently extensible and can be activated per analysis run.</p>
+
+<table>
+    <tr><th>ID</th><th>Perspective</th><th>Key Topics</th></tr>
+    <tr><td>A</td><td>Linguistics</td><td>Etymology, morphology, historical phonology, dialectology, substrate detection, folk etymology</td></tr>
+    <tr><td>B</td><td>History</td><td>Settlement waves (Bronze Age → Modern), Black Death depopulation, Viking expansion, naming law</td></tr>
+    <tr><td>C</td><td>Geography</td><td>Topography, hydrology, geology, palaeogeography, maritime features, astronomical orientation</td></tr>
+    <tr><td>D</td><td>Ecology</td><td>Flora/fauna elements, historical species distribution, biotopes, palaeoecological controls</td></tr>
+    <tr><td>E</td><td>Archaeology</td><td>Burial sites, cult sites, fortifications, runic inscriptions, assembly sites</td></tr>
+    <tr><td>F</td><td>Religion & Mythology</td><td>14 sub-perspectives: Norse, Sámi, Finnic, Celtic, Slavic, Baltic, Roman, Mithraic, Greek, Jewish, Islamic, Christian, Zoroastrian, Folk/Supernatural</td></tr>
+    <tr><td>G</td><td>Culture & Society</td><td>Personal names, ethnonyms, occupations, gender, minority perspectives</td></tr>
+    <tr><td>H</td><td>Economics</td><td>Trade routes, raw materials, agriculture, maritime economy, crafts, taxation</td></tr>
+    <tr><td>I</td><td>Migration & Diaspora</td><td>Indo-European, Uralic, Germanic, Slavic, Celtic, Viking, Hanseatic, Jewish/Romani diaspora</td></tr>
+    <tr><td>J</td><td>Law & Administration</td><td>Thing-sites, parishes, border markers, naming law, UNESCO/indigenous rights</td></tr>
+    <tr><td>K</td><td>Literary Sources</td><td>Sagas, runic inscriptions, diplomas, cartography, travel accounts, folklore</td></tr>
+    <tr><td>L</td><td>Cognition & Semiotics</td><td>Landscape categorization, spatial cognition, metaphor, colour terminology</td></tr>
+    <tr><td>M</td><td>Genetics & Palaeoclimate</td><td>Y-DNA/mtDNA correlation, ancient DNA, palaeoclimatic epochs, population density</td></tr>
+    <tr><td>N</td><td>Methodology</td><td>Source criticism, uncertainty quantification, reproducibility, open science</td></tr>
+    <tr><td>O</td><td>Astronomy & Cosmology</td><td>Solar/lunar/stellar toponymy, alignments, calendar names, cosmological worldviews</td></tr>
+    <tr><td>P</td><td>Esoteric & Geomantic</td><td>Sacred geometry, alchemy, geomancy, numerology, taboo/apotropaic naming</td></tr>
+    <tr><td>Q</td><td>Sensory Landscape</td><td>Acoustic, olfactory, thermal, colour/light perception in names</td></tr>
+    <tr><td>R</td><td>Mortality & Catastrophe</td><td>Plague names, disaster records, war traces, famine markers</td></tr>
+    <tr><td>S</td><td>PIE & Substrate</td><td>Pre-Indo-European substrates, Vasconic, Old European hydronymy</td></tr>
+    <tr><td>T</td><td>Temporal Cycles</td><td>Seasonal names, transhumance, festival sites, agricultural calendar</td></tr>
+    <tr><td>U</td><td>Medicinal Landscape</td><td>Healing waters, care facilities, medicinal plants, spa/bath toponymy</td></tr>
+</table>
+
+<!-- ═══════════════════════════════════════ -->
+<h2 id="methodology">Methodology</h2>
+
+<h3>Epistemological Position</h3>
+<ul>
+    <li>Place name interpretations are <strong>hypotheses</strong>, not facts</li>
+    <li>Multiple competing interpretations coexist with different probability weights</li>
+    <li>Uncertainty is quantified and propagated through all analyses</li>
+    <li>Claims are falsifiable through statistical testing</li>
+</ul>
+
+<h3>Data Pipeline Stages</h3>
+<ol>
+    <li><strong>Ingestion</strong> — Connectors normalize heterogeneous sources into a common format</li>
+    <li><strong>Normalization</strong> — Unicode NFC, script detection, language-specific orthographic rules</li>
+    <li><strong>Morphological Segmentation</strong> — Compound head/modifier identification with confidence</li>
+    <li><strong>Language Classification</strong> — Phonological/morphological/statistical evidence for source language</li>
+    <li><strong>Etymological Generation</strong> — Candidates from lexical databases, sound change rules, ML models</li>
+    <li><strong>Statistical Testing</strong> — Hypotheses tested against null models with robustness checks</li>
+</ol>
+
+<!-- ═══════════════════════════════════════ -->
+<h2 id="statistics">Statistical Methods</h2>
+
+<h3>Permutation Testing</h3>
+<p>The primary statistical method. For each test:</p>
+<ol>
+    <li>Compute observed test statistic</li>
+    <li>Generate null distribution by permuting labels (not coordinates)</li>
+    <li>Compute p-value as proportion of null values ≥ observed</li>
+    <li>Report effect size and confidence intervals</li>
+</ol>
+
+<h3>Null Models</h3>
+<table>
+    <tr><th>Test Type</th><th>Null Model</th></tr>
+    <tr><td>Element vs. signal</td><td>Element labels randomly distributed among all places</td></tr>
+    <tr><td>Spatial clustering</td><td>Random subset of same size from all places</td></tr>
+    <tr><td>Temporal consistency</td><td>Random assignment of dates to places</td></tr>
+    <tr><td>Language boundary</td><td>Random placement of boundary independent of topography</td></tr>
+</table>
+
+<h3>Robustness Requirements</h3>
+<p>Every test must survive:</p>
+<ol>
+    <li><strong>Regional jackknife</strong> — Conclusion stable when excluding 10% of data</li>
+    <li><strong>Bootstrap CI</strong> — Effect size confidence interval excludes zero</li>
+    <li><strong>Parameter sensitivity</strong> — Result stable across parameter choices</li>
+    <li><strong>Confound control</strong> — Population density, source density, terrain visibility</li>
+</ol>
+
+<h3>Synthetic Validation</h3>
+<p>Before applying to real data, every test must demonstrate:</p>
+<ul>
+    <li><strong>Power ≥ 0.80</strong> — Can detect a planted signal of realistic magnitude</li>
+    <li><strong>FPR ≤ 0.10</strong> — Does not reject null when data is pure noise</li>
+</ul>
+
+<h3>Multiple Testing Correction</h3>
+<ul>
+    <li>Bonferroni correction (conservative)</li>
+    <li>Benjamini-Hochberg FDR (when tests are independent)</li>
+    <li>Both corrected and uncorrected p-values reported</li>
+</ul>
+
+<!-- ═══════════════════════════════════════ -->
+<h2 id="preregistration">Preregistration Protocol</h2>
+<ol>
+    <li>Formulate hypothesis <em>before</em> examining data</li>
+    <li>Specify test method, null model, and significance criterion</li>
+    <li>Record in <code>analysis/preregistered/</code> with timestamp</li>
+    <li>Execute test and report results <strong>regardless of outcome</strong></li>
+</ol>
+
+<!-- ═══════════════════════════════════════ -->
+<h2 id="adding-source">Adding a Data Source</h2>
+
+<h3>Connector Interface</h3>
+<pre><code>from toponymia.connectors.base import BaseConnector, ConnectorResult
+
+class MySourceConnector(BaseConnector):
+    source_id = "my_source"
+    source_name = "My Source"
+    license = "CC-BY-4.0"
+    coverage_region = "NO"
+    source_url = "https://..."
+
+    def fetch(self, bbox=None, country=None) -> Iterator[ConnectorResult]:
+        ...
+
+    def validate(self, record: ConnectorResult) -> list[ValidationError]:
+        ...</code></pre>
+
+<h3>Required Fields (ConnectorResult)</h3>
+<table>
+    <tr><th>Field</th><th>Type</th><th>Description</th></tr>
+    <tr><td><code>latitude</code></td><td>float</td><td>WGS84 latitude</td></tr>
+    <tr><td><code>longitude</code></td><td>float</td><td>WGS84 longitude</td></tr>
+    <tr><td><code>name_form</code></td><td>str</td><td>Original name form</td></tr>
+    <tr><td><code>name_normalized</code></td><td>str</td><td>Normalized form</td></tr>
+    <tr><td><code>language_code</code></td><td>str</td><td>ISO 639-3 code ("und" if unknown)</td></tr>
+    <tr><td><code>source_id</code></td><td>str</td><td>ID within the source</td></tr>
+</table>
+
+<h3>Optional Fields</h3>
+<table>
+    <tr><th>Field</th><th>Type</th><th>Description</th></tr>
+    <tr><td><code>elevation_m</code></td><td>float</td><td>Elevation in metres</td></tr>
+    <tr><td><code>place_type</code></td><td>str</td><td>Feature type (P., H., T., etc.)</td></tr>
+    <tr><td><code>year_from</code> / <code>year_to</code></td><td>int</td><td>Temporal bounds</td></tr>
+    <tr><td><code>alternative_names</code></td><td>dict</td><td>lang_code → list of forms</td></tr>
+    <tr><td><code>wikidata_qid</code></td><td>str</td><td>Wikidata Q-identifier</td></tr>
+    <tr><td><code>source_url</code></td><td>str</td><td>URL for this record</td></tr>
+</table>
+
+<h3>Guidelines</h3>
+<ul>
+    <li>Document the source's license in the connector class</li>
+    <li>Respect rate limits and terms of service</li>
+    <li>Use streaming/iterators for large datasets</li>
+    <li>Implement caching for downloaded files</li>
+    <li>Write unit tests with sample data fixtures; mock HTTP requests</li>
+    <li>Place connector in <code>src/toponymia/connectors/your_source.py</code> — auto-discovered</li>
+</ul>
+
+<!-- ═══════════════════════════════════════ -->
+<h2 id="attestations">Historical Attestations</h2>
+
+<p>An <strong>attestation</strong> is a dated record of a place name as it appears in a historical source document. Attestations are the primary evidence for diachronic analysis.</p>
+
+<pre><code>Source Document → Transcription → Validation → Databank Record → Analysis</code></pre>
+
+<h3>Required Fields</h3>
+<table>
+    <tr><th>Field</th><th>Type</th><th>Example</th></tr>
+    <tr><td><code>form</code></td><td>str</td><td>"Þrándarheimr"</td></tr>
+    <tr><td><code>language_code</code></td><td>str</td><td>"non" (Old Norse)</td></tr>
+    <tr><td><code>year_from</code></td><td>int</td><td>1070</td></tr>
+    <tr><td><code>source</code></td><td>str</td><td>"Adam of Bremen IV.34"</td></tr>
+</table>
+
+<h3>Date Assignment Rules</h3>
+<table>
+    <tr><th>Situation</th><th>Rule</th><th>Example</th></tr>
+    <tr><td>Exact year</td><td>Use year directly</td><td><code>year_from: 1314</code></td></tr>
+    <tr><td>Date range</td><td>Use range</td><td><code>year_from: 1150, year_to: 1200</code></td></tr>
+    <tr><td>Century only</td><td>Use century bounds</td><td><code>year_from: 1200, year_to: 1299</code></td></tr>
+    <tr><td>"Before X"</td><td>Use terminus ante quem</td><td><code>year_to: 1350</code></td></tr>
+    <tr><td>BCE dates</td><td>Negative numbers</td><td><code>year_from: -500</code></td></tr>
+</table>
+
+<h3>Validation</h3>
+<pre><code># Validate attestation files before submitting
+uv run toponymia databank validate --schema attestation</code></pre>
+
+<h3>Common Sources by Region</h3>
+<table>
+    <tr><th>Region</th><th>Key Sources</th><th>Date Range</th></tr>
+    <tr><td>Norway</td><td>Diplomatarium Norvegicum, Norske Gaardnavne (Rygh)</td><td>1050–1590</td></tr>
+    <tr><td>Sweden</td><td>Svenskt Diplomatarium, Ortnamnsregistret</td><td>1164–1500</td></tr>
+    <tr><td>Denmark</td><td>Diplomatarium Danicum, Danmarks Stednavne</td><td>1085–1450</td></tr>
+    <tr><td>Iceland</td><td>Diplomatarium Islandicum, Landnámabók</td><td>870–1500</td></tr>
+    <tr><td>England</td><td>Domesday Book, EPNS county volumes</td><td>700–1500</td></tr>
+    <tr><td>Germany</td><td>Urkundenbücher (regional), Förstemann</td><td>700–1500</td></tr>
+    <tr><td>France</td><td>Cartulaires, Dictionnaire topographique</td><td>800–1400</td></tr>
+</table>
+
+<h3>Submission Process</h3>
+<ol>
+    <li>Register the source in <code>databank/sources.jsonl</code></li>
+    <li>Prepare JSONL file following <code>databank/schema/attestation.v1.json</code></li>
+    <li>Run batch validation: <code>uv run toponymia databank validate --schema attestation</code></li>
+    <li>Run dedup check against existing records</li>
+    <li>Submit PR using the attestation template</li>
+</ol>
+
+<!-- ═══════════════════════════════════════ -->
+<h2 id="quality">Data Quality Stages</h2>
+
+<p>Every record progresses through 5 quality stages:</p>
+
+<table>
+    <tr><th>Stage</th><th>Name</th><th>Requirements</th></tr>
+    <tr><td>1</td><td>Candidate (Quarantine)</td><td>Passes schema validation, has source citation</td></tr>
+    <tr><td>2</td><td>Verified</td><td>Source confirmed, coordinates validated, no duplicates</td></tr>
+    <tr><td>3</td><td>Enriched</td><td>Segmentation, classification, and etymology attached</td></tr>
+    <tr><td>4</td><td>Reviewed</td><td>Peer verification by second contributor</td></tr>
+    <tr><td>5</td><td>Published</td><td>Authoritative — included in analysis datasets</td></tr>
+</table>
+
+<div class="note">
+    <strong>Demotion & Retraction:</strong> Records can be demoted or retracted at any time if new evidence undermines their validity. Retraction does not delete — a retraction note is attached and the record is excluded from analysis.
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<h2 id="adding-language">Adding a Language Module</h2>
+
+<h3>Interface</h3>
+<pre><code>from toponymia.languages.base import (
+    BaseLanguageModule,
+    SegmentationResult,
+    LanguageClassification,
+    EtymologyCandidate,
+)
+
+class MyLanguageModule(BaseLanguageModule):
+    language_code = "xxx"      # ISO 639-3
+    language_name = "My Language"
+    family = "Language Family"
+    branch = "Family > Branch"
+    period = "Start-End CE"
+    script = "Latn"            # ISO 15924
+
+    suffixes = ["-suffix1", "-suffix2"]
+    prefixes = ["prefix1-", "prefix2-"]
+    stems = ["stem1", "stem2"]
+
+    def segment(self, form: str) -> list[SegmentationResult]:
+        """Break a name into morphological components."""
+        ...
+
+    def classify(self, form: str) -> LanguageClassification:
+        """Assess probability that a form belongs to this language."""
+        ...
+
+    def etymologize(self, components) -> list[EtymologyCandidate]:
+        """Generate etymology candidates for segmented components."""
+        ...</code></pre>
+
+<h3>Step-by-Step</h3>
+<ol>
+    <li><strong>Research</strong> — Document common suffixes, modifiers, sound changes, and key references</li>
+    <li><strong>Create</strong> — <code>src/toponymia/languages/your_language.py</code></li>
+    <li><strong>Implement segmentation</strong> — Match known suffixes (longest first), assign confidence</li>
+    <li><strong>Implement classification</strong> — Return confidence 0–1 with evidence</li>
+    <li><strong>Implement etymology</strong> — Provide meaning candidates for known elements</li>
+    <li><strong>Write tests</strong> — <code>tests/test_languages/test_your_language.py</code></li>
+    <li><strong>Auto-discovered</strong> — No manual registration needed</li>
+</ol>
+
+<h3>Guidelines</h3>
+<ul>
+    <li>Be conservative with confidence — understate rather than overstate</li>
+    <li>Document sources — each element should reference academic literature</li>
+    <li>Handle ambiguity — many elements are shared across languages (e.g., <em>-berg</em>)</li>
+    <li>Consider sound changes — OE <em>-hām</em> vs. <em>-hamm</em> distinction</li>
+    <li>Test with real, well-attested examples from scholarly literature</li>
+</ul>
+
+<!-- ═══════════════════════════════════════ -->
+<h2 id="contributing">Pull Request Process</h2>
+
+<h3>Universal Requirements (All PRs)</h3>
+<ol>
+    <li>All existing tests pass</li>
+    <li>No linting errors (<code>ruff check</code> + <code>ruff format</code>)</li>
+    <li>PR description explains <em>what</em> and <em>why</em></li>
+    <li>No unrelated changes bundled</li>
+    <li>License-compatible content only</li>
+</ol>
+
+<h3>Additional Requirements by Type</h3>
+
+<h4>Data Contributions</h4>
+<ul>
+    <li>Full source citations for every record</li>
+    <li>Correct ISO 639-3 language codes</li>
+    <li>Plausible geographic coordinates (±5 km)</li>
+    <li>Temporal dating where available</li>
+    <li>Records enter as Stage 1 (Candidate)</li>
+</ul>
+
+<h4>Research Contributions</h4>
+<ul>
+    <li>Testable claim with null hypothesis</li>
+    <li>Reproducible method (code + data + seed)</li>
+    <li>All sources cited</li>
+    <li>Honest confidence assessment</li>
+    <li>Synthetic validation: power ≥ 0.80, FPR ≤ 0.10</li>
+    <li>Preregistered before data examination</li>
+</ul>
+
+<h4>Code Contributions</h4>
+<ul>
+    <li>Tests cover new functionality</li>
+    <li>Type hints on public interfaces</li>
+    <li>Follows existing architecture patterns</li>
+</ul>
+
+<h3>Review Criteria</h3>
+<p>Every PR is evaluated on five questions:</p>
+<ol>
+    <li><strong>Is it true?</strong> — Claims supported by evidence</li>
+    <li><strong>Is it testable?</strong> — Could be falsified in principle</li>
+    <li><strong>Is it reproducible?</strong> — Another researcher could replicate</li>
+    <li><strong>Is it honest?</strong> — Uncertainty acknowledged, limitations stated</li>
+    <li><strong>Is it attributed?</strong> — Sources and prior work credited</li>
+</ol>
+
+<!-- ═══════════════════════════════════════ -->
+<h2 id="dev-setup">Development Setup</h2>
+
+<pre><code># Clone and install
+git clone https://github.com/egkristi/ToponymiaEuropaea.git
+cd ToponymiaEuropaea
+uv sync --extra dev
+pre-commit install
+
+# Run full test suite (skip h3-dependent tests)
+uv run pytest tests/ --ignore=tests/test_pipelines/test_dedup.py
+
+# Lint before committing (ALWAYS do both)
+uv run ruff check --fix src/ tests/
+uv run ruff format src/ tests/
+
+# Run a specific test file
+uv run pytest tests/test_languages/test_norwegian.py -v</code></pre>
+
+<h3>Branch Naming</h3>
+<table>
+    <tr><th>Prefix</th><th>Use</th></tr>
+    <tr><td><code>feature/</code></td><td>New functionality</td></tr>
+    <tr><td><code>data/</code></td><td>Data additions</td></tr>
+    <tr><td><code>fix/</code></td><td>Bug fixes</td></tr>
+    <tr><td><code>research/</code></td><td>Research analyses</td></tr>
+    <tr><td><code>docs/</code></td><td>Documentation</td></tr>
+    <tr><td><code>refactor/</code></td><td>Code restructuring</td></tr>
+</table>
+
+<!-- ═══════════════════════════════════════ -->
+<h2 id="ethics">Ethics Framework</h2>
+
+<h3>Core Principles</h3>
+
+<h4>1. Respect for Indigenous and Minority Languages</h4>
+<ul>
+    <li>All language layers are equally valid data</li>
+    <li>Never privileges a majority-language form as "correct"</li>
+    <li>Consults with relevant communities before publishing analyses of sensitive sites</li>
+    <li>Documents colonial and assimilation history explicitly</li>
+</ul>
+
+<h4>2. Acknowledging Historical Violence</h4>
+<p>Many European place name landscapes bear traces of forced renaming:</p>
+<ul>
+    <li><strong>Norwegianization</strong> of Sámi and Kven names</li>
+    <li><strong>Russification</strong> of Finnish, Baltic, and Ukrainian names</li>
+    <li><strong>Germanization</strong> of Slavic names in Eastern Europe</li>
+    <li><strong>Anglicization</strong> of Welsh, Scottish Gaelic, and Irish names</li>
+    <li><strong>Hellenization</strong> of Slavic and Turkish names in Greece</li>
+    <li><strong>Turkification</strong> of Armenian, Greek, and Kurdish names</li>
+</ul>
+<p>These processes are documented as data (renaming events with actors and motivations), never hidden or normalized.</p>
+
+<h4>3. Disputed Territories</h4>
+<ul>
+    <li>All attested name forms are recorded without privileging one</li>
+    <li>No automatic preference for the controlling state's official form</li>
+    <li>Temporal and political context is explicit</li>
+    <li>The project does not take political positions</li>
+</ul>
+
+<h4>4. Sacred and Sensitive Sites</h4>
+<ul>
+    <li>Only included with community consent</li>
+    <li>Precise locations may be generalized when requested</li>
+    <li>Cultural protocols are respected</li>
+</ul>
+
+<h4>5. Responsible Publication</h4>
+<ul>
+    <li>All results include confidence intervals and effect sizes</li>
+    <li>Analyses of ethnic/linguistic distributions are not suitable for political instrumentalization</li>
+    <li>The project explicitly disclaims support for ethno-nationalist readings</li>
+    <li>Findings about historical populations do not imply territorial claims</li>
+</ul>
+
+<!-- ═══════════════════════════════════════ -->
+<h2 id="gdpr">GDPR & Historical Person-Names</h2>
+
+<p>Place names frequently derive from personal names (anthroponymic toponyms). GDPR applies to <strong>identified or identifiable living natural persons</strong> only. It does <strong>not</strong> apply to deceased persons (Recital 27).</p>
+
+<h3>Jurisdiction-Specific Thresholds</h3>
+<table>
+    <tr><th>Country</th><th>Threshold</th><th>Notes</th></tr>
+    <tr><td>Norway</td><td>10 years after death OR >100 years since birth</td><td>Church/census records public after 60/100 years</td></tr>
+    <tr><td>Sweden</td><td>No explicit post-mortem GDPR; 70-year secrecy for census</td><td>Research exempt under ethical review</td></tr>
+    <tr><td>Denmark</td><td>10 years after death; census open after 75 years</td><td>Church books open after 50 years</td></tr>
+    <tr><td>Finland</td><td>GDPR ceases at death; archives open 25–50 years</td><td>Depends on content sensitivity</td></tr>
+    <tr><td>Iceland</td><td>GDPR ceases at death</td><td>Small population → extra care</td></tr>
+    <tr><td>UK</td><td>GDPR ceases at death; living persons only</td><td>Common law privacy may extend briefly</td></tr>
+    <tr><td>Germany</td><td>10 years post-mortem (Persönlichkeitsschutz)</td><td>Dignity protection extends beyond death</td></tr>
+    <tr><td>France</td><td>GDPR ceases at death</td><td>CNIL guidance 2020</td></tr>
+</table>
+
+<h3>Project Policy</h3>
+<ol>
+    <li><strong>>100 years dead:</strong> Freely usable as historical-linguistic data. No GDPR concern. Covers >99% of toponymic material.</li>
+    <li><strong>10–100 years dead:</strong> Usable as geographic/linguistic data. Place name is a geographic designator, not personal data. Research exemption (Art. 89(1)) applies.</li>
+    <li><strong>Living persons:</strong> Rare. Record only geographic name from official gazetteers. No biographical data, no profiling.</li>
+</ol>
+
+<!-- ═══════════════════════════════════════ -->
+<h2 id="indigenous">Indigenous Languages</h2>
+
+<p>Place names in minority and indigenous languages represent <strong>living cultural heritage</strong>. The framework:</p>
+
+<ul>
+    <li>Treats all language layers as equally valid — Sámi, Kven, Romani, Basque, Sorbian, Cornish, Welsh, Breton, Catalan</li>
+    <li>Never privileges a majority-language form as "correct"</li>
+    <li>Documents forced renaming (fornorskning, Russification, etc.) as historical events with actors</li>
+    <li>Invites indigenous language communities as <em>collaborators</em>, not subjects</li>
+    <li>Supports language revitalization efforts where relevant</li>
+    <li>Respects sacred site protocols — locations generalized when requested</li>
+</ul>
+
+<!-- ═══════════════════════════════════════ -->
+<h2 id="licensing">License Compatibility</h2>
+
+<h3>Source Licenses</h3>
+<table>
+    <tr><th>Source</th><th>License</th><th>Attribution</th><th>Share-Alike</th></tr>
+    <tr><td>GeoNames</td><td>CC BY 4.0</td><td>Yes</td><td>No</td></tr>
+    <tr><td>OpenStreetMap</td><td>ODbL 1.0</td><td>Yes</td><td>Yes (database)</td></tr>
+    <tr><td>Kartverket (Norway)</td><td>CC0 / NLOD 2.0</td><td>No / Yes</td><td>No</td></tr>
+    <tr><td>Lantmäteriet (Sweden)</td><td>CC0</td><td>No</td><td>No</td></tr>
+    <tr><td>MML (Finland)</td><td>CC BY 4.0</td><td>Yes</td><td>No</td></tr>
+    <tr><td>Ordnance Survey (UK)</td><td>OGL 3.0</td><td>Yes</td><td>No</td></tr>
+    <tr><td>Wikidata</td><td>CC0</td><td>No</td><td>No</td></tr>
+</table>
+
+<h3>Compatibility Rules</h3>
+<ul>
+    <li>CC0 + CC BY → CC BY (attribution required)</li>
+    <li>CC BY + ODbL → ODbL + Attribution (both obligations)</li>
+    <li>ODbL + CC BY-SA → <strong>Incompatible</strong> (different share-alike mechanisms)</li>
+    <li>Statistical outputs (aggregated findings) are not database derivatives — safe to publish freely</li>
+</ul>
+
+<div class="note">
+    <strong>Record-level tracking:</strong> Each record carries its own license in the databank. The system can produce license-filtered exports for specific use cases.
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<h2 id="backup">Backup Strategy</h2>
+
+<h3>Backup Layers</h3>
+<table>
+    <tr><th>Layer</th><th>Mechanism</th><th>Frequency</th></tr>
+    <tr><td>1</td><td>Git History (primary)</td><td>Every commit</td></tr>
+    <tr><td>2</td><td>GitHub (remote redundancy)</td><td>Every push</td></tr>
+    <tr><td>3</td><td>Tagged Releases (archival)</td><td>Per milestone</td></tr>
+    <tr><td>4</td><td>SHA-256 Integrity (MANIFEST)</td><td>Every CI run</td></tr>
+</table>
+
+<h3>Recovery</h3>
+<pre><code># Restore from any point in history
+git checkout &lt;commit-hash&gt; -- databank/
+
+# Verify integrity after restore
+uv run toponymia databank verify-manifest</code></pre>
+
+<!-- ═══════════════════════════════════════ -->
+<h2 id="decisions">Architecture Decisions</h2>
+
+<h3>ADR-002: Phonetic Matching</h3>
+<p><strong>Decision:</strong> Keep <code>NordicPhoneticNormalizer</code>; do not adopt Beider-Morse (BMPM).</p>
+<ul>
+    <li>Nordic normalizer: 36% TPR, 6.7% FPR, 10.8 µs/key</li>
+    <li>BMPM: 8% TPR, 13.3% FPR, 1506 µs/key — unsuitable for Nordic toponyms</li>
+    <li>Generic algorithms (Soundex, Metaphone, NYSIIS): 40-60% FPR — unacceptable</li>
+    <li>Future: language-family-specific normalizers for non-Nordic expansion</li>
+</ul>
+
+<h3>ADR-003: Coordinate Resolution</h3>
+<p><strong>Decision:</strong> Multi-source coordinate resolution using strict priority hierarchy.</p>
+<ul>
+    <li>Priority: National mapping authority → National gazetteers → GeoNames → OSM → Wikidata</li>
+    <li>Conflict thresholds: &lt;100m minor, 100m–1km moderate, &gt;1km major</li>
+    <li>All source coordinates stored in provenance metadata</li>
+</ul>
+
+<!-- ═══════════════════════════════════════ -->
+
+<hr style="margin-top: 48px;">
+<p style="font-size: 0.8rem; color: #888; margin-top: 16px;">
+    Toponymia Europaea v0.5.0 · <a href="https://github.com/egkristi/ToponymiaEuropaea" style="color:#3498db;">GitHub</a> · CC BY-NC-SA 4.0
+</p>
+
+        </main>
+    </div>
+</body>
+</html>
