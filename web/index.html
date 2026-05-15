@@ -165,48 +165,62 @@
     <div class="pagination" id="pagination"></div>
 
     <script>
-        const API_BASE = window.location.origin;
         const PAGE_SIZE = 50;
+        let allPlaces = [];
+        let filtered = [];
         let currentOffset = 0;
 
-        function getParams() {
-            const name = document.getElementById('search-input').value.trim();
-            const country = document.getElementById('country-select').value;
-            const params = new URLSearchParams();
-            params.set('limit', PAGE_SIZE);
-            params.set('offset', currentOffset);
-            if (name) params.set('name', name);
-            if (country) params.set('country', country);
-            return params;
+        async function init() {
+            const info = document.getElementById('results-info');
+            info.textContent = 'Loading data...';
+            try {
+                const resp = await fetch('./data/places.json');
+                if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+                allPlaces = await resp.json();
+                filtered = allPlaces;
+                info.textContent = `${allPlaces.length.toLocaleString()} places loaded`;
+                renderTable();
+            } catch (err) {
+                info.textContent = `Error loading data: ${err.message}`;
+            }
         }
 
-        async function loadPlaces() {
-            const params = getParams();
+        function applyFilters() {
+            const name = document.getElementById('search-input').value.trim().toLowerCase();
+            const country = document.getElementById('country-select').value;
+            filtered = allPlaces.filter(p => {
+                if (name && !(p.name_form || '').toLowerCase().includes(name) &&
+                    !(p.name_normalized || '').toLowerCase().includes(name)) return false;
+                if (country && p.country_code !== country) return false;
+                return true;
+            });
+            currentOffset = 0;
+            renderTable();
+        }
+
+        function renderTable() {
             const info = document.getElementById('results-info');
             const body = document.getElementById('results-body');
+            const page = filtered.slice(currentOffset, currentOffset + PAGE_SIZE);
 
-            try {
-                const resp = await fetch(`${API_BASE}/api/v1/places?${params.toString()}`);
-                const data = await resp.json();
+            const start = filtered.length > 0 ? currentOffset + 1 : 0;
+            const end = currentOffset + page.length;
+            info.textContent = `Showing ${start}–${end} of ${filtered.length.toLocaleString()} records`;
 
-                info.textContent = `Showing ${currentOffset + 1}–${currentOffset + data.length} records`;
-                body.innerHTML = data.map(p => `
-                    <tr>
-                        <td><strong>${escHtml(p.name_form)}</strong></td>
-                        <td>${escHtml(p.name_normalized || '')}</td>
-                        <td><span class="badge badge-country">${escHtml(p.country_code || '')}</span></td>
-                        <td><span class="badge badge-type">${escHtml(p.place_type || '')}</span></td>
-                        <td>${escHtml(p.language_code || '')}</td>
-                        <td>${p.latitude?.toFixed(4) ?? ''}</td>
-                        <td>${p.longitude?.toFixed(4) ?? ''}</td>
-                        <td>${escHtml(p.source_id || '')}</td>
-                    </tr>
-                `).join('');
+            body.innerHTML = page.map(p => `
+                <tr>
+                    <td><strong>${escHtml(p.name_form)}</strong></td>
+                    <td>${escHtml(p.name_normalized || '')}</td>
+                    <td><span class="badge badge-country">${escHtml(p.country_code || '')}</span></td>
+                    <td><span class="badge badge-type">${escHtml(p.place_type || '')}</span></td>
+                    <td>${escHtml(p.language_code || '')}</td>
+                    <td>${p.latitude?.toFixed(4) ?? ''}</td>
+                    <td>${p.longitude?.toFixed(4) ?? ''}</td>
+                    <td>${escHtml(p.source_id || '')}</td>
+                </tr>
+            `).join('');
 
-                renderPagination(data.length);
-            } catch (err) {
-                info.textContent = `Error: ${err.message}`;
-            }
+            renderPagination(page.length);
         }
 
         function renderPagination(count) {
@@ -215,13 +229,20 @@
             const prevBtn = document.createElement('button');
             prevBtn.textContent = '← Previous';
             prevBtn.disabled = currentOffset === 0;
-            prevBtn.onclick = () => { currentOffset = Math.max(0, currentOffset - PAGE_SIZE); loadPlaces(); };
+            prevBtn.onclick = () => { currentOffset = Math.max(0, currentOffset - PAGE_SIZE); renderTable(); };
             pag.appendChild(prevBtn);
+
+            const pageInfo = document.createElement('span');
+            pageInfo.style.cssText = 'padding: 8px 14px; font-size: 0.85rem; color: #888;';
+            const currentPage = Math.floor(currentOffset / PAGE_SIZE) + 1;
+            const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
+            pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
+            pag.appendChild(pageInfo);
 
             const nextBtn = document.createElement('button');
             nextBtn.textContent = 'Next →';
             nextBtn.disabled = count < PAGE_SIZE;
-            nextBtn.onclick = () => { currentOffset += PAGE_SIZE; loadPlaces(); };
+            nextBtn.onclick = () => { currentOffset += PAGE_SIZE; renderTable(); };
             pag.appendChild(nextBtn);
         }
 
@@ -231,15 +252,13 @@
             return div.innerHTML;
         }
 
-        document.getElementById('search-btn').addEventListener('click', () => {
-            currentOffset = 0;
-            loadPlaces();
-        });
+        document.getElementById('search-btn').addEventListener('click', applyFilters);
+        document.getElementById('country-select').addEventListener('change', applyFilters);
         document.getElementById('search-input').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') { currentOffset = 0; loadPlaces(); }
+            if (e.key === 'Enter') applyFilters();
         });
 
-        loadPlaces();
+        init();
     </script>
 </body>
 </html>

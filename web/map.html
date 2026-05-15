@@ -363,7 +363,7 @@
     </div>
 
     <script>
-        const API_BASE = window.location.origin;
+        const DATA_URL = './data/places.json';
 
         // --- Map setup ---
         const map = L.map('map', {
@@ -397,8 +397,9 @@
         map.addLayer(clusterGroup);
 
         // Track all loaded features for sidebar linkage
+        let allPlaces = [];
         let currentFeatures = [];
-        let markerMap = new Map(); // sha256 -> marker
+        let markerMap = new Map(); // index -> marker
 
         // --- Helpers ---
         function getMarkerColor(placeType) {
@@ -462,51 +463,59 @@
         }
 
         // --- Data loading & display ---
-        async function searchPlaces() {
-            const query = document.getElementById('search-input').value.trim();
+        async function loadData() {
+            setStatus('Loading data...');
+            try {
+                const resp = await fetch(DATA_URL);
+                if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+                allPlaces = await resp.json();
+                setStatus(`${allPlaces.length.toLocaleString()} places loaded — search or browse`);
+                document.getElementById('results-header').textContent =
+                    `${allPlaces.length.toLocaleString()} places available — enter a search or click Search to show all`;
+            } catch (err) {
+                setStatus(`Error loading data: ${err.message}`);
+                document.getElementById('results-header').textContent = 'Error loading data';
+            }
+        }
+
+        function searchPlaces() {
+            const query = document.getElementById('search-input').value.trim().toLowerCase();
             const country = document.getElementById('filter-country').value;
             const placeType = document.getElementById('filter-type').value;
 
-            const params = new URLSearchParams();
-            if (country) params.set('country', country);
-            if (query) params.set('name', query);
-            params.set('limit', '5000');
-
-            setStatus('Loading...');
+            setStatus('Filtering...');
             document.getElementById('results-header').textContent = 'Searching...';
 
-            try {
-                const url = `${API_BASE}/api/v1/places?${params.toString()}`;
-                const resp = await fetch(url);
-                if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-                let data = await resp.json();
+            let data = allPlaces.filter(p => {
+                if (query && !(p.name_form || '').toLowerCase().includes(query) &&
+                    !(p.name_normalized || '').toLowerCase().includes(query)) return false;
+                if (country && p.country_code !== country) return false;
+                if (placeType && !(p.place_type || '').startsWith(placeType)) return false;
+                return true;
+            });
 
-                // Client-side place_type filter
-                if (placeType) {
-                    data = data.filter(p => (p.place_type || '').startsWith(placeType));
-                }
+            // Limit display to 5000 for performance
+            const limited = data.slice(0, 5000);
 
-                displayResults(data);
-                plotOnMap(data);
+            displayResults(limited);
+            plotOnMap(limited);
 
-                const total = data.length;
-                setStatus(`${total.toLocaleString()} place${total !== 1 ? 's' : ''} found`);
-                document.getElementById('results-header').textContent =
-                    `${total.toLocaleString()} result${total !== 1 ? 's' : ''}` +
-                    (query ? ` for "${query}"` : '') +
-                    (country ? ` in ${country}` : '');
-            } catch (err) {
-                setStatus(`Error: ${err.message}`);
-                document.getElementById('results-header').textContent = 'Error loading results';
-                console.error('Search failed:', err);
-            }
+            const total = data.length;
+            const shown = limited.length;
+            const suffix = total > shown ? ` (showing first ${shown.toLocaleString()})` : '';
+            setStatus(`${total.toLocaleString()} place${total !== 1 ? 's' : ''} found${suffix}`);
+            document.getElementById('results-header').textContent =
+                `${total.toLocaleString()} result${total !== 1 ? 's' : ''}` +
+                (query ? ` for "${query}"` : '') +
+                (country ? ` in ${country}` : '') +
+                suffix;
         }
 
         function plotOnMap(places) {
             clusterGroup.clearLayers();
             markerMap.clear();
 
-            places.forEach(place => {
+            places.forEach((place, idx) => {
                 if (place.latitude == null || place.longitude == null) return;
                 const color = getMarkerColor(place.place_type);
                 const marker = L.circleMarker([place.latitude, place.longitude], {
@@ -520,9 +529,7 @@
                 const coords = [place.longitude, place.latitude];
                 marker.bindPopup(getPopupContent(place, coords));
                 clusterGroup.addLayer(marker);
-                if (place._sha256) {
-                    markerMap.set(place._sha256, marker);
-                }
+                markerMap.set(idx, marker);
             });
 
             if (places.length > 0) {
@@ -579,7 +586,7 @@
             map.flyTo(latlng, 14, { duration: 1.2 });
 
             // Open popup on the marker
-            const marker = markerMap.get(place._sha256);
+            const marker = markerMap.get(idx);
             if (marker) {
                 // Unspiderfy cluster if needed
                 clusterGroup.zoomToShowLayer(marker, () => {
@@ -591,47 +598,6 @@
                     .setLatLng(latlng)
                     .setContent(getPopupContent(place, [place.longitude, place.latitude]))
                     .openOn(map);
-            }
-        }
-
-        // --- Spatial search: load places visible in current map bounds ---
-        async function loadVisibleArea() {
-            const bounds = map.getBounds();
-            const params = new URLSearchParams();
-            params.set('min_lat', bounds.getSouth().toFixed(5));
-            params.set('max_lat', bounds.getNorth().toFixed(5));
-            params.set('min_lon', bounds.getWest().toFixed(5));
-            params.set('max_lon', bounds.getEast().toFixed(5));
-
-            const country = document.getElementById('filter-country').value;
-            if (country) params.set('country', country);
-            const placeType = document.getElementById('filter-type').value;
-            params.set('limit', '5000');
-
-            setStatus('Loading visible area...');
-
-            try {
-                const url = `${API_BASE}/api/v1/places/bbox?${params.toString()}`;
-                const resp = await fetch(url);
-                if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-                let data = await resp.json();
-
-                if (placeType) {
-                    data = data.filter(p => (p.place_type || '').startsWith(placeType));
-                }
-
-                displayResults(data);
-                plotOnMap(data);
-                setStatus(`${data.length.toLocaleString()} places in view`);
-                document.getElementById('results-header').textContent =
-                    `${data.length.toLocaleString()} places in current view`;
-            } catch (err) {
-                // Fallback to regular search if bbox endpoint not available
-                if (err.message.includes('404')) {
-                    setStatus('Bbox endpoint not available — use search');
-                } else {
-                    setStatus(`Error: ${err.message}`);
-                }
             }
         }
 
@@ -667,7 +633,7 @@
         });
 
         // Initial load
-        searchPlaces();
+        loadData();
     </script>
 </body>
 </html>

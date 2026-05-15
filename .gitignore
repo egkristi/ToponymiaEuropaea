@@ -54,3 +54,4 @@ config/settings.toml
 
 # DVC
 /dvc.lock
+web/data/

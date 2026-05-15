@@ -64,6 +64,7 @@
     <header>
         <h1>Toponymia Europaea — Dashboard</h1>
         <nav>
+            <a href="index.html">Browse</a>
             <a href="map.html">Map</a>
         </nav>
     </header>
@@ -86,8 +87,6 @@
     </div>
 
     <script>
-        const API_BASE = window.location.origin;
-
         const COUNTRY_NAMES = {
             NO: 'Norway', SE: 'Sweden', DK: 'Denmark',
             FI: 'Finland', IS: 'Iceland',
@@ -97,9 +96,12 @@
         async function loadDashboard() {
             try {
                 const [statsResp, sourcesResp] = await Promise.all([
-                    fetch(`${API_BASE}/api/v1/stats`),
-                    fetch(`${API_BASE}/api/v1/sources`),
+                    fetch('./data/stats.json'),
+                    fetch('./data/sources.json'),
                 ]);
+
+                if (!statsResp.ok) throw new Error(`Stats: HTTP ${statsResp.status}`);
+                if (!sourcesResp.ok) throw new Error(`Sources: HTTP ${sourcesResp.status}`);
 
                 const stats = await statsResp.json();
                 const sources = await sourcesResp.json();
