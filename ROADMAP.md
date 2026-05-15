@@ -284,7 +284,7 @@ Soundex/Metaphone are English-centric. For cross-source deduplication (Þórshof
 
 | # | Item | Status | Priority | Notes |
 |---|------|--------|----------|-------|
-| 11.4.1 | Evaluate Beider-Morse Phonetic Matching | ⬚ | HIGH | Best for multi-language, but complex |
+| 11.4.1 | Evaluate Beider-Morse Phonetic Matching | ✅ | HIGH | Evaluated: BMPM 8% TPR vs Nordic normalizer 36% TPR. Decision: keep custom. See docs/decisions/002-phonetic-matching.md |
 | 11.4.2 | Nordic phonetic normalizer (ON→modern) | ✅ | **HIGH** | þ→t, ð→d, ǫ→o, hv→kv, ö→ø, -hem→-heim; find_duplicates() |
 | 11.4.3 | Phonetic index field on attestations | ✅ | **HIGH** | `_phonetic_key` on all 3000 records, enriched during `databank sign` |
 | 11.4.4 | Cross-source deduplication pipeline | ✅ | **HIGH** | Phonetic blocking + H3 spatial verification; `databank dedup` CLI |
@@ -340,6 +340,7 @@ The litmus test (May 2025) proved the pipeline works mechanically. Data populati
 7. ~~**Issue #39** — Parametrized interface tests for all modules~~ ✅
 8. ~~**Issue #31** — JSONL archival snapshots attached to releases~~ ✅
 9. ~~**Issue #34** — Gold-standard kernel with validation tooling~~ ✅
+10. ~~**Issue #27** — Evaluate Beider-Morse Phonetic Matching (decision: keep Nordic normalizer)~~ ✅
 
 ### Next phase
 

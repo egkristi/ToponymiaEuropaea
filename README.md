@@ -28,13 +28,14 @@
 - Cross-source deduplication pipeline (phonetic blocking + H3 spatial verification)
 - Diachronic attestation linking (historical → modern name chains)
 - H3 hierarchical spatial indexing (R7/R9/R11) for efficient geospatial queries
-- Nordic phonetic normalizer for cross-source deduplication
+- Nordic phonetic normalizer for cross-source deduplication (benchmarked vs BMPM, Metaphone, NYSIIS, Soundex)
 - Name lemma detection and frequency analysis across 5 countries
 - SHA-256 integrity signing with MANIFEST verification
 - Full CLI: ingest, analyze, test, databank, lemma commands
 - Bayesian etymology framework with hypothesis sets and evidence updating
 - JSONL archival snapshots attached to releases with checksums
 - 199 language modules spanning 7,000+ years of European linguistic history
+- Phonetic algorithm evaluation benchmark (decision: custom normalizer outperforms BMPM for Nordic toponyms)
 
 **Language coverage (201 modules):**
 
