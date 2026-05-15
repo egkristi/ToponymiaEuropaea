@@ -1,4 +1,4 @@
-"""Tests for perspective modules (Milestone 5)."""
+"""Tests for perspective modules (Milestone 5 + Milestone 12)."""
 
 from uuid import uuid4
 
@@ -19,13 +19,32 @@ from toponymia.perspectives.colour import (
     _COLOUR_ELEMENTS,
     ColourPerspective,
 )
+from toponymia.perspectives.ecological import (
+    _FAUNA_ELEMENTS,
+    _FLORA_ELEMENTS,
+    EcologicalPerspective,
+)
 from toponymia.perspectives.economic import (
     _ECONOMIC_ELEMENTS,
     EconomicPerspective,
 )
+from toponymia.perspectives.historical import (
+    _PERIOD_ELEMENTS,
+    HistoricalPerspective,
+)
 from toponymia.perspectives.hydrological import (
     _HYDRO_ELEMENTS,
     HydrologicalPerspective,
+)
+from toponymia.perspectives.legal import (
+    _LEGAL_ELEMENTS,
+    LegalPerspective,
+)
+from toponymia.perspectives.medicinal import (
+    _CARE_ELEMENTS,
+    _HEALING_WATER_ELEMENTS,
+    _MEDICINAL_PLANT_ELEMENTS,
+    MedicinalPerspective,
 )
 from toponymia.perspectives.migration import (
     _MIGRATION_ELEMENTS,
@@ -39,6 +58,10 @@ from toponymia.perspectives.religious import (
     _CULT_ELEMENTS,
     _DEITY_ELEMENTS,
     ReligiousPerspective,
+)
+from toponymia.perspectives.temporal_cycles import (
+    _TEMPORAL_ELEMENTS,
+    TemporalPerspective,
 )
 from toponymia.perspectives.terrain import (
     _TERRAIN_ELEMENTS,
@@ -359,3 +382,289 @@ class TestEconomicPerspective:
         assert "kaup" in _ECONOMIC_ELEMENTS
         assert "hamn" in _ECONOMIC_ELEMENTS
         assert "torg" in _ECONOMIC_ELEMENTS
+
+
+# --- Historical Perspective (Milestone 12.1) ---
+
+
+class TestHistoricalPerspective:
+    """Tests for HistoricalPerspective."""
+
+    def test_metadata(self):
+        p = HistoricalPerspective()
+        assert p.perspective_id == "historical"
+        assert p.name == "Historical/Diachronic"
+
+    def test_is_base_perspective(self):
+        assert isinstance(HistoricalPerspective(), BasePerspective)
+
+    def test_extract_features(self):
+        features = HistoricalPerspective().extract_features(uuid4())
+        assert "assigned_period" in features
+        assert "earliest_attestation_year" in features
+        assert "settlement_wave" in features
+
+    def test_generate_hypotheses(self):
+        hypos = HistoricalPerspective().generate_hypotheses(uuid4())
+        assert len(hypos) == len(_PERIOD_ELEMENTS)
+        assert all(isinstance(h, Hypothesis) for h in hypos)
+
+    def test_period_elements_defined(self):
+        assert "heim" in _PERIOD_ELEMENTS
+        assert "by" in _PERIOD_ELEMENTS
+        assert "rud" in _PERIOD_ELEMENTS
+        assert "torp" in _PERIOD_ELEMENTS
+        assert "ødegård" in _PERIOD_ELEMENTS
+
+    def test_assign_period_viking_age(self):
+        p = HistoricalPerspective()
+        period, confidence = p.assign_period(["by"])
+        assert period == "viking_age"
+        assert confidence > 0.0
+
+    def test_assign_period_medieval_clearing(self):
+        p = HistoricalPerspective()
+        period, confidence = p.assign_period(["rud"])
+        assert period == "high_medieval"
+        assert confidence > 0.0
+
+    def test_assign_period_unknown(self):
+        p = HistoricalPerspective()
+        period, confidence = p.assign_period(["xyz"])
+        assert period is None
+        assert confidence == 0.0
+
+    def test_assign_period_mixed(self):
+        p = HistoricalPerspective()
+        period, confidence = p.assign_period(["heim", "by"])
+        # Should pick one based on weighting
+        assert period in ("iron_age", "viking_age")
+        assert 0.0 < confidence <= 1.0
+
+
+# --- Ecological Perspective (Milestone 12.2) ---
+
+
+class TestEcologicalPerspective:
+    """Tests for EcologicalPerspective."""
+
+    def test_metadata(self):
+        p = EcologicalPerspective()
+        assert p.perspective_id == "ecological"
+        assert p.name == "Ecological/Biological"
+
+    def test_is_base_perspective(self):
+        assert isinstance(EcologicalPerspective(), BasePerspective)
+
+    def test_extract_features(self):
+        features = EcologicalPerspective().extract_features(uuid4())
+        assert "flora_element" in features
+        assert "fauna_element" in features
+        assert "vegetation_zone" in features
+
+    def test_generate_hypotheses(self):
+        hypos = EcologicalPerspective().generate_hypotheses(uuid4())
+        assert len(hypos) == len(_FLORA_ELEMENTS) + len(_FAUNA_ELEMENTS)
+        assert all(isinstance(h, Hypothesis) for h in hypos)
+
+    def test_flora_elements_defined(self):
+        assert "bjørk" in _FLORA_ELEMENTS
+        assert "eik" in _FLORA_ELEMENTS
+        assert "gran" in _FLORA_ELEMENTS
+        assert "furu" in _FLORA_ELEMENTS
+
+    def test_fauna_elements_defined(self):
+        assert "ulv" in _FAUNA_ELEMENTS
+        assert "bjørn" in _FAUNA_ELEMENTS
+        assert "ørn" in _FAUNA_ELEMENTS
+        assert "laks" in _FAUNA_ELEMENTS
+
+    def test_classify_flora(self):
+        p = EcologicalPerspective()
+        result = p.classify_element("bjørk")
+        assert result is not None
+        assert result["category"] == "flora"
+        assert result["species"] == "Betula"
+
+    def test_classify_fauna(self):
+        p = EcologicalPerspective()
+        result = p.classify_element("ulv")
+        assert result is not None
+        assert result["category"] == "fauna"
+        assert result["species"] == "Canis lupus"
+
+    def test_classify_unknown(self):
+        p = EcologicalPerspective()
+        assert p.classify_element("xyz") is None
+
+
+# --- Legal Perspective (Milestone 12.3) ---
+
+
+class TestLegalPerspective:
+    """Tests for LegalPerspective."""
+
+    def test_metadata(self):
+        p = LegalPerspective()
+        assert p.perspective_id == "legal"
+        assert p.name == "Legal/Administrative"
+
+    def test_is_base_perspective(self):
+        assert isinstance(LegalPerspective(), BasePerspective)
+
+    def test_extract_features(self):
+        features = LegalPerspective().extract_features(uuid4())
+        assert "legal_element" in features
+        assert "nearest_boundary_m" in features
+        assert "centrality_score" in features
+
+    def test_generate_hypotheses(self):
+        hypos = LegalPerspective().generate_hypotheses(uuid4())
+        assert len(hypos) == len(_LEGAL_ELEMENTS)
+        assert all(isinstance(h, Hypothesis) for h in hypos)
+
+    def test_legal_elements_defined(self):
+        assert "ting" in _LEGAL_ELEMENTS
+        assert "herad" in _LEGAL_ELEMENTS
+        assert "grense" in _LEGAL_ELEMENTS
+        assert "galge" in _LEGAL_ELEMENTS
+
+    def test_classify_assembly_element(self):
+        p = LegalPerspective()
+        result = p.classify_element("ting")
+        assert result is not None
+        assert result["type"] == "assembly"
+
+    def test_classify_boundary_element(self):
+        p = LegalPerspective()
+        result = p.classify_element("grense")
+        assert result is not None
+        assert result["type"] == "boundary"
+
+    def test_classify_unknown(self):
+        p = LegalPerspective()
+        assert p.classify_element("xyz") is None
+
+
+# --- Temporal Perspective (Milestone 12.4) ---
+
+
+class TestTemporalPerspective:
+    """Tests for TemporalPerspective."""
+
+    def test_metadata(self):
+        p = TemporalPerspective()
+        assert p.perspective_id == "temporal"
+        assert p.name == "Temporal Cycles & Calendar"
+
+    def test_is_base_perspective(self):
+        assert isinstance(TemporalPerspective(), BasePerspective)
+
+    def test_extract_features(self):
+        features = TemporalPerspective().extract_features(uuid4())
+        assert "temporal_element" in features
+        assert "season" in features
+        assert "growing_season_days" in features
+
+    def test_generate_hypotheses(self):
+        hypos = TemporalPerspective().generate_hypotheses(uuid4())
+        assert len(hypos) == len(_TEMPORAL_ELEMENTS)
+        assert all(isinstance(h, Hypothesis) for h in hypos)
+
+    def test_temporal_elements_defined(self):
+        assert "vår" in _TEMPORAL_ELEMENTS
+        assert "seter" in _TEMPORAL_ELEMENTS
+        assert "jul" in _TEMPORAL_ELEMENTS
+        assert "slått" in _TEMPORAL_ELEMENTS
+
+    def test_classify_seasonal(self):
+        p = TemporalPerspective()
+        result = p.classify_element("vår")
+        assert result is not None
+        assert result["type"] == "seasonal"
+        assert result["season"] == "spring"
+
+    def test_classify_transhumance(self):
+        p = TemporalPerspective()
+        result = p.classify_element("seter")
+        assert result is not None
+        assert result["type"] == "transhumance"
+
+    def test_classify_unknown(self):
+        p = TemporalPerspective()
+        assert p.classify_element("xyz") is None
+
+
+# --- Medicinal Perspective (Milestone 12.5) ---
+
+
+class TestMedicinalPerspective:
+    """Tests for MedicinalPerspective."""
+
+    def test_metadata(self):
+        p = MedicinalPerspective()
+        assert p.perspective_id == "medicinal"
+        assert p.name == "Medicinal & Healing Landscape"
+
+    def test_is_base_perspective(self):
+        assert isinstance(MedicinalPerspective(), BasePerspective)
+
+    def test_extract_features(self):
+        features = MedicinalPerspective().extract_features(uuid4())
+        assert "healing_element" in features
+        assert "nearest_thermal_spring_m" in features
+        assert "water_temperature_c" in features
+
+    def test_generate_hypotheses(self):
+        p = MedicinalPerspective()
+        hypos = p.generate_hypotheses(uuid4())
+        expected = (
+            len(_HEALING_WATER_ELEMENTS) + len(_CARE_ELEMENTS) + len(_MEDICINAL_PLANT_ELEMENTS)
+        )
+        assert len(hypos) == expected
+        assert all(isinstance(h, Hypothesis) for h in hypos)
+
+    def test_generate_hypotheses_no_plants(self):
+        p = MedicinalPerspective(include_plants=False)
+        hypos = p.generate_hypotheses(uuid4())
+        expected = len(_HEALING_WATER_ELEMENTS) + len(_CARE_ELEMENTS)
+        assert len(hypos) == expected
+
+    def test_healing_water_elements(self):
+        assert "bad" in _HEALING_WATER_ELEMENTS
+        assert "spa" in _HEALING_WATER_ELEMENTS
+        assert "varm" in _HEALING_WATER_ELEMENTS
+        assert "kilde" in _HEALING_WATER_ELEMENTS
+
+    def test_care_elements(self):
+        assert "hospital" in _CARE_ELEMENTS
+        assert "spital" in _CARE_ELEMENTS
+        assert "lazarett" in _CARE_ELEMENTS
+
+    def test_medicinal_plant_elements(self):
+        assert "lind" in _MEDICINAL_PLANT_ELEMENTS
+        assert "selje" in _MEDICINAL_PLANT_ELEMENTS
+
+    def test_classify_healing_water(self):
+        p = MedicinalPerspective()
+        result = p.classify_element("bad")
+        assert result is not None
+        assert result["category"] == "healing_water"
+        assert result["type"] == "thermal"
+
+    def test_classify_care(self):
+        p = MedicinalPerspective()
+        result = p.classify_element("hospital")
+        assert result is not None
+        assert result["category"] == "care_facility"
+
+    def test_classify_plant(self):
+        p = MedicinalPerspective()
+        result = p.classify_element("selje")
+        assert result is not None
+        assert result["category"] == "medicinal_plant"
+        assert result["species"] == "Salix"
+
+    def test_classify_unknown(self):
+        p = MedicinalPerspective()
+        assert p.classify_element("xyz") is None
