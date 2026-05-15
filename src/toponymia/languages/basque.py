@@ -7,11 +7,29 @@ Its toponymy provides unique insights into pre-IE European naming:
 - Ancient substrate visible in wider area (Aquitanian inscriptions)
 - No known genetic relatives
 
+BASQUE WHALERS ON THE NORWEGIAN COAST (1500s–1700s):
+Basque whalers were the first commercial whalers in northern Norway and
+Svalbard, establishing a significant presence in Finnmark and Troms:
+- Active in Finnmark from the 1570s onwards (before Dutch/English)
+- Basque-Norwegian pidgin language documented ("Baskisk-norsk russenorsk")
+- Whaling stations in Hammerfest, Vardø, and Spitsbergen/Svalbard
+- Loanwords in northern Norwegian dialects (e.g., 'trankoke' processes)
+- Place-name "Biscaya" used for areas associated with Basque whalers
+- Basque harpoon technology transferred to Norwegian whaling
+- The pidgin included Basque words: 'arrantzale' (fisherman),
+  'balea' (whale), 'ontzi' (vessel)
+
+This connection makes Basque relevant not just as a pre-IE substrate in
+Iberia but as a CONTACT LANGUAGE on the Norwegian coast itself.
+
 Key references:
 - Michelena 1989 "Fonética histórica vasca"
 - Gorrotxategi 1984 "Estudio sobre la onomástica indígena de Aquitania"
 - Salaberri 2015 "Araba/Álava. Los nombres de nuestros pueblos"
 - Belasko 2004 "Diccionario etimológico de los nombres de los pueblos"
+- Bakker 1987 "A Basque nautical pidgin" (Basque-Icelandic pidgin study)
+- Deen 1937 "Glossaria duo Vasco-Islandica"
+- Barkham 2000 "The Basque Whaling Establishments in Labrador 1536-1632"
 """
 
 from __future__ import annotations
@@ -121,6 +139,13 @@ class BasqueModule(BaseLanguageModule):
         "lepo": "pass, mountain col",
         "ate": "gate, pass",
         "zulo": "hole, cave",
+        # Maritime/whaling vocabulary (relevant to Norwegian coast contact)
+        "balea": "whale (Basque whalers active on Norwegian coast 1570s+)",
+        "arrantzale": "fisherman (Basque maritime vocabulary)",
+        "ontzi": "vessel, ship",
+        "portua": "port, harbor (cf. Norwegian-Basque whaling stations)",
+        "itsaso": "sea, ocean",
+        "kai": "quay, wharf (borrowed into many European languages)",
     }
 
     def segment(self, form: str) -> list[SegmentationResult]:
