@@ -411,8 +411,8 @@ Move beyond regex/dictionary-based morpheme detection. Enable automated analysis
 
 | # | Item | Status | Priority | Notes |
 |---|------|--------|----------|-------|
-| 13.1 | **Transformer-based morpheme segmentation** | ⬚ | **HIGH** | Fine-tune on known segmentations from language modules. Handle compounds (Þór+s+hof) without dictionary lookup. |
-| 13.2 | **Cross-lingual cognate detection** | ⬚ | **HIGH** | Automated PIE root matching across language modules. Sound correspondence rules as learned embeddings. E.g., detect that Perun/Perkūnas/Fjǫrgyn share *\*perkʷ-*. |
+| 13.1 | **Transformer-based morpheme segmentation** | ✅ | **HIGH** | Morfessor-based unsupervised segmentation in `src/toponymia/nlp/`. Trains on databank corpus. Benchmarking against rule-based. |
+| 13.2 | **Cross-lingual cognate detection** | ✅ | **HIGH** | Sound correspondence rules + 15 cognate sets (PIE → Germanic daughters). `src/toponymia/nlp/cognates.py`. |
 | 13.3 | **Named Entity Recognition for historical texts** | ⬚ | MEDIUM | SpaCy/transformer NER trained on medieval charters, sagas, diplomas. Extract place-name mentions with dates. Feeds perspectives B, G, K. |
 | 13.4 | **Automated name-type classification** | ⬚ | MEDIUM | Character-level CNN/RNN to classify name types (habitative, topographic, theophoric, anthroponymic) without explicit rules. Validate against language module classifications. |
 | 13.5 | **Substrate detection via distributional analysis** | ⬚ | HIGH | Identify non-IE elements by statistical anomaly in phonotactics. Names that don't fit any known language module → candidate substrate. Feeds perspective U. |
