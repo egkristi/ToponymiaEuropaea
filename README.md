@@ -41,6 +41,9 @@
 - 201 language modules spanning 7,000+ years of European linguistic history
 - Phonetic algorithm evaluation benchmark (decision: custom normalizer outperforms BMPM for Nordic toponyms)
 - **Parquet/DuckDB analytical layer** — SQL queries over databank without loading into memory
+- **NLP pipeline** — Morfessor morpheme segmentation, cross-lingual cognate detection (15 PGmc sets), historical NER for medieval documents
+- **Research infrastructure** — OSF preregistrations, reproducible analysis scripts, publication-quality figure generation (colourblind-safe)
+- **RDF/Turtle export** — Linked Open Data with GeoSPARQL, Dublin Core, and schema.org vocabularies
 - **Docker Compose 3-layer stack** — PostgreSQL+PostGIS, API service, seed pipeline
 - **Sync pipeline** — JSONL → PostgreSQL → Parquet with checksum verification at each stage
 - **Wikidata etymology extraction** — P138 (named after) for 18 European countries with databank matching
@@ -867,6 +870,12 @@ uv sync --extra dev
 # For geospatial features (H3 spatial indexing)
 uv sync --extra dev --extra geospatial
 
+# For NLP features (Morfessor segmentation, cognates, NER)
+uv sync --extra dev --extra nlp-segment
+
+# For research output (figures, statistical analysis)
+uv sync --extra dev --extra research
+
 # Verify installation
 uv run pytest
 ```
@@ -1004,6 +1013,12 @@ toponymia-europaea/
 │       │   ├── old_norse.py         # Reference implementation (120+ elements)
 │       │   ├── ...                  # 199 more: all European, ancient, Caucasian,
 │       │   └── ...                  #   Near Eastern, and Central Asian languages
+│       ├── nlp/                      # NLP analysis modules
+│       │   ├── __init__.py          # Morfessor-based morpheme segmentation
+│       │   ├── cognates.py          # Cross-lingual cognate detection (15 PGmc sets)
+│       │   └── ner.py               # Historical NER for medieval documents
+│       ├── research/                 # Research output infrastructure
+│       │   └── __init__.py          # Figure generation (publication-quality defaults)
 │       ├── statistics/               # Statistical testing framework (16 modules)
 │       │   ├── base.py              # BaseTest, PlaceData, StatFamily, StatStatus
 │       │   ├── correspondence.py    # Permutation-based correspondence
@@ -1079,6 +1094,14 @@ toponymia-europaea/
 │   ├── docs.html                    # Documentation browser
 │   ├── build_data.py               # Databank → static JSON export
 │   └── data/                        # Pre-built JSON for frontend
+├── research/                         # Research outputs and analysis
+│   ├── preregistration/             # OSF preregistrations
+│   │   └── heim_distribution_norway.md
+│   ├── notebooks/                   # Reproducible analysis scripts
+│   │   └── 01_heim_distribution.py
+│   ├── results/                     # Results matrix and outputs
+│   │   └── README.md
+│   └── figures/                     # Publication-quality figures
 ├── benchmarks/
 │   └── phonetic_evaluation.py       # BMPM vs Nordic normalizer benchmark
 ├── templates/
