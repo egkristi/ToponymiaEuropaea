@@ -230,7 +230,7 @@ The framework has 15 seed records. To produce real research, it needs real data.
 | 10.5 | Norske Gaardnavne (Rygh) digitized | ⬚ | HIGH | 19th-century authoritative Norwegian farm-name corpus |
 | 10.6 | EPNS volumes (England) | ⬚ | MEDIUM | English Place-Name Society historical records |
 | 10.7 | Attestations from Diplomatarium Norvegicum | ⬚ | HIGH | Medieval charter attestations with dates |
-| 10.8 | Seed data for UK/Ireland | ⬚ | MEDIUM | GeoNames + OS data for Celtic language analysis |
+| 10.8 | Seed data for UK/Ireland | ✅ | MEDIUM | GeoNames + OS data for Celtic language analysis |
 | 10.9 | Seed data for Iberia | ⬚ | MEDIUM | Arabic/Moorish substrate layer validation |
 | 10.10 | Historical attestation curation workflow | ✅ | HIGH | How contributors add dated attestations from primary sources |
 
@@ -430,7 +430,7 @@ Scale from 2,936 records (5 Nordic countries) to continental coverage. Prerequis
 | 14.1 | **Norske Gaardnavne (Rygh) digitized corpus** | ⬚ | **HIGH** | 19th-century authoritative Norwegian farm-name corpus. ~60,000 names with etymologies. Issue #20. |
 | 14.2 | **Diplomatarium Norvegicum attestations** | ⬚ | **HIGH** | Medieval charter attestations with dates. ~10,000 dated forms. Issue #21. |
 | 14.3 | **EPNS volumes (England)** | ⬚ | HIGH | English Place-Name Society. County-by-county historical analysis. Issue #28. |
-| 14.4 | **UK/Ireland seed data** | ⬚ | HIGH | OS Names + Logainm.ie. Celtic substrate validation. Issue #29. |
+| 14.4 | **UK/Ireland seed data** | ✅ | HIGH | GeoNames GB/IE/IM: 9,616 records. Celtic substrate validation. Issue #29. |
 | 14.5 | **Iberian seed data** | ⬚ | HIGH | IGN Spain + Arabic/Mozarabic substrate layer. Issue #30. |
 | 14.6 | **Central European expansion** | ✅ | MEDIUM | DE (5,500), AT (4,500), CH (4,500), PL (5,000), CZ (4,000) from GeoNames. Issue #44. |
 | 14.7 | **Baltic states** | ✅ | MEDIUM | Estonia (47 cities), Lithuania (81 cities), Latvia (83 cities). Wikidata + OSM polygon geometry. Historical German/Polish/Swedish name layers. |
