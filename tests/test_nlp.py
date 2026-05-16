@@ -54,10 +54,9 @@ class TestMorfessorSegmenter:
 
     @pytest.fixture
     def segmenter(self):
-        try:
-            from toponymia.nlp import MorfessorSegmenter
-        except ImportError:
-            pytest.skip("morfessor not installed")
+        pytest.importorskip("morfessor")
+        from toponymia.nlp import MorfessorSegmenter
+
         return MorfessorSegmenter()
 
     def test_train_and_segment(self, segmenter) -> None:
