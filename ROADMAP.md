@@ -4,7 +4,7 @@ This roadmap tracks the project's development from initial framework to producti
 
 **Legend:** ✅ Done | 🔄 In Progress | ⬚ Not Started
 
-**Current status:** 4,221 tests passing, 0 warnings, CI green (lint + mypy strict + test py3.12/3.13 + ontology + databank validation). 2,936 records (5 Nordic countries × 2 sources). 201 language modules with auto-discovery registry. 15 perspective modules. Gold-standard kernel (8 records). Full 3-layer persistence (JSONL → PostgreSQL → Parquet). End-to-end: `toponymia analyze element nes --country NO` runs databank → segmentation → statistical test → results.
+**Current status:** 4,221 tests passing, 0 warnings, CI green (lint + mypy strict + test py3.12/3.13 + ontology + databank validation). 4,290 records (12 countries × 3 sources). 201 language modules with auto-discovery registry. 15 perspective modules. Gold-standard kernel (8 records). Full 3-layer persistence (JSONL → PostgreSQL → Parquet). End-to-end: `toponymia analyze element nes --country NO` runs databank → segmentation → statistical test → results.
 
 ---
 
@@ -329,7 +329,7 @@ The litmus test (May 2025) proved the pipeline works mechanically. Data populati
 **Milestone 11.4.3 COMPLETE** — Phonetic index field on all records.
 **Issues #10–13 closed** — mypy fixed, Danish/Swedish modules added, data populated.
 
-**Status: 4,221 tests passing (incl. 3,184 parametrized module tests), mypy strict clean, 2,936 databank records, 201 language modules with auto-discovery registry, 15 perspective modules, 8 gold-standard kernel records.**
+**Status: 4,221 tests passing (incl. 3,184 parametrized module tests), mypy strict clean, 4,290 databank records, 201 language modules with auto-discovery registry, 15 perspective modules, 8 gold-standard kernel records.**
 
 **Milestone 11.2 COMPLETE** — Full 3-layer persistence: JSONL kernel, PostgreSQL+PostGIS, Parquet/DuckDB, sync pipeline with checksums.
 **Milestone 11.6 (4/5) COMPLETE** — Coordinate resolution, license matrix, ODbL compliance. Only GDPR analysis remains.
@@ -433,7 +433,7 @@ Scale from 2,936 records (5 Nordic countries) to continental coverage. Prerequis
 | 14.4 | **UK/Ireland seed data** | ⬚ | HIGH | OS Names + Logainm.ie. Celtic substrate validation. Issue #29. |
 | 14.5 | **Iberian seed data** | ⬚ | HIGH | IGN Spain + Arabic/Mozarabic substrate layer. Issue #30. |
 | 14.6 | **Central European expansion** | ⬚ | MEDIUM | Germany (BKG), Poland (GUGiK), Czechia (ČÚZK). Slavic-Germanic contact zone. |
-| 14.7 | **Baltic states** | ⬚ | MEDIUM | Lithuania, Latvia, Estonia. Baltic/Finnic/Slavic layer interaction. |
+| 14.7 | **Baltic states** | ✅ | MEDIUM | Estonia (47 cities), Lithuania (81 cities), Latvia (83 cities). Wikidata + OSM polygon geometry. Historical German/Polish/Swedish name layers. |
 | 14.8 | **Balkans & Southeast Europe** | ⬚ | LOW | Complex stratigraphy: Illyrian → Latin → Slavic → Ottoman → modern. |
 | 14.9 | **Historical attestation curation workflow** | ⬚ | **HIGH** | Web interface for contributors to add dated attestations. Issue #24. |
 | 14.10 | **Automated source discovery** | ⬚ | MEDIUM | Crawl/detect national gazetteer APIs and open datasets. |
@@ -543,3 +543,39 @@ Connect the framework to the wider academic data ecosystem.
 - **v0.8.0** — Continental data scaling (100K+ records). Cross-disciplinary perspectives (12.6–12.11). Full NLP pipeline (13.3–13.6).
 - **v0.9.0** — Research output pipeline. Preregistration, results matrix, reproducible notebooks, automated figures.
 - **v1.0.0** — First publishable research result produced and submitted. Linked Data export. DOI for datasets.
+
+---
+
+## Milestone 19 — Topographic Metrics for Terrain Features
+
+Enrich mountain/hill/peak records with quantitative topographic data. These metrics enable analysis of naming patterns relative to physical prominence and spatial dominance.
+
+### Wikidata Properties (readily available)
+
+| Property | Description | Coverage |
+|----------|-------------|----------|
+| P2660 | Topographic prominence (m) | ~50,000 peaks globally |
+| P2659 | Topographic isolation (km) | ~30,000 peaks globally |
+| P3137 | Parent peak (nearest higher summit) | ~20,000 peaks |
+| P4552 | Mountain range membership | Extensive |
+| P2044 | Elevation (m) | Very high coverage |
+
+### Implementation Plan
+
+| # | Item | Status | Priority | Notes |
+|---|------|--------|----------|-------|
+| 19.1 | **Mountain/peak ingestion script** | ⬚ | **HIGH** | Wikidata SPARQL for peaks with P2660/P2659/P3137/P4552. Start with Norway (rich coverage). |
+| 19.2 | **Schema fields: prominence, isolation** | ⬚ | **HIGH** | `prominence_m`, `isolation_km`, `parent_peak_qid`, `mountain_range` in JSONL records. |
+| 19.3 | **Dominance ratio computation** | ⬚ | MEDIUM | `prominence_m / elevation_m` — measures relative significance of a peak. |
+| 19.4 | **Nearest-equal-height analysis** | ⬚ | MEDIUM | For peaks without P2659: compute from DEM (Copernicus 30m). |
+| 19.5 | **Peak naming pattern analysis** | ⬚ | HIGH | Do prominent peaks have older/more stable names? Is isolation correlated with unique naming? |
+| 19.6 | **Mountain range grouping** | ⬚ | MEDIUM | Group peaks by P4552 range. Analyze naming consistency within ranges. |
+| 19.7 | **Cross-country peak comparison** | ⬚ | MEDIUM | Compare naming conventions for terrain features across linguistic boundaries (e.g., Scandinavian Mountains). |
+| 19.8 | **DEM-based metrics pipeline** | ⬚ | LOW | Bulk computation from Copernicus 30m DEM for peaks lacking Wikidata values. |
+
+### Research Questions
+
+- Do topographically isolated peaks receive unique names more often than clustered peaks?
+- Is there a correlation between prominence and name age/stability?
+- Do mountain names encode relative height (e.g., "Store-/Lille-" vs actual prominence)?
+- Are naming patterns within a mountain range more consistent than across ranges?
