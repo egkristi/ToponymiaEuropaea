@@ -1033,6 +1033,40 @@ def databank_history(
         console.print(f"\nLongest span: [bold]{report.longest_span}[/bold] years")
 
 
+@databank_app.command("export-rdf")
+def databank_export_rdf(
+    output: Path = typer.Option(
+        "databank/export/toponymia-europaea.ttl",
+        "--output",
+        "-o",
+        help="Output file path",
+    ),
+    country: str | None = typer.Option(None, "--country", "-c", help="Filter by ISO country code"),
+    rdf_format: str = typer.Option(
+        "turtle", "--format", "-f", help="RDF format: turtle, xml, n3, nt, json-ld"
+    ),
+) -> None:
+    """Export databank to RDF/Turtle (Linked Open Data)."""
+    try:
+        from toponymia.export.rdf import export_databank_to_rdf
+    except ImportError:
+        console.print("[red]rdflib not installed. Install with: uv pip install rdflib[/red]")
+        raise typer.Exit(1) from None
+
+    databank_path = Path(__file__).parent.parent.parent / "databank"
+
+    if not (databank_path / "places").exists():
+        console.print("[yellow]No databank/places directory found[/yellow]")
+        raise typer.Exit(1)
+
+    console.print(f"[bold]Exporting databank to RDF ({rdf_format})...[/bold]")
+    if country:
+        console.print(f"  Filtering: {country.upper()}")
+
+    count = export_databank_to_rdf(databank_path, output, country=country, rdf_format=rdf_format)
+    console.print(f"[green]✓ Exported {count:,} records → {output}[/green]")
+
+
 # --- Analyze commands ---
 
 

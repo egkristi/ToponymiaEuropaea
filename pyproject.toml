@@ -58,6 +58,9 @@ bayesian = [
     "pymc>=5.10",
     "arviz>=0.17",
 ]
+linkeddata = [
+    "rdflib>=7.0",
+]
 ml = [
     "transformers>=4.37",
     "torch>=2.1",
