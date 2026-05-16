@@ -155,6 +155,54 @@
             font-size: 0.85rem;
         }
 
+        .pagination-bar {
+            padding: 10px 20px;
+            border-top: 1px solid #2a2a4a;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            background: #1a1a2e;
+            position: sticky;
+            bottom: 0;
+        }
+        .pagination-bar button {
+            padding: 6px 12px;
+            border: 1px solid #444;
+            border-radius: 4px;
+            background: #0f3460;
+            color: #eee;
+            cursor: pointer;
+            font-size: 0.78rem;
+        }
+        .pagination-bar button:hover { background: #1a5276; }
+        .pagination-bar button:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+        .pagination-bar .page-info {
+            font-size: 0.72rem;
+            color: #888;
+        }
+
+        .search-options {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 8px;
+        }
+        .search-options label {
+            font-size: 0.78rem;
+            color: #aaa;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .search-options input[type="checkbox"] {
+            accent-color: #3498db;
+        }
+
         /* Map area */
         .map-container {
             flex: 1;
@@ -266,6 +314,9 @@
                     <input type="text" id="search-input" placeholder="Search place names..." autofocus>
                     <button id="search-btn">Search</button>
                 </div>
+                <div class="search-options">
+                    <label><input type="checkbox" id="search-in-view"> Search within current map view</label>
+                </div>
                 <div class="filters">
                     <div>
                         <label for="filter-country">Country</label>
@@ -344,6 +395,11 @@
                     Enter a name to search, or click "Search" to load all places
                 </div>
                 <div id="results-list"></div>
+                <div class="pagination-bar" id="pagination-bar" style="display:none;">
+                    <button id="page-prev" disabled>&laquo; Previous</button>
+                    <span class="page-info" id="page-info"></span>
+                    <button id="page-next">Next &raquo;</button>
+                </div>
             </div>
         </aside>
 
@@ -399,9 +455,15 @@
 
         // Track all loaded features for sidebar linkage
         let allPlaces = [];
-        let currentFeatures = [];
+        let currentFeatures = [];  // all filtered results (full set)
+        let displayedFeatures = []; // current page slice
         let markerMap = new Map(); // index -> marker
         let geometryLayer = null; // currently displayed geometry overlay
+
+        // Pagination state
+        const PAGE_SIZE = 5000;
+        let currentPage = 0;
+        let totalFilteredCount = 0;
 
         // --- Helpers ---
         function getMarkerColor(placeType) {
@@ -486,6 +548,13 @@
             const query = document.getElementById('search-input').value.trim().toLowerCase();
             const country = document.getElementById('filter-country').value;
             const placeType = document.getElementById('filter-type').value;
+            const searchInView = document.getElementById('search-in-view').checked;
+
+            // Get map bounds if searching within view
+            let bounds = null;
+            if (searchInView) {
+                bounds = map.getBounds();
+            }
 
             setStatus('Filtering...');
             document.getElementById('results-header').textContent = 'Searching...';
@@ -495,24 +564,60 @@
                     !(p.name_normalized || '').toLowerCase().includes(query)) return false;
                 if (country && p.country_code !== country) return false;
                 if (placeType && !(p.place_type || '').startsWith(placeType)) return false;
+                if (bounds && p.latitude != null && p.longitude != null) {
+                    if (!bounds.contains([p.latitude, p.longitude])) return false;
+                }
                 return true;
             });
 
-            // Limit display to 5000 for performance
-            const limited = data.slice(0, 5000);
+            // Store full filtered results and reset pagination
+            currentFeatures = data;
+            totalFilteredCount = data.length;
+            currentPage = 0;
 
-            displayResults(limited);
-            plotOnMap(limited);
+            showPage(0);
+        }
 
-            const total = data.length;
-            const shown = limited.length;
-            const suffix = total > shown ? ` (showing first ${shown.toLocaleString()})` : '';
-            setStatus(`${total.toLocaleString()} place${total !== 1 ? 's' : ''} found${suffix}`);
+        function showPage(page) {
+            currentPage = page;
+            const start = page * PAGE_SIZE;
+            const end = Math.min(start + PAGE_SIZE, currentFeatures.length);
+            displayedFeatures = currentFeatures.slice(start, end);
+
+            displayResults(displayedFeatures);
+            plotOnMap(displayedFeatures);
+            updatePagination();
+
+            const query = document.getElementById('search-input').value.trim().toLowerCase();
+            const country = document.getElementById('filter-country').value;
+            const searchInView = document.getElementById('search-in-view').checked;
+            const total = totalFilteredCount;
+            const pageLabel = total > PAGE_SIZE
+                ? ` (page ${page + 1}/${Math.ceil(total / PAGE_SIZE)}, showing ${start + 1}–${end})`
+                : '';
+            setStatus(`${total.toLocaleString()} place${total !== 1 ? 's' : ''} found${pageLabel}`);
             document.getElementById('results-header').textContent =
                 `${total.toLocaleString()} result${total !== 1 ? 's' : ''}` +
                 (query ? ` for "${query}"` : '') +
                 (country ? ` in ${country}` : '') +
-                suffix;
+                (searchInView ? ' (in view)' : '') +
+                pageLabel;
+        }
+
+        function updatePagination() {
+            const totalPages = Math.ceil(totalFilteredCount / PAGE_SIZE);
+            const bar = document.getElementById('pagination-bar');
+
+            if (totalPages <= 1) {
+                bar.style.display = 'none';
+                return;
+            }
+
+            bar.style.display = 'flex';
+            document.getElementById('page-prev').disabled = currentPage === 0;
+            document.getElementById('page-next').disabled = currentPage >= totalPages - 1;
+            document.getElementById('page-info').textContent =
+                `Page ${currentPage + 1} of ${totalPages}`;
         }
 
         function plotOnMap(places) {
@@ -572,7 +677,6 @@
         }
 
         function displayResults(places) {
-            currentFeatures = places;
             const listEl = document.getElementById('results-list');
 
             if (places.length === 0) {
@@ -610,7 +714,7 @@
         }
 
         function flyToPlace(idx) {
-            const place = currentFeatures[idx];
+            const place = displayedFeatures[idx];
             if (!place || place.latitude == null || place.longitude == null) return;
 
             // Clear any previous geometry overlay
@@ -668,6 +772,15 @@
             document.getElementById('sidebar').classList.toggle('collapsed');
         });
 
+        // Pagination buttons
+        document.getElementById('page-prev').addEventListener('click', () => {
+            if (currentPage > 0) showPage(currentPage - 1);
+        });
+        document.getElementById('page-next').addEventListener('click', () => {
+            const totalPages = Math.ceil(totalFilteredCount / PAGE_SIZE);
+            if (currentPage < totalPages - 1) showPage(currentPage + 1);
+        });
+
         // Load on filter change
         document.getElementById('filter-country').addEventListener('change', () => {
             if (currentFeatures.length > 0 || document.getElementById('search-input').value.trim()) {
@@ -675,6 +788,13 @@
             }
         });
         document.getElementById('filter-type').addEventListener('change', () => {
+            if (currentFeatures.length > 0 || document.getElementById('search-input').value.trim()) {
+                searchPlaces();
+            }
+        });
+
+        // Re-search when "search in view" changes (if there are active results)
+        document.getElementById('search-in-view').addEventListener('change', () => {
             if (currentFeatures.length > 0 || document.getElementById('search-input').value.trim()) {
                 searchPlaces();
             }
