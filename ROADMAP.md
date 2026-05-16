@@ -394,7 +394,7 @@ The first 10 coded perspectives (terrain, hydrological, archaeological, religiou
 
 | # | Item | Status | Priority | Notes |
 |---|------|--------|----------|-------|
-| 12.6 | **Cultural/Social perspective** (G) | ⬚ | MEDIUM | Personal name extraction, ethnonym distribution (*Finn-*, *Kvæn-*, *Lapp-*), occupational names (*Smed-*, *Møller-*). Requires NER for historical documents (→ Milestone 13). |
+| 12.6 | **Cultural/Social perspective** (G) | ✅ | MEDIUM | Personal name extraction, ethnonym distribution (*Finn-*, *Kvæn-*, *Lapp-*), social class indicators. `src/toponymia/perspectives/cultural.py`. |
 | 12.7 | **Literary/Textual perspective** (K) | ⬚ | MEDIUM | Cross-reference with saga locations, runic inscriptions, medieval charters. Frequency of place-name mentions in historical texts as significance proxy. Connectors: Rundata (✅), Diplomatarium (✅). |
 | 12.8 | **PIE/Deep-Time substrate perspective** (U) | ⬚ | HIGH | Old European hydronymy (Krahe), non-IE substrate detection. Statistical test: Do substrate elements cluster along rivers more than expected? Cross-reference with archaeological culture boundaries. |
 | 12.9 | **Esoteric/Geomantic perspective** (P) | ⬚ | LOW | Extend sacred_geometry statistical test to full perspective. Numerological patterns, ley-line hypothesis as rigorous spatial test. Primarily exploratory/negative-result research. |
@@ -415,7 +415,7 @@ Move beyond regex/dictionary-based morpheme detection. Enable automated analysis
 | 13.2 | **Cross-lingual cognate detection** | ✅ | **HIGH** | Sound correspondence rules + 15 cognate sets (PIE → Germanic daughters). `src/toponymia/nlp/cognates.py`. |
 | 13.3 | **Named Entity Recognition for historical texts** | ✅ | MEDIUM | Rule-based NER for medieval Latin/ON documents. Extracts PLACE, PERSON, ETHNONYM, DEITY, TITLE entities. `src/toponymia/nlp/ner.py`. |
 | 13.4 | **Automated name-type classification** | ⬚ | MEDIUM | Character-level CNN/RNN to classify name types (habitative, topographic, theophoric, anthroponymic) without explicit rules. Validate against language module classifications. |
-| 13.5 | **Substrate detection via distributional analysis** | ⬚ | HIGH | Identify non-IE elements by statistical anomaly in phonotactics. Names that don't fit any known language module → candidate substrate. Feeds perspective U. |
+| 13.5 | **Substrate detection via distributional analysis** | ✅ | HIGH | Phonotactic bigram/trigram model scores names against IE baseline. Sami + Finnic indicator patterns. `src/toponymia/nlp/substrate.py`. |
 | 13.6 | **Semantic embedding space for name elements** | ⬚ | MEDIUM | Embed name elements in shared space. Cluster semantically similar elements across languages (*berg/fjell/montagna/góra* → "mountain" cluster). Enable cross-lingual queries. |
 | 13.7 | **OCR post-correction for historical maps** | ⬚ | LOW | Improve historical_map_ocr connector output using language-model-based correction. Reduce error rate for extracting names from 17th–19th century maps. |
 
@@ -478,7 +478,7 @@ Place names often refer to features with spatial extent: rivers (polylines), lak
 | 17.2.2 | **Wikidata geometry fetcher** | ⬚ | MEDIUM | Use P625 (coordinate) + P3896 (geoshape) properties. Good coverage for lakes, islands, countries. |
 | 17.2.3 | **National mapping authority geometry** | ⬚ | MEDIUM | Kartverket N50 (NO), Lantmäteriet (SE): official outlines for rivers, lakes, coastlines. |
 | 17.2.4 | **Geometry simplification** | ⬚ | MEDIUM | Douglas-Peucker or Visvalingam simplification for storage efficiency. Target: <50 vertices for display. |
-| 17.2.5 | **Geometry validation** | ⬚ | HIGH | Ensure valid GeoJSON (closed rings, right-hand rule, no self-intersections). Shapely-based validator. |
+| 17.2.5 | **Geometry validation** | ✅ | HIGH | RFC 7946 validator: coordinates, closed rings, right-hand rule, self-intersections. `src/toponymia/pipelines/geometry_validate.py`. |
 | 17.2.6 | **Manual geometry upload** | ⬚ | LOW | JSONL patch format for contributor-submitted geometries from GIS tools (QGIS export). |
 
 ### 17.3 — Integration & Display

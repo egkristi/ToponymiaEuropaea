@@ -41,15 +41,16 @@
 - 201 language modules spanning 7,000+ years of European linguistic history
 - Phonetic algorithm evaluation benchmark (decision: custom normalizer outperforms BMPM for Nordic toponyms)
 - **Parquet/DuckDB analytical layer** — SQL queries over databank without loading into memory
-- **NLP pipeline** — Morfessor morpheme segmentation, cross-lingual cognate detection (15 PGmc sets), historical NER for medieval documents
+- **NLP pipeline** — Morfessor morpheme segmentation, cross-lingual cognate detection (15 PGmc sets), historical NER for medieval documents, substrate detection via phonotactic analysis
 - **Research infrastructure** — OSF preregistrations, reproducible analysis scripts, publication-quality figure generation (colourblind-safe)
 - **RDF/Turtle export** — Linked Open Data with GeoSPARQL, Dublin Core, and schema.org vocabularies
+- **GeoJSON geometry validation** — RFC 7946 compliance (closed rings, right-hand rule, self-intersection detection)
 - **Docker Compose 3-layer stack** — PostgreSQL+PostGIS, API service, seed pipeline
 - **Sync pipeline** — JSONL → PostgreSQL → Parquet with checksum verification at each stage
 - **Wikidata etymology extraction** — P138 (named after) for 18 European countries with databank matching
 - **Multi-source coordinate resolution** — priority hierarchy, conflict detection (100m/1km thresholds)
 - **License compatibility matrix** — ODbL/CC-BY/CC0 compliance documentation
-- **15 perspective modules** — terrain, hydro, archaeological, religious, astronomical, colour, acoustic, mortality, migration, economic, historical, ecological, legal, temporal, medicinal
+- **15 perspective modules** — terrain, hydro, archaeological, religious, astronomical, colour, acoustic, mortality, migration, economic, historical, ecological, legal, temporal, medicinal, cultural/social
 - **Attestation curation workflow** — schema validation, contributor templates, quality control checklist
 - **GDPR compliance** — jurisdiction-specific policy for historical person-names in place etymologies
 - **Bathymetry enrichment** — GEBCO/EMODnet/NVE depth data for water features
