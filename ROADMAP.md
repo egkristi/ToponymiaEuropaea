@@ -521,9 +521,9 @@ Connect the framework to the wider academic data ecosystem.
 
 | # | Item | Status | Priority | Notes |
 |---|------|--------|----------|-------|
-| 16.1 | **RDF/Linked Data export** | ⬚ | MEDIUM | Export places, names, interpretations as RDF triples. SKOS concept scheme already exists. |
+| 16.1 | **RDF/Linked Data export** | ✅ | MEDIUM | `toponymia databank export-rdf` — GeoSPARQL, Schema.org, SKOS. rdflib-based. |
 | 16.2 | **Pleiades cross-references** | ⬚ | MEDIUM | Link ancient place names to Pleiades gazetteer of ancient world. |
-| 16.3 | **LOD gazetteer interoperability** | ⬚ | MEDIUM | GeoNames LOD, DBpedia, Wikidata Q-ID cross-references. |
+| 16.3 | **LOD gazetteer interoperability** | ✅ | MEDIUM | owl:sameAs to GeoNames LOD and Wikidata entities. |
 | 16.4 | **IIIF integration for manuscript sources** | ⬚ | LOW | Link attestations to IIIF manifests of source manuscripts. |
 | 16.5 | **Collaboration with national registries** | ⬚ | MEDIUM | Formal data sharing agreements. Issue #38. |
 | 16.6 | **Graph database layer (optional)** | ⬚ | LOW | Neo4j/NetworkX for etymological family trees, name diffusion networks. |

@@ -72,8 +72,13 @@ def _add_record_to_graph(g: Graph, record: dict[str, Any]) -> None:
     alt_names = record.get("alternative_names", {})
     if isinstance(alt_names, dict):
         for lang, names in alt_names.items():
+            # Validate language tag: must be 2-3 letter ASCII code
+            is_valid_tag = 2 <= len(lang) <= 3 and lang.isascii() and lang.isalpha()
             for alt_name in names:
-                g.add((uri, SCHEMA.alternateName, Literal(alt_name, lang=lang)))
+                if is_valid_tag:
+                    g.add((uri, SCHEMA.alternateName, Literal(alt_name, lang=lang)))
+                else:
+                    g.add((uri, SCHEMA.alternateName, Literal(alt_name)))
 
     # Spatial properties (GeoSPARQL)
     lat = record.get("latitude")
