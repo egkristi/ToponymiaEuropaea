@@ -413,7 +413,7 @@ Move beyond regex/dictionary-based morpheme detection. Enable automated analysis
 |---|------|--------|----------|-------|
 | 13.1 | **Transformer-based morpheme segmentation** | ✅ | **HIGH** | Morfessor-based unsupervised segmentation in `src/toponymia/nlp/`. Trains on databank corpus. Benchmarking against rule-based. |
 | 13.2 | **Cross-lingual cognate detection** | ✅ | **HIGH** | Sound correspondence rules + 15 cognate sets (PIE → Germanic daughters). `src/toponymia/nlp/cognates.py`. |
-| 13.3 | **Named Entity Recognition for historical texts** | ⬚ | MEDIUM | SpaCy/transformer NER trained on medieval charters, sagas, diplomas. Extract place-name mentions with dates. Feeds perspectives B, G, K. |
+| 13.3 | **Named Entity Recognition for historical texts** | ✅ | MEDIUM | Rule-based NER for medieval Latin/ON documents. Extracts PLACE, PERSON, ETHNONYM, DEITY, TITLE entities. `src/toponymia/nlp/ner.py`. |
 | 13.4 | **Automated name-type classification** | ⬚ | MEDIUM | Character-level CNN/RNN to classify name types (habitative, topographic, theophoric, anthroponymic) without explicit rules. Validate against language module classifications. |
 | 13.5 | **Substrate detection via distributional analysis** | ⬚ | HIGH | Identify non-IE elements by statistical anomaly in phonotactics. Names that don't fit any known language module → candidate substrate. Feeds perspective U. |
 | 13.6 | **Semantic embedding space for name elements** | ⬚ | MEDIUM | Embed name elements in shared space. Cluster semantically similar elements across languages (*berg/fjell/montagna/góra* → "mountain" cluster). Enable cross-lingual queries. |
