@@ -4,7 +4,7 @@ This roadmap tracks the project's development from initial framework to producti
 
 **Legend:** ✅ Done | 🔄 In Progress | ⬚ Not Started
 
-**Current status:** 4,221 tests passing, 0 warnings, CI green (lint + mypy strict + test py3.12/3.13 + ontology + databank validation). 4,290 records (12 countries × 3 sources). 201 language modules with auto-discovery registry. 15 perspective modules. Gold-standard kernel (8 records). Full 3-layer persistence (JSONL → PostgreSQL → Parquet). End-to-end: `toponymia analyze element nes --country NO` runs databank → segmentation → statistical test → results.
+**Current status:** 4,221 tests passing, 0 warnings, CI green (lint + mypy strict + test py3.12/3.13 + ontology + databank validation). 9,692 records (12 countries × 3 sources). 201 language modules with auto-discovery registry. 15 perspective modules. Gold-standard kernel (8 records). Full 3-layer persistence (JSONL → PostgreSQL → Parquet). End-to-end: `toponymia analyze element nes --country NO` runs databank → segmentation → statistical test → results.
 
 ---
 
@@ -329,7 +329,7 @@ The litmus test (May 2025) proved the pipeline works mechanically. Data populati
 **Milestone 11.4.3 COMPLETE** — Phonetic index field on all records.
 **Issues #10–13 closed** — mypy fixed, Danish/Swedish modules added, data populated.
 
-**Status: 4,221 tests passing (incl. 3,184 parametrized module tests), mypy strict clean, 4,290 databank records, 201 language modules with auto-discovery registry, 15 perspective modules, 8 gold-standard kernel records.**
+**Status: 4,221 tests passing (incl. 3,184 parametrized module tests), mypy strict clean, 9,692 databank records, 201 language modules with auto-discovery registry, 15 perspective modules, 8 gold-standard kernel records.**
 
 **Milestone 11.2 COMPLETE** — Full 3-layer persistence: JSONL kernel, PostgreSQL+PostGIS, Parquet/DuckDB, sync pipeline with checksums.
 **Milestone 11.6 (4/5) COMPLETE** — Coordinate resolution, license matrix, ODbL compliance. Only GDPR analysis remains.
@@ -564,8 +564,8 @@ Enrich mountain/hill/peak records with quantitative topographic data. These metr
 
 | # | Item | Status | Priority | Notes |
 |---|------|--------|----------|-------|
-| 19.1 | **Mountain/peak ingestion script** | ⬚ | **HIGH** | Wikidata SPARQL for peaks with P2660/P2659/P3137/P4552. Start with Norway (rich coverage). |
-| 19.2 | **Schema fields: prominence, isolation** | ⬚ | **HIGH** | `prominence_m`, `isolation_km`, `parent_peak_qid`, `mountain_range` in JSONL records. |
+| 19.1 | **Mountain/peak ingestion script** | ✅ | **HIGH** | Norway: 5,402 peaks from Wikidata. 733 with prominence, 574 with isolation, 266 with mountain range. |
+| 19.2 | **Schema fields: prominence, isolation** | ✅ | **HIGH** | `prominence_m`, `isolation_km`, `parent_peak_qid`, `mountain_range`, `dominance_ratio` in JSONL records. |
 | 19.3 | **Dominance ratio computation** | ⬚ | MEDIUM | `prominence_m / elevation_m` — measures relative significance of a peak. |
 | 19.4 | **Nearest-equal-height analysis** | ⬚ | MEDIUM | For peaks without P2659: compute from DEM (Copernicus 30m). |
 | 19.5 | **Peak naming pattern analysis** | ⬚ | HIGH | Do prominent peaks have older/more stable names? Is isolation correlated with unique naming? |
