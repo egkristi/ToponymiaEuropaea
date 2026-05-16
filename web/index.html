@@ -190,6 +190,44 @@
         }
         .badge-country { background: #eaf2f8; color: #2980b9; }
         .badge-type { background: #eafaf1; color: #27ae60; }
+        .proximity-bar {
+            padding: 10px 24px;
+            background: #fffde7;
+            border-bottom: 1px solid #ffe082;
+            display: none;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            font-size: 0.85rem;
+        }
+        .proximity-bar.active { display: flex; }
+        .proximity-bar .prox-label { font-weight: 600; color: #f57f17; }
+        .proximity-bar input[type="number"] {
+            width: 80px;
+            padding: 6px 8px;
+            border: 1px solid #ffe082;
+            border-radius: 4px;
+            font-size: 0.85rem;
+        }
+        .proximity-bar button {
+            padding: 6px 12px;
+            border: 1px solid #ffe082;
+            background: #fff8e1;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.82rem;
+        }
+        .proximity-bar button:hover { background: #fff3c4; }
+        .proximity-bar .prox-clear { color: #c62828; border-color: #ef9a9a; background: #ffebee; }
+        .proximity-bar .prox-clear:hover { background: #ffcdd2; }
+        .nearby-link {
+            color: #f57f17;
+            text-decoration: none;
+            cursor: pointer;
+            font-size: 0.78rem;
+            white-space: nowrap;
+        }
+        .nearby-link:hover { text-decoration: underline; }
     </style>
 </head>
 <body>
@@ -270,6 +308,13 @@
             </select>
         </div>
     </div>
+    <div class="proximity-bar" id="proximity-bar">
+        <span class="prox-label">📍 Nearby:</span>
+        <span id="prox-center-name"></span>
+        <label>within <input type="number" id="prox-radius" value="10" min="1" max="500" step="1"> km</label>
+        <button id="prox-apply">Apply</button>
+        <button id="prox-clear" class="prox-clear">Clear</button>
+    </div>
     <div class="active-filters" id="active-filters"></div>
     <div class="results">
         <div class="results-info" id="results-info">Loading...</div>
@@ -284,6 +329,7 @@
                     <th>Latitude</th>
                     <th>Longitude</th>
                     <th>Source</th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody id="results-body"></tbody>
@@ -296,6 +342,29 @@
         let allPlaces = [];
         let filtered = [];
         let currentOffset = 0;
+        let proxCenter = null; // {name, lat, lon}
+
+        function haversineKm(lat1, lon1, lat2, lon2) {
+            const R = 6371;
+            const toRad = x => x * Math.PI / 180;
+            const dLat = toRad(lat2 - lat1);
+            const dLon = toRad(lon2 - lon1);
+            const a = Math.sin(dLat/2)**2 + Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon/2)**2;
+            return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        }
+
+        function setProxCenter(place) {
+            proxCenter = { name: place.name_form, lat: place.latitude, lon: place.longitude };
+            document.getElementById('prox-center-name').textContent = `"${place.name_form}" (${place.latitude.toFixed(4)}, ${place.longitude.toFixed(4)})`;
+            document.getElementById('proximity-bar').classList.add('active');
+            applyFilters();
+        }
+
+        function clearProxCenter() {
+            proxCenter = null;
+            document.getElementById('proximity-bar').classList.remove('active');
+            applyFilters();
+        }
 
         // Feature type classification
         const TYPE_CATEGORIES = {
@@ -397,6 +466,8 @@
             const elevMax = document.getElementById('elev-max').value;
             const sortBy = document.getElementById('sort-select').value;
 
+            const proxRadius = proxCenter ? Number(document.getElementById('prox-radius').value) || 10 : 0;
+
             filtered = allPlaces.filter(p => {
                 if (name && !(p.name_form || '').toLowerCase().includes(name) &&
                     !(p.name_normalized || '').toLowerCase().includes(name)) return false;
@@ -406,6 +477,10 @@
                 if (typeCategory && getTypeCategory(p.place_type) !== typeCategory) return false;
                 if (elevMin !== '' && (p.elevation === undefined || p.elevation === -9999.0 || p.elevation < Number(elevMin))) return false;
                 if (elevMax !== '' && (p.elevation === undefined || p.elevation === -9999.0 || p.elevation > Number(elevMax))) return false;
+                if (proxCenter) {
+                    if (p.latitude == null || p.longitude == null) return false;
+                    if (haversineKm(proxCenter.lat, proxCenter.lon, p.latitude, p.longitude) > proxRadius) return false;
+                }
                 return true;
             });
 
@@ -445,6 +520,7 @@
             if (typeCategory.value) tags.push({label: typeCategory.options[typeCategory.selectedIndex].text, clear: () => { typeCategory.value = ''; applyFilters(); }});
             if (elevMin) tags.push({label: `Elev ≥ ${elevMin}m`, clear: () => { document.getElementById('elev-min').value = ''; applyFilters(); }});
             if (elevMax) tags.push({label: `Elev ≤ ${elevMax}m`, clear: () => { document.getElementById('elev-max').value = ''; applyFilters(); }});
+            if (proxCenter) tags.push({label: `Within ${document.getElementById('prox-radius').value} km of "${proxCenter.name}"`, clear: clearProxCenter});
 
             container.innerHTML = tags.map((t, i) =>
                 `<span class="filter-tag">${escHtml(t.label)}<button data-idx="${i}">&times;</button></span>`
@@ -473,8 +549,19 @@
                     <td>${p.latitude?.toFixed(4) ?? ''}</td>
                     <td>${p.longitude?.toFixed(4) ?? ''}</td>
                     <td>${escHtml(getSource(p) || '')}</td>
+                    <td>${(p.latitude != null && p.longitude != null) ? `<a class="nearby-link" data-lat="${p.latitude}" data-lon="${p.longitude}" data-name="${escHtml(p.name_form)}">Nearby</a>` : ''}</td>
                 </tr>
             `).join('');
+
+            body.querySelectorAll('.nearby-link').forEach(link => {
+                link.addEventListener('click', () => {
+                    setProxCenter({
+                        name_form: link.dataset.name,
+                        latitude: Number(link.dataset.lat),
+                        longitude: Number(link.dataset.lon)
+                    });
+                });
+            });
 
             renderPagination(page.length);
         }
@@ -525,6 +612,12 @@
             const btn = document.getElementById('toggle-filters-btn');
             panel.classList.toggle('open');
             btn.textContent = panel.classList.contains('open') ? 'Filters ▴' : 'Filters ▾';
+        });
+
+        document.getElementById('prox-apply').addEventListener('click', applyFilters);
+        document.getElementById('prox-clear').addEventListener('click', clearProxCenter);
+        document.getElementById('prox-radius').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') applyFilters();
         });
 
         init();
