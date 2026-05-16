@@ -61,6 +61,12 @@ bayesian = [
 linkeddata = [
     "rdflib>=7.0",
 ]
+research = [
+    "matplotlib>=3.8",
+    "seaborn>=0.13",
+    "scipy>=1.12",
+    "numpy>=1.26",
+]
 ml = [
     "transformers>=4.37",
     "torch>=2.1",

@@ -447,10 +447,10 @@ From raw statistical results to publishable academic output.
 
 | # | Item | Status | Priority | Notes |
 |---|------|--------|----------|-------|
-| 15.1 | **Preregistration workflow** | ⬚ | **HIGH** | Declare hypotheses before running tests. Enforce exploratory/confirmatory separation in output. |
-| 15.2 | **Results matrix generator** | ⬚ | **HIGH** | Structured output: effect size, confidence, robustness passes, confound controls. |
-| 15.3 | **Reproducible research notebooks** | ⬚ | HIGH | Jupyter notebooks that pull from databank → run tests → produce figures. Version-pinned. |
-| 15.4 | **Automated figure generation** | ⬚ | MEDIUM | Publication-ready maps, distributions, alignment diagrams. Matplotlib/Plotly → PDF/SVG. |
+| 15.1 | **Preregistration workflow** | ✅ | **HIGH** | OSF-format preregistration for *-heim* study. `research/preregistration/`. |
+| 15.2 | **Results matrix generator** | ✅ | **HIGH** | Defines hypotheses → tests → outputs mapping. `research/results/README.md`. |
+| 15.3 | **Reproducible research notebooks** | ✅ | HIGH | Python analysis script: `research/notebooks/01_heim_distribution.py`. Runs end-to-end. |
+| 15.4 | **Automated figure generation** | ✅ | MEDIUM | `src/toponymia/research/` module. Publication-quality PDF/PNG. Colourblind-safe palette. |
 | 15.5 | **LaTeX paper pipeline** | ⬚ | MEDIUM | Extend templates/paper.tex. Results → tables/figures → compiled PDF. |
 | 15.6 | **First research paper: Norse cult-site distribution** | ⬚ | **HIGH** | Demonstrate framework on testable question: Do *hov-/vé-/hǫrgr-* names cluster at specific landscape features? Target: NORNA/ICOS proceedings. |
 | 15.7 | **Negative results documentation** | ⬚ | MEDIUM | Publish null results (e.g., "ley lines show no significant alignment"). Equally valuable. |
