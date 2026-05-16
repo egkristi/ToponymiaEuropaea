@@ -1,0 +1,4560 @@
+{
+  "country_statistics": {
+    "total_records": 54455,
+    "records_by_country": {
+      "ES": 8500,
+      "GB": 7234,
+      "NO": 6554,
+      "DE": 5500,
+      "PL": 5000,
+      "AT": 4500,
+      "CH": 4500,
+      "CZ": 4000,
+      "PT": 2905,
+      "IE": 2587,
+      "SE": 635,
+      "FI": 589,
+      "DK": 585,
+      "IS": 552,
+      "AD": 195,
+      "RU": 157,
+      "IM": 120,
+      "FO": 84,
+      "LV": 83,
+      "LT": 81,
+      "EE": 47,
+      "GI": 47
+    },
+    "records_by_source": {
+      "geonames": 47277,
+      "wikidata": 6526,
+      "kartverket_ssr": 652
+    },
+    "place_types_top30": {
+      "P.PPL": 14941,
+      "T.PK": 7055,
+      "T.MT": 6436,
+      "P.PPLA3": 6294,
+      "T.HLL": 5165,
+      "H.STM": 2751,
+      "P.PPLX": 1533,
+      "S.FRM": 987,
+      "T.PASS": 931,
+      "P.PPLA4": 925,
+      "P.PPLA2": 847,
+      "H.LK": 701,
+      "T.RDGE": 532,
+      "T.MTS": 423,
+      "H.BAY": 408,
+      "P.PPLA": 338,
+      "S.RSTN": 337,
+      "S.HSE": 279,
+      "T.ISL": 261,
+      "H.SHOL": 232,
+      "L.LCTY": 203,
+      "S.BLDG": 187,
+      "H.COVE": 155,
+      "T.PT": 142,
+      "By": 131,
+      "T.RK": 118,
+      "T.VAL": 113,
+      "T.SLP": 108,
+      "Myr": 97,
+      "S.CH": 96
+    },
+    "language_codes": {
+      "deu": 14500,
+      "eng": 10145,
+      "spa": 8500,
+      "nor": 6520,
+      "pol": 5000,
+      "ces": 4000,
+      "por": 2905,
+      "swe": 635,
+      "fin": 589,
+      "dan": 585,
+      "isl": 552,
+      "cat": 195,
+      "fao": 84,
+      "lav": 83,
+      "lit": 81,
+      "est": 47,
+      "sme": 14,
+      "sma": 9,
+      "fkv": 6,
+      "smj": 5
+    },
+    "geometry_status": {
+      "point": 33354,
+      "pending": 18613,
+      "unknown": 1607,
+      "defined": 881
+    },
+    "country_centroids": {
+      "AD": {
+        "lat": 42.5589,
+        "lon": 1.5587
+      },
+      "AT": {
+        "lat": 47.4074,
+        "lon": 13.2517
+      },
+      "CH": {
+        "lat": 46.7739,
+        "lon": 8.3222
+      },
+      "CZ": {
+        "lat": 49.7073,
+        "lon": 15.4498
+      },
+      "DE": {
+        "lat": 49.6249,
+        "lon": 10.3217
+      },
+      "DK": {
+        "lat": 55.9396,
+        "lon": 10.174
+      },
+      "EE": {
+        "lat": 58.7731,
+        "lon": 25.8054
+      },
+      "ES": {
+        "lat": 40.0589,
+        "lon": -3.0391
+      },
+      "FI": {
+        "lat": 64.947,
+        "lon": 24.9967
+      },
+      "FO": {
+        "lat": 62.0475,
+        "lon": -6.8521
+      },
+      "GB": {
+        "lat": 54.1199,
+        "lon": -2.3572
+      },
+      "GI": {
+        "lat": 36.1303,
+        "lon": -5.3481
+      },
+      "IE": {
+        "lat": 53.1185,
+        "lon": -8.1658
+      },
+      "IM": {
+        "lat": 54.194,
+        "lon": -4.5627
+      },
+      "IS": {
+        "lat": 65.242,
+        "lon": -17.1508
+      },
+      "LT": {
+        "lat": 55.2519,
+        "lon": 23.7785
+      },
+      "LV": {
+        "lat": 56.894,
+        "lon": 24.7283
+      },
+      "NO": {
+        "lat": 63.2049,
+        "lon": 11.6459
+      },
+      "PL": {
+        "lat": 51.1581,
+        "lon": 19.4854
+      },
+      "PT": {
+        "lat": 39.4091,
+        "lon": -10.0671
+      },
+      "RU": {
+        "lat": 52.486,
+        "lon": 50.2883
+      },
+      "SE": {
+        "lat": 62.8545,
+        "lon": 19.686
+      }
+    }
+  },
+  "segmentation": {
+    "total_elements_discovered": 6485,
+    "top_100_elements": [
+      {
+        "element": "berg",
+        "count": 882
+      },
+      {
+        "element": "os",
+        "count": 605
+      },
+      {
+        "element": "ey",
+        "count": 320
+      },
+      {
+        "element": "lo",
+        "count": 234
+      },
+      {
+        "element": "á",
+        "count": 216
+      },
+      {
+        "element": "stein",
+        "count": 182
+      },
+      {
+        "element": "heim",
+        "count": 174
+      },
+      {
+        "element": "nes",
+        "count": 170
+      },
+      {
+        "element": "hof",
+        "count": 151
+      },
+      {
+        "element": "by",
+        "count": 117
+      },
+      {
+        "element": "fjell",
+        "count": 104
+      },
+      {
+        "element": "land",
+        "count": 85
+      },
+      {
+        "element": "ås",
+        "count": 74
+      },
+      {
+        "element": "eid",
+        "count": 54
+      },
+      {
+        "element": "mo",
+        "count": 46
+      },
+      {
+        "element": "ø",
+        "count": 45
+      },
+      {
+        "element": "dal",
+        "count": 40
+      },
+      {
+        "element": "å",
+        "count": 36
+      },
+      {
+        "element": "vík",
+        "count": 34
+      },
+      {
+        "element": "borg",
+        "count": 33
+      },
+      {
+        "element": "haug",
+        "count": 33
+      },
+      {
+        "element": "ós",
+        "count": 32
+      },
+      {
+        "element": "ziegel",
+        "count": 25
+      },
+      {
+        "element": "fjall",
+        "count": 25
+      },
+      {
+        "element": "sund",
+        "count": 22
+      },
+      {
+        "element": "vik",
+        "count": 22
+      },
+      {
+        "element": "hov",
+        "count": 20
+      },
+      {
+        "element": "vatn",
+        "count": 20
+      },
+      {
+        "element": "holt",
+        "count": 17
+      },
+      {
+        "element": "ló",
+        "count": 16
+      },
+      {
+        "element": "fjord",
+        "count": 13
+      },
+      {
+        "element": "foss",
+        "count": 13
+      },
+      {
+        "element": "staðir",
+        "count": 13
+      },
+      {
+        "element": "stad",
+        "count": 12
+      },
+      {
+        "element": "vin",
+        "count": 11
+      },
+      {
+        "element": "blåfjellet",
+        "count": 11
+      },
+      {
+        "element": "mitter",
+        "count": 10
+      },
+      {
+        "element": "lund",
+        "count": 10
+      },
+      {
+        "element": "anger",
+        "count": 9
+      },
+      {
+        "element": "breiten",
+        "count": 9
+      },
+      {
+        "element": "havn",
+        "count": 9
+      },
+      {
+        "element": "rud",
+        "count": 9
+      },
+      {
+        "element": "såta",
+        "count": 9
+      },
+      {
+        "element": "sand",
+        "count": 8
+      },
+      {
+        "element": "schwarzen",
+        "count": 8
+      },
+      {
+        "element": "vesterskov",
+        "count": 8
+      },
+      {
+        "element": "hirsch",
+        "count": 7
+      },
+      {
+        "element": "winter",
+        "count": 7
+      },
+      {
+        "element": "vi",
+        "count": 7
+      },
+      {
+        "element": "vestergård",
+        "count": 7
+      },
+      {
+        "element": "arroyo de los molin",
+        "count": 7
+      },
+      {
+        "element": "vard",
+        "count": 7
+      },
+      {
+        "element": "stormyra",
+        "count": 7
+      },
+      {
+        "element": "storevarden",
+        "count": 7
+      },
+      {
+        "element": "høgtinden",
+        "count": 7
+      },
+      {
+        "element": "falken",
+        "count": 6
+      },
+      {
+        "element": "vis",
+        "count": 6
+      },
+      {
+        "element": "víðidalur",
+        "count": 6
+      },
+      {
+        "element": "svartfjellet",
+        "count": 6
+      },
+      {
+        "element": "blåtind",
+        "count": 6
+      },
+      {
+        "element": "lauvåsen",
+        "count": 6
+      },
+      {
+        "element": "stortinden",
+        "count": 6
+      },
+      {
+        "element": "fløyen",
+        "count": 6
+      },
+      {
+        "element": "gras",
+        "count": 5
+      },
+      {
+        "element": "mittel",
+        "count": 5
+      },
+      {
+        "element": "wald",
+        "count": 5
+      },
+      {
+        "element": "buch",
+        "count": 5
+      },
+      {
+        "element": "vé",
+        "count": 5
+      },
+      {
+        "element": "eisen",
+        "count": 5
+      },
+      {
+        "element": "ochsen",
+        "count": 5
+      },
+      {
+        "element": "vr",
+        "count": 5
+      },
+      {
+        "element": "víkur",
+        "count": 5
+      },
+      {
+        "element": "vesterelva",
+        "count": 5
+      },
+      {
+        "element": "åsane",
+        "count": 5
+      },
+      {
+        "element": "høgehei",
+        "count": 5
+      },
+      {
+        "element": "mellomåsen",
+        "count": 5
+      },
+      {
+        "element": "horn",
+        "count": 4
+      },
+      {
+        "element": "schnee",
+        "count": 4
+      },
+      {
+        "element": "sulz",
+        "count": 4
+      },
+      {
+        "element": "eng",
+        "count": 4
+      },
+      {
+        "element": "tun",
+        "count": 4
+      },
+      {
+        "element": "eich",
+        "count": 4
+      },
+      {
+        "element": "feld",
+        "count": 4
+      },
+      {
+        "element": "kirch",
+        "count": 4
+      },
+      {
+        "element": "sonnen",
+        "count": 4
+      },
+      {
+        "element": "březov",
+        "count": 4
+      },
+      {
+        "element": "jedlov",
+        "count": 4
+      },
+      {
+        "element": "vysok",
+        "count": 4
+      },
+      {
+        "element": "auer",
+        "count": 4
+      },
+      {
+        "element": "fried",
+        "count": 4
+      },
+      {
+        "element": "heu",
+        "count": 4
+      },
+      {
+        "element": "hoch",
+        "count": 4
+      },
+      {
+        "element": "kien",
+        "count": 4
+      },
+      {
+        "element": "zwiesel",
+        "count": 4
+      },
+      {
+        "element": "vilhelms",
+        "count": 4
+      },
+      {
+        "element": "gard",
+        "count": 4
+      },
+      {
+        "element": "lyng",
+        "count": 4
+      },
+      {
+        "element": "arc",
+        "count": 4
+      },
+      {
+        "element": "oakl",
+        "count": 4
+      },
+      {
+        "element": "vörðufell",
+        "count": 4
+      }
+    ],
+    "segmented_sample_size": 0,
+    "segmented_sample": []
+  },
+  "cultural_social": {
+    "social_class_distribution": {
+      "free": 49,
+      "royal": 25,
+      "nobility": 5,
+      "service": 2,
+      "unfree": 2
+    },
+    "ethnonym_distribution": {
+      "sami": 47,
+      "slavic": 20,
+      "celtic": 9,
+      "germanic": 6,
+      "swedish": 2,
+      "finnic": 1
+    },
+    "ownership_type_distribution": {
+      "owned farmstead": 7,
+      "assessed farm unit": 2,
+      "property/possession": 2,
+      "main/head farm": 1
+    },
+    "personal_names_detected": 1,
+    "personal_names_sample": [
+      {
+        "name": "Vester Romsgarden",
+        "personal_element": "vester rom",
+        "country": "NO"
+      }
+    ],
+    "ethnonyms_by_country": {
+      "AT": {
+        "sami": 2
+      },
+      "CH": {
+        "slavic": 1
+      },
+      "CZ": {
+        "slavic": 3
+      },
+      "DE": {
+        "slavic": 1,
+        "swedish": 1,
+        "sami": 1
+      },
+      "DK": {
+        "slavic": 1,
+        "germanic": 1
+      },
+      "ES": {
+        "slavic": 5
+      },
+      "FI": {
+        "sami": 2
+      },
+      "FO": {
+        "germanic": 1
+      },
+      "GB": {
+        "celtic": 2,
+        "sami": 1,
+        "slavic": 1
+      },
+      "IE": {
+        "sami": 5
+      },
+      "NO": {
+        "sami": 33,
+        "celtic": 3,
+        "germanic": 3,
+        "finnic": 1,
+        "swedish": 1
+      },
+      "PL": {
+        "celtic": 1
+      },
+      "PT": {
+        "slavic": 8
+      },
+      "RU": {
+        "celtic": 1
+      },
+      "SE": {
+        "sami": 3,
+        "celtic": 2,
+        "germanic": 1
+      }
+    }
+  },
+  "substrate_detection": {
+    "total_names_analyzed": 51023,
+    "names_with_substrate_candidates": 22726,
+    "origin_distribution": {
+      "": 18891,
+      "unknown": 3654,
+      "finnic": 110,
+      "sami": 71
+    },
+    "sami_candidates_count": 71,
+    "sami_candidates_top50": [
+      {
+        "name": "Uhcagaisa",
+        "element": "uhcagaisa",
+        "score": -6.196,
+        "reasons": [
+          "Sami indicator: gais"
+        ]
+      },
+      {
+        "name": "Vuotnabatskaidi",
+        "element": "vuotnabatskaidi",
+        "score": -6.162,
+        "reasons": [
+          "Sami indicator: vuot"
+        ]
+      },
+      {
+        "name": "vuotnabatskáidi",
+        "element": "vuotnabatskáidi",
+        "score": -6.162,
+        "reasons": [
+          "non-Germanic chars: {'á'}",
+          "Sami indicator: vuot"
+        ]
+      },
+      {
+        "name": "aivasnjuonicåkka",
+        "element": "aivasnjuonicåkka",
+        "score": -6.135,
+        "reasons": [
+          "Sami indicator: njuon"
+        ]
+      },
+      {
+        "name": "Gorbovuotna",
+        "element": "gorbovuotna",
+        "score": -6.047,
+        "reasons": [
+          "Sami indicator: vuot"
+        ]
+      },
+      {
+        "name": "Vuottasjohka",
+        "element": "vuottasjohka",
+        "score": -6.043,
+        "reasons": [
+          "Sami indicator: vuot"
+        ]
+      },
+      {
+        "name": "Iso Ahvenjarvi",
+        "element": "iso ahvenjarvi",
+        "score": -6.038,
+        "reasons": [
+          "non-Germanic chars: {' '}",
+          "Sami indicator: njar"
+        ]
+      },
+      {
+        "name": "Vuolit Suolggajavri",
+        "element": "vuolit suolggajavri",
+        "score": -6.011,
+        "reasons": [
+          "non-Germanic chars: {' '}",
+          "Sami indicator: suol"
+        ]
+      },
+      {
+        "name": "Suolggajohka",
+        "element": "suolggajohka",
+        "score": -5.99,
+        "reasons": [
+          "Sami indicator: suol"
+        ]
+      },
+      {
+        "name": "čáhcesuolu",
+        "element": "čáhcesuolu",
+        "score": -5.989,
+        "reasons": [
+          "non-Germanic chars: {'č', 'á'}",
+          "Sami indicator: suol"
+        ]
+      },
+      {
+        "name": "Vuomajavri",
+        "element": "vuomajavri",
+        "score": -5.989,
+        "reasons": [
+          "Sami indicator: vuom"
+        ]
+      },
+      {
+        "name": "Unna Suolojavrrit",
+        "element": "unna suolojavrrit",
+        "score": -5.984,
+        "reasons": [
+          "non-Germanic chars: {' '}",
+          "Sami indicator: suol"
+        ]
+      },
+      {
+        "name": "Vuomagielasjav'ri",
+        "element": "vuomagielasjav'ri",
+        "score": -5.984,
+        "reasons": [
+          "non-Germanic chars: {\"'\"}",
+          "Sami indicator: vuom"
+        ]
+      },
+      {
+        "name": "Gaisspitze",
+        "element": "gaisspitze",
+        "score": -5.978,
+        "reasons": [
+          "Sami indicator: gais"
+        ]
+      },
+      {
+        "name": "Suolojohka",
+        "element": "suolojohka",
+        "score": -5.978,
+        "reasons": [
+          "Sami indicator: suol"
+        ]
+      },
+      {
+        "name": "Ullogaisa",
+        "element": "ullogaisa",
+        "score": -5.965,
+        "reasons": [
+          "Sami indicator: gais"
+        ]
+      },
+      {
+        "name": "Gaispleiskopf",
+        "element": "gaispleiskopf",
+        "score": -5.963,
+        "reasons": [
+          "Sami indicator: gais"
+        ]
+      },
+      {
+        "name": "Suolojarjohka",
+        "element": "suolojarjohka",
+        "score": -5.954,
+        "reasons": [
+          "Sami indicator: suol"
+        ]
+      },
+      {
+        "name": "Suolovuomasjavrrit",
+        "element": "suolovuomasjavrrit",
+        "score": -5.948,
+        "reasons": [
+          "Sami indicator: suol"
+        ]
+      },
+      {
+        "name": "Suolovuomasjavri",
+        "element": "suolovuomasjavri",
+        "score": -5.948,
+        "reasons": [
+          "Sami indicator: suol"
+        ]
+      },
+      {
+        "name": "Magaiskopf",
+        "element": "magaiskopf",
+        "score": -5.942,
+        "reasons": [
+          "Sami indicator: gais"
+        ]
+      },
+      {
+        "name": "Ivars de Noguera",
+        "element": "ivars de noguera",
+        "score": -5.942,
+        "reasons": [
+          "non-Germanic chars: {' '}",
+          "Sami indicator: vars"
+        ]
+      },
+      {
+        "name": "Oarje-Borgasgaisa",
+        "element": "oarje-borgasgaisa",
+        "score": -5.933,
+        "reasons": [
+          "non-Germanic chars: {'-'}",
+          "Sami indicator: gais"
+        ]
+      },
+      {
+        "name": "Vaddasgaisa",
+        "element": "vaddasgaisa",
+        "score": -5.932,
+        "reasons": [
+          "Sami indicator: gais"
+        ]
+      },
+      {
+        "name": "Janansuolu",
+        "element": "janansuolu",
+        "score": -5.926,
+        "reasons": [
+          "Sami indicator: suol"
+        ]
+      },
+      {
+        "name": "Vuottasluoppal",
+        "element": "vuottasluoppal",
+        "score": -5.926,
+        "reasons": [
+          "Sami indicator: vuot"
+        ]
+      },
+      {
+        "name": "Vieravuotna",
+        "element": "vieravuotna",
+        "score": -5.908,
+        "reasons": [
+          "Sami indicator: vuot"
+        ]
+      },
+      {
+        "name": "isogaisse",
+        "element": "isogaisse",
+        "score": -5.907,
+        "reasons": [
+          "Sami indicator: gais"
+        ]
+      },
+      {
+        "name": "Mearraduoddara Suolojavri",
+        "element": "mearraduoddara suolojavri",
+        "score": -5.893,
+        "reasons": [
+          "non-Germanic chars: {' '}",
+          "Sami indicator: suol"
+        ]
+      },
+      {
+        "name": "Suolojavri",
+        "element": "suolojavri",
+        "score": -5.889,
+        "reasons": [
+          "Sami indicator: suol"
+        ]
+      },
+      {
+        "name": "Grosser Gaislehnkogel",
+        "element": "grosser gaislehnkogel",
+        "score": -5.884,
+        "reasons": [
+          "non-Germanic chars: {' '}",
+          "Sami indicator: gais"
+        ]
+      },
+      {
+        "name": "Kamenny vrch [Kovarska]",
+        "element": "kamenny vrch [kovarska]",
+        "score": -5.86,
+        "reasons": [
+          "non-Germanic chars: {' ', '[', ']'}",
+          "Sami indicator: vars"
+        ]
+      },
+      {
+        "name": "Suolobeasjavrrit",
+        "element": "suolobeasjavrrit",
+        "score": -5.853,
+        "reasons": [
+          "Sami indicator: suol"
+        ]
+      },
+      {
+        "name": "Ulisuolu",
+        "element": "ulisuolu",
+        "score": -5.851,
+        "reasons": [
+          "Sami indicator: suol"
+        ]
+      },
+      {
+        "name": "Suonjirgaisa",
+        "element": "suonjirgaisa",
+        "score": -5.844,
+        "reasons": [
+          "Sami indicator: gais"
+        ]
+      },
+      {
+        "name": "Spirdegieddi",
+        "element": "spirdegieddi",
+        "score": -5.844,
+        "reasons": [
+          "Sami indicator: gied"
+        ]
+      },
+      {
+        "name": "Giedlarowa",
+        "element": "giedlarowa",
+        "score": -5.842,
+        "reasons": [
+          "unusual pattern: (?:^|[aeiou])(?:tk|kp|tp|bz|dz|gz|pn|ks(?:t)|tl|dl)",
+          "Sami indicator: gied"
+        ]
+      },
+      {
+        "name": "Gaissfuss",
+        "element": "gaissfuss",
+        "score": -5.837,
+        "reasons": [
+          "Sami indicator: gais"
+        ]
+      },
+      {
+        "name": "Vaddasgaissat",
+        "element": "vaddasgaissat",
+        "score": -5.835,
+        "reasons": [
+          "Sami indicator: gais"
+        ]
+      },
+      {
+        "name": "Doarrunluokta",
+        "element": "doarrunluokta",
+        "score": -5.835,
+        "reasons": [
+          "Sami indicator: luok"
+        ]
+      },
+      {
+        "name": "Suolujavri",
+        "element": "suolujavri",
+        "score": -5.826,
+        "reasons": [
+          "Sami indicator: suol"
+        ]
+      },
+      {
+        "name": "Corrogaisi",
+        "element": "corrogaisi",
+        "score": -5.826,
+        "reasons": [
+          "Sami indicator: gais"
+        ]
+      },
+      {
+        "name": "Arroyo del Zanjar",
+        "element": "arroyo del zanjar",
+        "score": -5.821,
+        "reasons": [
+          "non-Germanic chars: {' '}",
+          "Sami indicator: njar"
+        ]
+      },
+      {
+        "name": "Gaiskogel",
+        "element": "gaiskogel",
+        "score": -5.815,
+        "reasons": [
+          "Sami indicator: gais"
+        ]
+      },
+      {
+        "name": "Vatnsleysuoldur",
+        "element": "vatnsleysuoldur",
+        "score": -5.812,
+        "reasons": [
+          "Sami indicator: suol"
+        ]
+      },
+      {
+        "name": "Vuomagielas",
+        "element": "vuomagielas",
+        "score": -5.798,
+        "reasons": [
+          "Sami indicator: vuom"
+        ]
+      },
+      {
+        "name": "Vuolitnjarga",
+        "element": "vuolitnjarga",
+        "score": -5.796,
+        "reasons": [
+          "Sami indicator: njarg"
+        ]
+      },
+      {
+        "name": "Suolggavarri",
+        "element": "suolggavarri",
+        "score": -5.791,
+        "reasons": [
+          "Sami indicator: suol"
+        ]
+      },
+      {
+        "name": "Njargajavri",
+        "element": "njargajavri",
+        "score": -5.789,
+        "reasons": [
+          "Sami indicator: njarg"
+        ]
+      },
+      {
+        "name": "kavarskas",
+        "element": "kavarskas",
+        "score": -5.786,
+        "reasons": [
+          "Sami indicator: vars"
+        ]
+      }
+    ],
+    "finnic_candidates_count": 110,
+    "finnic_candidates_top50": [
+      {
+        "name": "Pitkalahti",
+        "element": "pitkalahti",
+        "score": -6.115,
+        "reasons": [
+          "unusual pattern: (?:^|[aeiou])(?:tk|kp|tp|bz|dz|gz|pn|ks(?:t)|tl|dl)",
+          "Finnic indicator: lahti"
+        ]
+      },
+      {
+        "name": "Praavanlahti",
+        "element": "praavanlahti",
+        "score": -6.084,
+        "reasons": [
+          "Finnic indicator: lahti"
+        ]
+      },
+      {
+        "name": "Pitkakoski",
+        "element": "pitkakoski",
+        "score": -6.052,
+        "reasons": [
+          "unusual pattern: (?:^|[aeiou])(?:tk|kp|tp|bz|dz|gz|pn|ks(?:t)|tl|dl)",
+          "Finnic indicator: koski"
+        ]
+      },
+      {
+        "name": "Isolahti",
+        "element": "isolahti",
+        "score": -6.05,
+        "reasons": [
+          "Finnic indicator: lahti"
+        ]
+      },
+      {
+        "name": "Jokisuo",
+        "element": "jokisuo",
+        "score": -6.042,
+        "reasons": [
+          "Finnic indicator: joki"
+        ]
+      },
+      {
+        "name": "Pultavanlahti",
+        "element": "pultavanlahti",
+        "score": -6.028,
+        "reasons": [
+          "Finnic indicator: lahti"
+        ]
+      },
+      {
+        "name": "Pauhunlahti",
+        "element": "pauhunlahti",
+        "score": -5.989,
+        "reasons": [
+          "Finnic indicator: lahti"
+        ]
+      },
+      {
+        "name": "Niittysaari",
+        "element": "niittysaari",
+        "score": -5.981,
+        "reasons": [
+          "Finnic indicator: saari"
+        ]
+      },
+      {
+        "name": "Paanuniemi",
+        "element": "paanuniemi",
+        "score": -5.962,
+        "reasons": [
+          "Finnic indicator: niemi"
+        ]
+      },
+      {
+        "name": "Laivaniemenlahti",
+        "element": "laivaniemenlahti",
+        "score": -5.942,
+        "reasons": [
+          "Finnic indicator: lahti"
+        ]
+      },
+      {
+        "name": "lappeenranta",
+        "element": "lappeenranta",
+        "score": -5.929,
+        "reasons": [
+          "Finnic indicator: ranta"
+        ]
+      },
+      {
+        "name": "Ulkoniemi",
+        "element": "ulkoniemi",
+        "score": -5.918,
+        "reasons": [
+          "Finnic indicator: niemi"
+        ]
+      },
+      {
+        "name": "Olhavanlahti",
+        "element": "olhavanlahti",
+        "score": -5.915,
+        "reasons": [
+          "Finnic indicator: lahti"
+        ]
+      },
+      {
+        "name": "Ruonajarvi",
+        "element": "ruonajarvi",
+        "score": -5.905,
+        "reasons": [
+          "Finnic indicator: jarvi"
+        ]
+      },
+      {
+        "name": "lahti",
+        "element": "lahti",
+        "score": -5.904,
+        "reasons": [
+          "Finnic indicator: lahti"
+        ]
+      },
+      {
+        "name": "Lahdenperanlahti",
+        "element": "lahdenperanlahti",
+        "score": -5.901,
+        "reasons": [
+          "Finnic indicator: lahti"
+        ]
+      },
+      {
+        "name": "Ruukinlahti",
+        "element": "ruukinlahti",
+        "score": -5.898,
+        "reasons": [
+          "Finnic indicator: lahti"
+        ]
+      },
+      {
+        "name": "Postinlahti",
+        "element": "postinlahti",
+        "score": -5.889,
+        "reasons": [
+          "Finnic indicator: lahti"
+        ]
+      },
+      {
+        "name": "Rainanlahti",
+        "element": "rainanlahti",
+        "score": -5.874,
+        "reasons": [
+          "Finnic indicator: lahti"
+        ]
+      },
+      {
+        "name": "äänekoski",
+        "element": "äänekoski",
+        "score": -5.866,
+        "reasons": [
+          "Finnic indicator: koski"
+        ]
+      },
+      {
+        "name": "Palukankoski",
+        "element": "palukankoski",
+        "score": -5.861,
+        "reasons": [
+          "Finnic indicator: koski"
+        ]
+      },
+      {
+        "name": "Leppisaari",
+        "element": "leppisaari",
+        "score": -5.859,
+        "reasons": [
+          "Finnic indicator: saari"
+        ]
+      },
+      {
+        "name": "Vasukkasaari",
+        "element": "vasukkasaari",
+        "score": -5.844,
+        "reasons": [
+          "Finnic indicator: saari"
+        ]
+      },
+      {
+        "name": "Jarvis House",
+        "element": "jarvis house",
+        "score": -5.844,
+        "reasons": [
+          "non-Germanic chars: {' '}",
+          "Finnic indicator: jarvi"
+        ]
+      },
+      {
+        "name": "Uiskarinkoski",
+        "element": "uiskarinkoski",
+        "score": -5.835,
+        "reasons": [
+          "Finnic indicator: koski"
+        ]
+      },
+      {
+        "name": "Miettulanlahti",
+        "element": "miettulanlahti",
+        "score": -5.834,
+        "reasons": [
+          "Finnic indicator: lahti"
+        ]
+      },
+      {
+        "name": "iisalmi",
+        "element": "iisalmi",
+        "score": -5.833,
+        "reasons": [
+          "Finnic indicator: salmi"
+        ]
+      },
+      {
+        "name": "Papinkarinniemi",
+        "element": "papinkarinniemi",
+        "score": -5.819,
+        "reasons": [
+          "Finnic indicator: niemi"
+        ]
+      },
+      {
+        "name": "Ailionkoski",
+        "element": "ailionkoski",
+        "score": -5.816,
+        "reasons": [
+          "Finnic indicator: koski"
+        ]
+      },
+      {
+        "name": "Huttulanlahti",
+        "element": "huttulanlahti",
+        "score": -5.814,
+        "reasons": [
+          "Finnic indicator: lahti"
+        ]
+      },
+      {
+        "name": "Jaeaekaerinsaari",
+        "element": "jaeaekaerinsaari",
+        "score": -5.813,
+        "reasons": [
+          "unusual pattern: [aeiou]{3,}",
+          "Finnic indicator: saari"
+        ]
+      },
+      {
+        "name": "Nivakoski",
+        "element": "nivakoski",
+        "score": -5.809,
+        "reasons": [
+          "Finnic indicator: koski"
+        ]
+      },
+      {
+        "name": "Moukunniemi",
+        "element": "moukunniemi",
+        "score": -5.807,
+        "reasons": [
+          "Finnic indicator: niemi"
+        ]
+      },
+      {
+        "name": "Laitakarinlahti",
+        "element": "laitakarinlahti",
+        "score": -5.805,
+        "reasons": [
+          "Finnic indicator: lahti"
+        ]
+      },
+      {
+        "name": "Hiastinlahti",
+        "element": "hiastinlahti",
+        "score": -5.805,
+        "reasons": [
+          "Finnic indicator: lahti"
+        ]
+      },
+      {
+        "name": "Partalahti",
+        "element": "partalahti",
+        "score": -5.805,
+        "reasons": [
+          "Finnic indicator: lahti"
+        ]
+      },
+      {
+        "name": "Vahtolanlahti",
+        "element": "vahtolanlahti",
+        "score": -5.801,
+        "reasons": [
+          "Finnic indicator: lahti"
+        ]
+      },
+      {
+        "name": "Onganranta",
+        "element": "onganranta",
+        "score": -5.8,
+        "reasons": [
+          "Finnic indicator: ranta"
+        ]
+      },
+      {
+        "name": "Iso Kirkosaari",
+        "element": "iso kirkosaari",
+        "score": -5.799,
+        "reasons": [
+          "non-Germanic chars: {' '}",
+          "Finnic indicator: saari"
+        ]
+      },
+      {
+        "name": "Liuhanlahti",
+        "element": "liuhanlahti",
+        "score": -5.798,
+        "reasons": [
+          "Finnic indicator: lahti"
+        ]
+      },
+      {
+        "name": "Puntarniemi",
+        "element": "puntarniemi",
+        "score": -5.798,
+        "reasons": [
+          "Finnic indicator: niemi"
+        ]
+      },
+      {
+        "name": "Palosaari",
+        "element": "palosaari",
+        "score": -5.786,
+        "reasons": [
+          "Finnic indicator: saari"
+        ]
+      },
+      {
+        "name": "Jokikylae",
+        "element": "jokikylae",
+        "score": -5.785,
+        "reasons": [
+          "Finnic indicator: joki"
+        ]
+      },
+      {
+        "name": "Parhaniemi",
+        "element": "parhaniemi",
+        "score": -5.779,
+        "reasons": [
+          "Finnic indicator: niemi"
+        ]
+      },
+      {
+        "name": "Tuomisaari",
+        "element": "tuomisaari",
+        "score": -5.779,
+        "reasons": [
+          "Finnic indicator: saari"
+        ]
+      },
+      {
+        "name": "Karinlahti",
+        "element": "karinlahti",
+        "score": -5.779,
+        "reasons": [
+          "Finnic indicator: lahti"
+        ]
+      },
+      {
+        "name": "Alkunkarinlahti",
+        "element": "alkunkarinlahti",
+        "score": -5.776,
+        "reasons": [
+          "Finnic indicator: lahti"
+        ]
+      },
+      {
+        "name": "Syvalahti",
+        "element": "syvalahti",
+        "score": -5.768,
+        "reasons": [
+          "Finnic indicator: lahti"
+        ]
+      },
+      {
+        "name": "Haapajarvi",
+        "element": "haapajarvi",
+        "score": -5.759,
+        "reasons": [
+          "Finnic indicator: jarvi"
+        ]
+      },
+      {
+        "name": "Martinlahti",
+        "element": "martinlahti",
+        "score": -5.755,
+        "reasons": [
+          "Finnic indicator: lahti"
+        ]
+      }
+    ],
+    "preie_candidates_count": 0,
+    "preie_candidates_top50": []
+  },
+  "cognate_detection": {
+    "records_analyzed": 10000,
+    "proto_form_frequency": {
+      "*bergaz": 251,
+      "*haimaz": 28,
+      "*ahwō": 27,
+      "*landą": 24,
+      "*nesją": 17,
+      "*aujō": 14,
+      "*dalaz": 7,
+      "*þurpą": 1,
+      "*stadiz": 1
+    },
+    "meaning_frequency": {
+      "mountain, rock": 251,
+      "home, settlement": 28,
+      "water, river": 27,
+      "land, territory": 24,
+      "headland, promontory": 17,
+      "island": 14,
+      "valley": 7,
+      "village, settlement": 1,
+      "place, stead": 1
+    },
+    "cognates_by_country": {
+      "AD": {
+        "*nesją": 2
+      },
+      "AT": {
+        "*bergaz": 153,
+        "*landą": 16,
+        "*haimaz": 14,
+        "*þurpą": 1,
+        "*dalaz": 1
+      },
+      "CH": {
+        "*bergaz": 95,
+        "*nesją": 15,
+        "*aujō": 14,
+        "*haimaz": 14,
+        "*landą": 8,
+        "*dalaz": 6,
+        "*stadiz": 1
+      },
+      "CZ": {
+        "*ahwō": 27,
+        "*bergaz": 3
+      }
+    },
+    "example_matches": [
+      {
+        "name": "Collada de les Planes",
+        "morpheme": "nes",
+        "proto_form": "*nesją",
+        "meaning": "headland, promontory",
+        "confidence": 0.7,
+        "country": "AD"
+      },
+      {
+        "name": "Les Subiranes",
+        "morpheme": "nes",
+        "proto_form": "*nesją",
+        "meaning": "headland, promontory",
+        "confidence": 0.7,
+        "country": "AD"
+      },
+      {
+        "name": "Alland",
+        "morpheme": "land",
+        "proto_form": "*landą",
+        "meaning": "land, territory",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Allhartsberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Alpenheim",
+        "morpheme": "heim",
+        "proto_form": "*haimaz",
+        "meaning": "home, settlement",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Altenberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Altheim",
+        "morpheme": "heim",
+        "proto_form": "*haimaz",
+        "meaning": "home, settlement",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Altlichtenberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Angerberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Annenheim",
+        "morpheme": "heim",
+        "proto_form": "*haimaz",
+        "meaning": "home, settlement",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Attnang-Puchheim",
+        "morpheme": "heim",
+        "proto_form": "*haimaz",
+        "meaning": "home, settlement",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Bad Dürrnberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Bad Gleichenberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Bartholomäberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Baumgarten im Burgenland",
+        "morpheme": "land",
+        "proto_form": "*landą",
+        "meaning": "land, territory",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Berg",
+        "morpheme": "Berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Berg",
+        "morpheme": "Berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Berg",
+        "morpheme": "Berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Bergheim",
+        "morpheme": "Berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Bergheim",
+        "morpheme": "heim",
+        "proto_form": "*haimaz",
+        "meaning": "home, settlement",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Bergland",
+        "morpheme": "Berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Bergland",
+        "morpheme": "land",
+        "proto_form": "*landą",
+        "meaning": "land, territory",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Bisamberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Blahberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Brandenberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Burgauberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Deutschlandsberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Dietenberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Dobersberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Dorfheim",
+        "morpheme": "Dorf",
+        "proto_form": "*þurpą",
+        "meaning": "village, settlement",
+        "confidence": 0.9,
+        "country": "AT"
+      },
+      {
+        "name": "Dorfheim",
+        "morpheme": "heim",
+        "proto_form": "*haimaz",
+        "meaning": "home, settlement",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Dürnberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Ebersberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Eggelsberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Eggenberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Eidenberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Elendberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Elschberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Enzersberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Esternberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Finkenberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Forsthaus Rieplsberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Franz-Schulz-Heim",
+        "morpheme": "Heim",
+        "proto_form": "*haimaz",
+        "meaning": "home, settlement",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Fügenberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Galtenberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Gansberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Gaumberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Geinberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Gelber Berg",
+        "morpheme": "Berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Georgenberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Glatzberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Grafendorf bei Hartberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Grasberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Grünbach am Schneeberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Göttelsberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Hainzenberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Harland",
+        "morpheme": "land",
+        "proto_form": "*landą",
+        "meaning": "land, territory",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Hartberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Hartheim",
+        "morpheme": "heim",
+        "proto_form": "*haimaz",
+        "meaning": "home, settlement",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Hessenberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Hilmersberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Himberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Hinterberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Hinterberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Hippach-Schwendberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Hirschland",
+        "morpheme": "land",
+        "proto_form": "*landą",
+        "meaning": "land, territory",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Hirtenberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Hohenberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Hönigsberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Hühnersberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Imsterberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Jochberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Johannisberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Kaltenberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Kapfenberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Kellerberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Kindberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Kleinhöflein im Burgenland",
+        "morpheme": "land",
+        "proto_form": "*landą",
+        "meaning": "land, territory",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Kollmitzberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Kolsassberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Kratzenberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Kreuzberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Kuchenberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Kumberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Kürnberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Lasberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Linzerberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Loipersbach im Burgenland",
+        "morpheme": "land",
+        "proto_form": "*landą",
+        "meaning": "land, territory",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Loipersdorf im Burgenland",
+        "morpheme": "land",
+        "proto_form": "*landą",
+        "meaning": "land, territory",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Luterseeberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Marienberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Mittelberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Mittelberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Mittelberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Mitterberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Mitterlimberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Muttelberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Neuberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Neuberg im Burgenland",
+        "morpheme": "land",
+        "proto_form": "*landą",
+        "meaning": "land, territory",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Niederland",
+        "morpheme": "land",
+        "proto_form": "*landą",
+        "meaning": "land, territory",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Nußdorf am Haunsberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Nörderberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Nötsch bei Bleiberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Oberdorf im Burgenland",
+        "morpheme": "land",
+        "proto_form": "*landą",
+        "meaning": "land, territory",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Oberer Schafberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Oberneuberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Ollersdorf im Burgenland",
+        "morpheme": "land",
+        "proto_form": "*landą",
+        "meaning": "land, territory",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Ottenheim",
+        "morpheme": "heim",
+        "proto_form": "*haimaz",
+        "meaning": "home, settlement",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Ottensheim",
+        "morpheme": "heim",
+        "proto_form": "*haimaz",
+        "meaning": "home, settlement",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Pankrazberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Penningberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Predigberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Puchberg am Schneeberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Puchheim",
+        "morpheme": "heim",
+        "proto_form": "*haimaz",
+        "meaning": "home, settlement",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Puchkirchen am Trattberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Rehberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Reichersberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Reisenberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Reitberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Riederberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Riefensberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Rosenau am Sonntagberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Rotsteinberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Roßberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Sankt Margarethen im Burgenland",
+        "morpheme": "land",
+        "proto_form": "*landą",
+        "meaning": "land, territory",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Sankt Michael im Burgenland",
+        "morpheme": "land",
+        "proto_form": "*landą",
+        "meaning": "land, territory",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Sankt Peter am Kammersberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Sankt Peter am Wimberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Schaalenberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Schafberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Schardenberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Schermberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Schildberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Schleissheim",
+        "morpheme": "heim",
+        "proto_form": "*haimaz",
+        "meaning": "home, settlement",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Schlossberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Schloß Wilhelminenberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Schlüsslberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Schneeberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Schrattenberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Schwanberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Schwarzenberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Schwemmberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Schwertberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Seiersberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Senftenberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Siegendorf im Burgenland",
+        "morpheme": "land",
+        "proto_form": "*landą",
+        "meaning": "land, territory",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Siezenheim",
+        "morpheme": "heim",
+        "proto_form": "*haimaz",
+        "meaning": "home, settlement",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Sonnberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Spannberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Spullerschafberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "St Anton am Arlberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Steinbach am Ziehberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Steinberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Stubenberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Sulzberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Södingberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Talhof",
+        "morpheme": "Tal",
+        "proto_form": "*dalaz",
+        "meaning": "valley",
+        "confidence": 0.9,
+        "country": "AT"
+      },
+      {
+        "name": "Tannheim",
+        "morpheme": "heim",
+        "proto_form": "*haimaz",
+        "meaning": "home, settlement",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Ternberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Thomasberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Thüringerberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Traunberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Ulrichsberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Unternberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Unterradlberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Vasoldsberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Venetberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Vergaldner Schneeberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Vertinesberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Voitsberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Vorderberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Vordernberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Wallern im Burgenland",
+        "morpheme": "land",
+        "proto_form": "*landą",
+        "meaning": "land, territory",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Walserberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Wartberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Wattenberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Weerberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Weißlachberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Westlicher Valschavielberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Widdersberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Wienerherberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Wildberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Wimberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Winterberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Wolfsberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Zell-Arzberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Zwerfenberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "AT"
+      },
+      {
+        "name": "Aarberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "CH"
+      },
+      {
+        "name": "Adliswil / Sonnenberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "CH"
+      },
+      {
+        "name": "Affoltern / Goldiger Berg",
+        "morpheme": "Berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "CH"
+      },
+      {
+        "name": "Affoltern / Sonnenberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "CH"
+      },
+      {
+        "name": "Aiguilles de Valsorey",
+        "morpheme": "ey",
+        "proto_form": "*aujō",
+        "meaning": "island",
+        "confidence": 0.7,
+        "country": "CH"
+      },
+      {
+        "name": "Altlandenberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "CH"
+      },
+      {
+        "name": "Amlisberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "CH"
+      },
+      {
+        "name": "Arlesheim",
+        "morpheme": "heim",
+        "proto_form": "*haimaz",
+        "meaning": "home, settlement",
+        "confidence": 0.7,
+        "country": "CH"
+      },
+      {
+        "name": "Arête des Quatre Ânes",
+        "morpheme": "nes",
+        "proto_form": "*nesją",
+        "meaning": "headland, promontory",
+        "confidence": 0.7,
+        "country": "CH"
+      },
+      {
+        "name": "Augstenberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "CH"
+      },
+      {
+        "name": "Bacun, Furcela dal",
+        "morpheme": "dal",
+        "proto_form": "*dalaz",
+        "meaning": "valley",
+        "confidence": 0.7,
+        "country": "CH"
+      },
+      {
+        "name": "Bagnes",
+        "morpheme": "nes",
+        "proto_form": "*nesją",
+        "meaning": "headland, promontory",
+        "confidence": 0.7,
+        "country": "CH"
+      },
+      {
+        "name": "Beatenberg",
+        "morpheme": "berg",
+        "proto_form": "*bergaz",
+        "meaning": "mountain, rock",
+        "confidence": 0.7,
+        "country": "CH"
+      }
+    ]
+  },
+  "historical_periods": {
+    "period_distribution": {
+      "iron_age": 708,
+      "viking_age": 549,
+      "high_medieval": 78,
+      "early_modern": 6,
+      "black_death": 2
+    },
+    "periods_by_country": {
+      "AD": {
+        "viking_age": 1
+      },
+      "AT": {
+        "iron_age": 62,
+        "viking_age": 19,
+        "high_medieval": 3,
+        "early_modern": 2
+      },
+      "CH": {
+        "iron_age": 77,
+        "viking_age": 13,
+        "early_modern": 1
+      },
+      "CZ": {
+        "viking_age": 43,
+        "iron_age": 31,
+        "high_medieval": 3
+      },
+      "DE": {
+        "iron_age": 224,
+        "viking_age": 101,
+        "high_medieval": 4
+      },
+      "DK": {
+        "viking_age": 44,
+        "iron_age": 8,
+        "high_medieval": 7
+      },
+      "ES": {
+        "iron_age": 37,
+        "viking_age": 11,
+        "early_modern": 1
+      },
+      "FI": {
+        "viking_age": 1,
+        "iron_age": 1
+      },
+      "FO": {
+        "viking_age": 3
+      },
+      "GB": {
+        "viking_age": 97,
+        "iron_age": 86,
+        "high_medieval": 3
+      },
+      "IE": {
+        "iron_age": 38,
+        "high_medieval": 1
+      },
+      "IM": {
+        "viking_age": 11,
+        "iron_age": 2
+      },
+      "IS": {
+        "viking_age": 17,
+        "iron_age": 6
+      },
+      "LT": {
+        "iron_age": 1
+      },
+      "NO": {
+        "viking_age": 138,
+        "iron_age": 113,
+        "high_medieval": 47,
+        "early_modern": 2,
+        "black_death": 2
+      },
+      "PL": {
+        "viking_age": 35,
+        "high_medieval": 7
+      },
+      "PT": {
+        "iron_age": 9,
+        "high_medieval": 1
+      },
+      "RU": {
+        "iron_age": 4,
+        "viking_age": 1
+      },
+      "SE": {
+        "viking_age": 14,
+        "iron_age": 9,
+        "high_medieval": 2
+      }
+    },
+    "period_examples": {
+      "viking_age": [
+        "Tosseta de Vallcivera",
+        "Braunau Neustadt",
+        "Donaustadt",
+        "Eisenstadt",
+        "Freistadt",
+        "Gstadtmaier",
+        "Heustadelböden",
+        "Hochstadel",
+        "Josefstadt",
+        "Oberndorf bei Schwanenstadt",
+        "Radstadt",
+        "Sankt Oswald bei Freistadt",
+        "Schwanenstadt",
+        "Schärding Vorstadt",
+        "St. Veiter Vorstadt",
+        "Versettla",
+        "Viktringer Vorstadt",
+        "Villacher Vorstadt",
+        "Völkermarkter Vorstadt",
+        "Wiener Neustadt"
+      ],
+      "iron_age": [
+        "Alland",
+        "Alpenheim",
+        "Altheim",
+        "Altlengbach",
+        "Am Hengst",
+        "Annenheim",
+        "Aperer Pfaffengrat",
+        "Attnang-Puchheim",
+        "Baumgarten im Burgenland",
+        "Bergheim",
+        "Bergland",
+        "Böheimkirchen",
+        "Deutschlandsberg",
+        "Dorfheim",
+        "Eggessengrat",
+        "Finkenstein am Faaker See",
+        "Fuorcla Fenga Pitschna",
+        "Harland",
+        "Hartheim",
+        "Hirschland"
+      ],
+      "high_medieval": [
+        "Frudigerkopf",
+        "Schulterhöhe",
+        "Schulterkopf",
+        "Chrudim",
+        "Chrudim",
+        "Kraví hora [Vyšší Brod-Hrudkov] outlook p.",
+        "Bruderhaldehöhe",
+        "Bruderholz",
+        "Schultiskopf",
+        "Wassertrüdingen",
+        "Vitved",
+        "Vistorp",
+        "Vindtved Kanal",
+        "Vestorp",
+        "Næstved",
+        "Rudkøbing",
+        "Hillerød",
+        "Cruden Bay",
+        "Loch Truderscaig",
+        "Prudhoe"
+      ],
+      "early_modern": [
+        "Kleinstübing",
+        "Valgraggestürme",
+        "Bülach / Gstückt",
+        "Castuera",
+        "Suolovuopmi Fjellstue",
+        "Skotplassnuten"
+      ],
+      "black_death": [
+        "Ødegårdsåsen",
+        "Kjødetoppen"
+      ]
+    }
+  },
+  "geometry_validation": {
+    "total_records": 54455,
+    "records_with_geometry": 881,
+    "valid_geometries": 881,
+    "invalid_geometries": 0,
+    "error_types": {},
+    "warning_types": {}
+  },
+  "terrain": {
+    "terrain_element_counts": {
+      "berg": 1139,
+      "ås": 895,
+      "mo": 742,
+      "fjell": 569,
+      "dal": 558,
+      "nes": 380,
+      "stein": 226,
+      "haug": 159,
+      "vik": 121,
+      "myr": 119,
+      "sand": 37,
+      "bakke": 6,
+      "klippe": 3,
+      "flat": 1
+    },
+    "elevation_statistics": {
+      "mo": {
+        "count": 712,
+        "mean": 422.9,
+        "median": 344.0,
+        "min": -9999.0,
+        "max": 3422.0,
+        "p25": 79.0,
+        "p75": 758.0
+      },
+      "nes": {
+        "count": 317,
+        "mean": 669.2,
+        "median": 443.0,
+        "min": -9999.0,
+        "max": 3908.0,
+        "p25": 60.0,
+        "p75": 980.0
+      },
+      "berg": {
+        "count": 1125,
+        "mean": 979.9,
+        "median": 942.0,
+        "min": -9999.0,
+        "max": 3797.0,
+        "p25": 433.8,
+        "p75": 1242.0
+      },
+      "stein": {
+        "count": 225,
+        "mean": 1178.9,
+        "median": 1092.0,
+        "min": 1.0,
+        "max": 3211.0,
+        "p25": 435.0,
+        "p75": 1589.0
+      },
+      "dal": {
+        "count": 456,
+        "mean": 787.3,
+        "median": 640.0,
+        "min": -9999.0,
+        "max": 3355.0,
+        "p25": 236.0,
+        "p75": 1351.0
+      },
+      "vik": {
+        "count": 71,
+        "mean": 318.4,
+        "median": 118.0,
+        "min": 1.0,
+        "max": 1809.3,
+        "p25": 5.0,
+        "p75": 556.0
+      },
+      "klippe": {
+        "count": 3,
+        "mean": 951.7,
+        "median": 926.0,
+        "min": 926.0,
+        "max": 1003.0,
+        "p25": 926.0,
+        "p75": 1003.0
+      },
+      "sand": {
+        "count": 27,
+        "mean": -150.1,
+        "median": 238.0,
+        "min": -9999.0,
+        "max": 1930.5,
+        "p25": 50.0,
+        "p75": 1010.0
+      },
+      "haug": {
+        "count": 152,
+        "mean": 474.8,
+        "median": 355.6,
+        "min": 14.0,
+        "max": 2148.5,
+        "p25": 133.0,
+        "p75": 736.0
+      },
+      "myr": {
+        "count": 30,
+        "mean": 351.7,
+        "median": 277.0,
+        "min": 79.0,
+        "max": 1380.0,
+        "p25": 195.0,
+        "p75": 456.0
+      },
+      "fjell": {
+        "count": 566,
+        "mean": 756.3,
+        "median": 719.0,
+        "min": 1.0,
+        "max": 3322.0,
+        "p25": 391.0,
+        "p75": 1000.0
+      },
+      "ås": {
+        "count": 881,
+        "mean": 319.0,
+        "median": 255.0,
+        "min": 17.0,
+        "max": 1720.0,
+        "p25": 182.0,
+        "p75": 385.0
+      },
+      "bakke": {
+        "count": 5,
+        "mean": 227.8,
+        "median": 234.0,
+        "min": 20.0,
+        "max": 407.0,
+        "p25": 165.0,
+        "p75": 313.0
+      }
+    },
+    "terrain_by_country": {
+      "AD": {
+        "nes": 3,
+        "mo": 1
+      },
+      "AT": {
+        "berg": 205,
+        "stein": 57,
+        "mo": 25,
+        "nes": 13,
+        "dal": 2
+      },
+      "CH": {
+        "berg": 122,
+        "dal": 32,
+        "mo": 30,
+        "nes": 28,
+        "stein": 14
+      },
+      "CZ": {
+        "mo": 72,
+        "nes": 15,
+        "berg": 7,
+        "vik": 6,
+        "dal": 4
+      },
+      "DE": {
+        "berg": 631,
+        "stein": 121,
+        "mo": 16,
+        "nes": 6,
+        "dal": 5,
+        "klippe": 3
+      },
+      "DK": {
+        "mo": 8,
+        "dal": 3,
+        "nes": 1,
+        "sand": 1,
+        "berg": 1
+      },
+      "ES": {
+        "mo": 189,
+        "nes": 106,
+        "dal": 40,
+        "sand": 2
+      },
+      "FI": {
+        "mo": 7,
+        "berg": 1,
+        "nes": 1,
+        "myr": 1
+      },
+      "FO": {
+        "nes": 6,
+        "dal": 3,
+        "sand": 2
+      },
+      "GB": {
+        "mo": 101,
+        "dal": 54,
+        "nes": 50,
+        "sand": 4,
+        "berg": 3,
+        "haug": 3
+      },
+      "GI": {
+        "berg": 1
+      },
+      "IE": {
+        "mo": 135,
+        "nes": 13,
+        "dal": 13,
+        "haug": 2
+      },
+      "IM": {
+        "nes": 2,
+        "dal": 1
+      },
+      "IS": {
+        "dal": 70,
+        "nes": 20,
+        "vik": 12,
+        "mo": 4,
+        "myr": 3,
+        "berg": 3,
+        "sand": 2,
+        "stein": 2,
+        "flat": 1
+      },
+      "LT": {
+        "mo": 1
+      },
+      "LV": {
+        "nes": 1
+      },
+      "NO": {
+        "ås": 891,
+        "fjell": 569,
+        "dal": 320,
+        "berg": 157,
+        "haug": 154,
+        "myr": 114,
+        "nes": 105,
+        "vik": 70,
+        "mo": 36,
+        "stein": 32
+      },
+      "PL": {
+        "mo": 65,
+        "sand": 3,
+        "dal": 2,
+        "myr": 1
+      },
+      "PT": {
+        "mo": 41,
+        "nes": 10,
+        "dal": 8,
+        "berg": 1,
+        "sand": 1
+      },
+      "RU": {
+        "mo": 4,
+        "dal": 1
+      },
+      "SE": {
+        "vik": 33,
+        "mo": 7,
+        "berg": 7,
+        "sand": 4,
+        "ås": 4
+      }
+    }
+  },
+  "religious": {
+    "deity_element_counts": {
+      "tor": 411,
+      "ty": 244,
+      "ull": 237,
+      "hel": 229,
+      "odin": 6
+    },
+    "cult_site_counts": {
+      "ve": 1672,
+      "vi": 1076,
+      "hov": 157,
+      "horg": 20,
+      "lund": 16,
+      "kapell": 15,
+      "kirke": 6
+    },
+    "deities_by_country": {
+      "AD": {
+        "ull": 1
+      },
+      "AT": {
+        "ull": 19,
+        "hel": 19,
+        "tor": 13
+      },
+      "CH": {
+        "tor": 24,
+        "hel": 22,
+        "ull": 14,
+        "odin": 1,
+        "ty": 1
+      },
+      "CZ": {
+        "ty": 65,
+        "hel": 15,
+        "tor": 2,
+        "odin": 1
+      },
+      "DE": {
+        "hel": 59,
+        "tor": 28,
+        "ull": 7,
+        "odin": 2,
+        "ty": 1
+      },
+      "DK": {
+        "hel": 6,
+        "ull": 3,
+        "tor": 3
+      },
+      "ES": {
+        "tor": 46,
+        "ull": 33,
+        "hel": 10,
+        "odin": 1
+      },
+      "FI": {
+        "ty": 4,
+        "hel": 2,
+        "ull": 1,
+        "tor": 1
+      },
+      "GB": {
+        "ull": 52,
+        "ty": 44,
+        "hel": 20,
+        "tor": 16,
+        "odin": 1
+      },
+      "IE": {
+        "ull": 80,
+        "ty": 16,
+        "hel": 4,
+        "tor": 3
+      },
+      "IM": {
+        "ull": 2,
+        "hel": 1
+      },
+      "IS": {
+        "ty": 4,
+        "ull": 2,
+        "tor": 1
+      },
+      "LT": {
+        "ty": 1
+      },
+      "NO": {
+        "tor": 232,
+        "hel": 41,
+        "ty": 30,
+        "ull": 21
+      },
+      "PL": {
+        "ty": 71,
+        "hel": 20,
+        "tor": 15
+      },
+      "PT": {
+        "hel": 6,
+        "tor": 5
+      },
+      "RU": {
+        "ty": 6,
+        "hel": 3,
+        "tor": 1
+      },
+      "SE": {
+        "tor": 21,
+        "ull": 2,
+        "ty": 1,
+        "hel": 1
+      }
+    },
+    "examples": {
+      "deity:ull": [
+        "Agulla de Baiau",
+        "Bahnhof Tulln",
+        "Bahnhof Tulln-Stadt",
+        "Bahnhof Tullnerbach-Pressbaum",
+        "Baumgarten am Tullnerfeld",
+        "Gansmüllerbach",
+        "La Mulle",
+        "Mitterpullendorf",
+        "Mulleter Seichenkopf",
+        "Mullitztörl"
+      ],
+      "cult:ve": [
+        "Collada del Forat de Malhiverns",
+        "Roca Entravessada",
+        "Tosseta de Vallcivera",
+        "Travenc",
+        "Alkoven",
+        "Arvental",
+        "Grossveitsch",
+        "Großvenediger",
+        "Hochvernagtspitze",
+        "Kleinvenediger"
+      ],
+      "cult:vi": [
+        "Plana de l’Avier",
+        "Außervillgraten",
+        "Freßnitzviertel",
+        "Hermesvilla",
+        "Innervillgraten",
+        "Kirchenviertel",
+        "Kirchenviertel",
+        "Neudorf im Weinviertel",
+        "Plankovitzspitze",
+        "Valschavielberge"
+      ],
+      "deity:hel": [
+        "Brochelkopf",
+        "Eichelwang",
+        "Heimbühel",
+        "Kitzbühel",
+        "Krachelgrat",
+        "Küchelspitze",
+        "Micheldorf",
+        "Micheldorf in Oberösterreich",
+        "Michelhausen",
+        "Peischelspitze"
+      ],
+      "cult:kapell": [
+        "Cholerakapelle",
+        "Gratzkapelle",
+        "Hubertuskapelle",
+        "Hubertuskapelle",
+        "Huttererkapelle",
+        "Josefskapelle",
+        "Lorettokapelle",
+        "Ochsenwaldkapelle",
+        "Paulskapelle",
+        "Rochuskapelle"
+      ],
+      "deity:tor": [
+        "Forcella di Riotorbo",
+        "Hochtor",
+        "Kronstorf",
+        "Peischlachtörl",
+        "Riffeltor",
+        "Rottor",
+        "Sankt Viktorkapelle",
+        "Schnaggentörl",
+        "Schoppmanntörl",
+        "Schwarztörl"
+      ],
+      "deity:odin": [
+        "Basòdino",
+        "Svobodínská paseka [Sobotín-Klepáčov]",
+        "Roding",
+        "Rödinghausen",
+        "La Almunia de Doña Godina",
+        "River Roding"
+      ],
+      "deity:ty": [
+        "Zürich (Kreis 1) / City",
+        "Bezděkovský kopec [Toužim-Prachomety]",
+        "Blatnice pod Svatým Antonínkem",
+        "Bystřice pod Hostýnem",
+        "Charváty",
+        "Chotyně",
+        "Dolní Hbity",
+        "Dolní Lutyně",
+        "Hostýn",
+        "Huštýn"
+      ],
+      "cult:hov": [
+        "(Paseky) [Nebahovy]",
+        "(Přední Kruhová) [Rožmitál na Šumavě-Zahrádka]",
+        "(U Pavlovy hutě) [Obora u Tachova]",
+        "Bedřichova hora [Holčovice - Dlouhá Ves]",
+        "Blahutov [Boleboř-Svahová]",
+        "Bochov",
+        "Branišovský vrch [Toužim-Nežichov]",
+        "Bílá skála [Vlachovice]",
+        "Běleč [Dolany-Malechov]",
+        "Běleč [Vlachovo Březí-Mojkov]"
+      ],
+      "cult:lund": [
+        "Vredeslund",
+        "Vovlund",
+        "Vognslund",
+        "Virklund",
+        "Vindbylund",
+        "Vester Nordlunde",
+        "Vesterlund",
+        "Vesterlund",
+        "Kalundborg",
+        "Billund"
+      ],
+      "cult:kirke": [
+        "Vester Nykirke",
+        "Rognsund kirke",
+        "Kirkenes",
+        "Kirkestinden",
+        "Kirkeåsen",
+        "Kirkeåsen"
+      ],
+      "cult:horg": [
+        "Lønahorgi",
+        "Hausdalshorga",
+        "Skjemmehorgi",
+        "Torfinnshorgi",
+        "Grønahorgi",
+        "Slåttabakkhorgi",
+        "Grythorgi",
+        "Langahorgi",
+        "Vetlehorgi",
+        "Nesheimhorgi"
+      ]
+    }
+  },
+  "ecological": {
+    "flora_counts": {
+      "or": 6353,
+      "ask": 134,
+      "alm": 126,
+      "eik": 56,
+      "lind": 30,
+      "gran": 23,
+      "rogn": 12,
+      "furu": 7,
+      "bjørk": 6,
+      "lønn": 1,
+      "selje": 1,
+      "bøk": 1
+    },
+    "fauna_counts": {
+      "ku": 236,
+      "sel": 201,
+      "ørn": 103,
+      "rev": 82,
+      "elg": 73,
+      "sau": 61,
+      "hest": 58,
+      "rein": 51,
+      "bjørn": 47,
+      "geit": 17,
+      "ulv": 16,
+      "hval": 14,
+      "laks": 3
+    },
+    "flora_by_country": {
+      "AD": {
+        "or": 41
+      },
+      "AT": {
+        "or": 504,
+        "alm": 9,
+        "eik": 7,
+        "ask": 4,
+        "lind": 2
+      },
+      "CH": {
+        "or": 823,
+        "alm": 12,
+        "rogn": 1,
+        "lind": 1
+      },
+      "CZ": {
+        "or": 532,
+        "ask": 10
+      },
+      "DE": {
+        "or": 441,
+        "alm": 14,
+        "eik": 3,
+        "lind": 2,
+        "ask": 2
+      },
+      "DK": {
+        "or": 69
+      },
+      "ES": {
+        "or": 916,
+        "alm": 45,
+        "lind": 6,
+        "gran": 3
+      },
+      "FI": {
+        "or": 14,
+        "eik": 8,
+        "ask": 5,
+        "alm": 5
+      },
+      "FO": {
+        "or": 5
+      },
+      "GB": {
+        "or": 929,
+        "alm": 13,
+        "eik": 5,
+        "lind": 1,
+        "ask": 1
+      },
+      "GI": {
+        "or": 3
+      },
+      "IE": {
+        "or": 301,
+        "ask": 11,
+        "gran": 4,
+        "lind": 2,
+        "alm": 2
+      },
+      "IM": {
+        "or": 11
+      },
+      "IS": {
+        "or": 23,
+        "ask": 15,
+        "eik": 1,
+        "lind": 1
+      },
+      "LT": {
+        "or": 1,
+        "eik": 1
+      },
+      "LV": {
+        "alm": 1
+      },
+      "NO": {
+        "or": 648,
+        "eik": 31,
+        "ask": 21,
+        "lind": 14,
+        "gran": 14,
+        "alm": 12,
+        "rogn": 11,
+        "furu": 7,
+        "bjørk": 6,
+        "lønn": 1
+      },
+      "PL": {
+        "or": 722,
+        "ask": 57,
+        "alm": 2
+      },
+      "PT": {
+        "or": 283,
+        "alm": 6
+      },
+      "RU": {
+        "or": 13,
+        "alm": 1
+      },
+      "SE": {
+        "or": 74,
+        "ask": 8,
+        "alm": 4,
+        "gran": 2,
+        "lind": 1
+      }
+    },
+    "fauna_by_country": {
+      "AT": {
+        "sel": 28,
+        "sau": 13,
+        "rein": 10,
+        "elg": 4,
+        "ku": 3
+      },
+      "CH": {
+        "sel": 22,
+        "sau": 13,
+        "elg": 12,
+        "rev": 5,
+        "ku": 4,
+        "rein": 2
+      },
+      "CZ": {
+        "ku": 44,
+        "sel": 14,
+        "rev": 13,
+        "hval": 10
+      },
+      "DE": {
+        "sel": 73,
+        "ku": 10,
+        "sau": 9,
+        "elg": 4,
+        "rev": 3,
+        "rein": 3,
+        "hest": 1
+      },
+      "DK": {
+        "sel": 2,
+        "ku": 2,
+        "rev": 1
+      },
+      "EE": {
+        "ku": 2,
+        "sau": 1
+      },
+      "ES": {
+        "rev": 14,
+        "sel": 9,
+        "elg": 7,
+        "sau": 6,
+        "ku": 2,
+        "rein": 1,
+        "hest": 1,
+        "ulv": 1
+      },
+      "FI": {
+        "ku": 30,
+        "sel": 4
+      },
+      "FO": {
+        "hval": 2,
+        "ørn": 1,
+        "sel": 1,
+        "rein": 1,
+        "laks": 1,
+        "ku": 1,
+        "hest": 1
+      },
+      "GB": {
+        "hest": 21,
+        "sel": 6,
+        "elg": 5,
+        "ulv": 4,
+        "rein": 4,
+        "hval": 1,
+        "rev": 1,
+        "geit": 1
+      },
+      "IE": {
+        "rev": 2,
+        "sel": 2,
+        "elg": 1,
+        "ku": 1
+      },
+      "IS": {
+        "ku": 43,
+        "sel": 7,
+        "elg": 2,
+        "sau": 1
+      },
+      "LT": {
+        "ku": 3
+      },
+      "LV": {
+        "ku": 3,
+        "elg": 2,
+        "sau": 1
+      },
+      "NO": {
+        "ørn": 102,
+        "ku": 58,
+        "bjørn": 47,
+        "hest": 34,
+        "rev": 33,
+        "sel": 32,
+        "rein": 30,
+        "elg": 19,
+        "sau": 17,
+        "geit": 16
+      },
+      "PL": {
+        "ku": 22,
+        "elg": 7,
+        "rev": 2
+      },
+      "PT": {
+        "elg": 8,
+        "rev": 2
+      },
+      "RU": {
+        "ku": 5,
+        "elg": 1
+      },
+      "SE": {
+        "rev": 6,
+        "ku": 3,
+        "elg": 1,
+        "ulv": 1,
+        "sel": 1
+      }
+    }
+  },
+  "hydrological": {
+    "hydro_element_counts": {
+      "å": 1464,
+      "bru": 115,
+      "elv": 115,
+      "fjord": 69,
+      "vann": 58,
+      "sund": 46,
+      "vatn": 41,
+      "tjern": 39,
+      "sjø": 39,
+      "bukt": 31,
+      "foss": 29,
+      "bekk": 16,
+      "kilde": 6,
+      "brønn": 3,
+      "stryk": 1
+    },
+    "hydro_by_country": {
+      "AT": {
+        "bru": 27
+      },
+      "CH": {
+        "bru": 16,
+        "vann": 3
+      },
+      "CZ": {
+        "elv": 2,
+        "bru": 2
+      },
+      "DE": {
+        "bru": 35,
+        "sund": 3,
+        "elv": 2
+      },
+      "DK": {
+        "sund": 5,
+        "kilde": 4
+      },
+      "EE": {
+        "elv": 1
+      },
+      "ES": {
+        "elv": 21,
+        "bru": 1
+      },
+      "FO": {
+        "sund": 2,
+        "vann": 1
+      },
+      "GB": {
+        "elv": 7,
+        "foss": 1,
+        "sund": 1
+      },
+      "IE": {
+        "elv": 3,
+        "vann": 1,
+        "kilde": 1
+      },
+      "IS": {
+        "vatn": 17,
+        "fjord": 2,
+        "foss": 2,
+        "vann": 1,
+        "bru": 1
+      },
+      "LV": {
+        "elv": 1
+      },
+      "NO": {
+        "å": 1454,
+        "elv": 73,
+        "fjord": 67,
+        "vann": 52,
+        "tjern": 39,
+        "sjø": 39,
+        "bru": 33,
+        "bukt": 31,
+        "sund": 29,
+        "foss": 26
+      },
+      "PT": {
+        "elv": 4
+      },
+      "SE": {
+        "å": 10,
+        "sund": 6,
+        "elv": 1
+      }
+    },
+    "depth_statistics": {
+      "fjord": {
+        "count": 18,
+        "mean_depth_m": 77.7,
+        "max_depth_m": 230
+      },
+      "bukt": {
+        "count": 8,
+        "mean_depth_m": 23.1,
+        "max_depth_m": 46
+      },
+      "sund": {
+        "count": 4,
+        "mean_depth_m": 38.8,
+        "max_depth_m": 117
+      },
+      "vatn": {
+        "count": 1,
+        "mean_depth_m": 144.0,
+        "max_depth_m": 144
+      },
+      "bekk": {
+        "count": 1,
+        "mean_depth_m": 19.0,
+        "max_depth_m": 19
+      }
+    }
+  },
+  "acoustic": {
+    "acoustic_element_counts": {
+      "stil": 56,
+      "dur": 49,
+      "gny": 12,
+      "tord": 7,
+      "sus": 7,
+      "brak": 4,
+      "song": 2
+    },
+    "acoustic_by_country": {
+      "CH": {
+        "gny": 12,
+        "dur": 5,
+        "tord": 2
+      },
+      "CZ": {
+        "sus": 1,
+        "stil": 1,
+        "brak": 1
+      },
+      "DE": {
+        "dur": 1
+      },
+      "ES": {
+        "stil": 50,
+        "dur": 6,
+        "sus": 2,
+        "tord": 1
+      },
+      "FO": {
+        "dur": 2
+      },
+      "GB": {
+        "stil": 1,
+        "dur": 1
+      },
+      "IS": {
+        "dur": 20,
+        "sus": 1
+      },
+      "LV": {
+        "dur": 1
+      },
+      "NO": {
+        "dur": 10,
+        "stil": 4,
+        "tord": 4,
+        "song": 2,
+        "sus": 1,
+        "brak": 1
+      },
+      "PL": {
+        "brak": 2,
+        "sus": 2,
+        "dur": 1
+      },
+      "PT": {
+        "dur": 1
+      },
+      "SE": {
+        "dur": 1
+      }
+    },
+    "examples": {
+      "gny": [
+        "Autigny",
+        "Bussigny",
+        "Cartigny",
+        "Céligny",
+        "Dardagny",
+        "Jongny",
+        "Martigny-Combe",
+        "Martigny-Ville",
+        "Montagny",
+        "Pampigny",
+        "Satigny",
+        "Savigny"
+      ],
+      "dur": [
+        "Caciadur",
+        "Caciadur, Pass di",
+        "Piz Laschadurella",
+        "Piz Rondadura",
+        "Spi da Laschadura",
+        "Walldürn",
+        "La Herradura",
+        "Pobladura de Pelayo García",
+        "Pobladura del Valle",
+        "Puerto Honduras",
+        "Sant Sadurní d'Anoia",
+        "Tuc de Bidur",
+        "Strendur",
+        "Sandur",
+        "Durham"
+      ],
+      "tord": [
+        "Col du Ritord",
+        "Le Ritord",
+        "Santa Maria de Palautordera",
+        "Tordsnose",
+        "Høgafjellet (Stord)",
+        "Stordalåsen",
+        "Stordokknuten"
+      ],
+      "sus": [
+        "(Bašusova cesta) [Lázně Kynžvart]",
+        "Collsuspina",
+        "Niño Jesús",
+        "Veisusel",
+        "Sushøgda",
+        "Ursus",
+        "Ursus"
+      ],
+      "stil": [
+        "Vyklestilka [Loučovice-Mnichovice] outlook p.",
+        "Alto de los Leones de Castilla",
+        "Arroyo de Testillos",
+        "Arroyo de los Sestiles",
+        "Bustillo de la Vega",
+        "Bustillo del Páramo",
+        "Cabañas del Castillo",
+        "Can Pastilla",
+        "Carcastillo",
+        "Castellonroi / Castillonroy",
+        "Castilblanco",
+        "Castilblanco de los Arroyos",
+        "Castiliscar",
+        "Castilla",
+        "Castilleja de Guzmán"
+      ],
+      "brak": [
+        "Žebrák",
+        "Brakandalsfjellet",
+        "Przełęcz Żebrak",
+        "Żebrak"
+      ],
+      "song": [
+        "Songåsen",
+        "Vestre Songåsen"
+      ]
+    }
+  },
+  "medicinal": {
+    "medicinal_element_counts": {
+      "einer": 77,
+      "bad": 62,
+      "brunn": 43,
+      "lind": 30,
+      "kilde": 6,
+      "spital": 4,
+      "salt": 4,
+      "humle": 2
+    },
+    "medicinal_by_country": {
+      "AT": {
+        "einer": 38,
+        "brunn": 18,
+        "lind": 2,
+        "bad": 2
+      },
+      "CH": {
+        "brunn": 10,
+        "lind": 1,
+        "bad": 1,
+        "einer": 1
+      },
+      "DE": {
+        "einer": 36,
+        "brunn": 15,
+        "bad": 7,
+        "lind": 2
+      },
+      "DK": {
+        "kilde": 4
+      },
+      "ES": {
+        "bad": 23,
+        "lind": 6,
+        "spital": 2
+      },
+      "FO": {
+        "salt": 2
+      },
+      "GB": {
+        "lind": 1
+      },
+      "IE": {
+        "lind": 2,
+        "bad": 1,
+        "kilde": 1,
+        "spital": 1,
+        "salt": 1
+      },
+      "IS": {
+        "bad": 1,
+        "lind": 1
+      },
+      "NO": {
+        "lind": 14,
+        "bad": 4,
+        "humle": 2,
+        "einer": 2,
+        "kilde": 1,
+        "salt": 1
+      },
+      "PT": {
+        "bad": 6,
+        "spital": 1
+      },
+      "SE": {
+        "bad": 17,
+        "lind": 1
+      }
+    },
+    "examples": {
+      "brunn": [
+        "Bad Sauerbrunn",
+        "Breitenbrunn",
+        "Deutsch Kaltenbrunn",
+        "Ernstbrunn",
+        "Fieberbrunn",
+        "Gallbrunn",
+        "Göttlesbrunn",
+        "Göttlesbrunner Bach",
+        "Hagenbrunn",
+        "Hausbrunn"
+      ],
+      "lind": [
+        "Blindenmarkt",
+        "Blindis Spitze",
+        "Kirchlindach",
+        "Glinde",
+        "Kirchlinde",
+        "Cilindro de Marboré",
+        "Colindres",
+        "Galindo y Perahuy",
+        "Galinduste",
+        "Mondalindo"
+      ],
+      "einer": [
+        "Greiner Sonnwand",
+        "Grosser Greiner",
+        "Kalksteiner Jöchl",
+        "Kleiner Billbach",
+        "Kleiner Burgstall",
+        "Kleiner Bärenkopf",
+        "Kleiner Eiser",
+        "Kleiner Gaislen Kogl",
+        "Kleiner Gjaidstein",
+        "Kleiner Gutentaler Bach"
+      ],
+      "bad": [
+        "Mils bei Solbad Hall",
+        "Warmbad-Judendorf",
+        "Leukerbad",
+        "Bad Wildbad",
+        "Heilbad Heiligenstadt",
+        "Ostseebad Binz",
+        "Ostseebad Kühlungsborn",
+        "Schlangenbad",
+        "Wiesbaden",
+        "Willebadessen"
+      ],
+      "kilde": [
+        "Vindekilde",
+        "Væggerskilde",
+        "Roskilde",
+        "Roskilde",
+        "Ballykildea Mountain",
+        "Kildetoppen"
+      ],
+      "spital": [
+        "Hospital de Órbigo",
+        "L'Hospitalet de Llobregat",
+        "Hospital",
+        "Oliveira do Hospital"
+      ],
+      "salt": [
+        "Saltangará",
+        "Saltnes",
+        "Loughsalt Mountain",
+        "Saltberget"
+      ],
+      "humle": [
+        "Humleåsen",
+        "Humleviksnutane"
+      ]
+    }
+  },
+  "_metadata": {
+    "analysis_date": "2026-05-16",
+    "total_records": 54455,
+    "elapsed_seconds": 4.0,
+    "perspectives_run": 12
+  }
+}
