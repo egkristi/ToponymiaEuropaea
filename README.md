@@ -14,10 +14,10 @@
 
 | Metric | Value |
 |--------|-------|
-| **Databank records** | 42,808 (18 countries, 3 sources) |
+| **Databank records** | 54,455 (22 countries, 3 sources) |
 | **Gold-standard kernel** | 8 verified records with full etymologies |
-| **Data sources** | GeoNames (35,630), Kartverket SSR (652), Wikidata (6,526) |
-| **Countries covered** | NO, SE, DK, FI, IS, EE, LT, LV, RU, GB, IE, IM, FO, DE, AT, CH, PL, CZ |
+| **Data sources** | GeoNames (47,277), Kartverket SSR (652), Wikidata (6,526) |
+| **Countries covered** | NO, SE, DK, FI, IS, EE, LT, LV, RU, GB, IE, IM, FO, DE, AT, CH, PL, CZ, ES, PT, AD, GI |
 | **Data connectors** | 16 implemented (national registries, gazetteers, terrain, climate, imagery) |
 | **Language modules** | 201 auto-discovered (covering all European languages + ancient/extinct) |
 | **Perspective modules** | 15 coded (of 21 documented) |
@@ -51,8 +51,9 @@
 - **GDPR compliance** — jurisdiction-specific policy for historical person-names in place etymologies
 - **Bathymetry enrichment** — GEBCO/EMODnet/NVE depth data for water features
 - **Geolocated image links** — Wikimedia Commons geotagged photographs linked to place records
-- **Geometry classification** — automatic point/line/area classification for all 42,808 records
+- **Geometry classification** — automatic point/line/area classification for all 54,455 records
 - **Wikidata city ingestion** — 12 countries with OSM polygon geometry, population, elevation, multilingual alternative names
+- **Iberian Peninsula coverage** — Spain (8,500), Portugal (2,905), Andorra (195), Gibraltar (47) with Arabic substrate layer
 - **British Isles coverage** — GB (7,000), Ireland (2,496), Isle of Man (120) with Celtic-language toponymic interest
 - **Baltic/Eastern European coverage** — Estonia, Lithuania, Latvia, Russia with historical German/Polish/Swedish name layers
 - **Topographic metrics** — 5,402 Norwegian peaks with prominence, isolation, dominance ratio, mountain range, and parent peak data from Wikidata (P2660/P2659/P3137/P4552)
