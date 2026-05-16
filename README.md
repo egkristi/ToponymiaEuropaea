@@ -14,9 +14,9 @@
 
 | Metric | Value |
 |--------|-------|
-| **Databank records** | 9,692 (12 countries, 3 sources) |
+| **Databank records** | 33,192 (17 countries, 3 sources) |
 | **Gold-standard kernel** | 8 verified records with full etymologies |
-| **Data sources** | GeoNames (2,514), Kartverket SSR (652), Wikidata (6,526) |
+| **Data sources** | GeoNames (26,014), Kartverket SSR (652), Wikidata (6,526) |
 | **Countries covered** | NO, SE, DK, FI, IS, EE, LT, LV, RU, GB, IE, FO |
 | **Data connectors** | 16 implemented (national registries, gazetteers, terrain, climate, imagery) |
 | **Language modules** | 201 auto-discovered (covering all European languages + ancient/extinct) |
@@ -51,7 +51,7 @@
 - **GDPR compliance** — jurisdiction-specific policy for historical person-names in place etymologies
 - **Bathymetry enrichment** — GEBCO/EMODnet/NVE depth data for water features
 - **Geolocated image links** — Wikimedia Commons geotagged photographs linked to place records
-- **Geometry classification** — automatic point/line/area classification for all 9,692 records
+- **Geometry classification** — automatic point/line/area classification for all 33,192 records
 - **Wikidata city ingestion** — 12 countries with OSM polygon geometry, population, elevation, multilingual alternative names
 - **Baltic/Eastern European coverage** — Estonia, Lithuania, Latvia, Russia with historical German/Polish/Swedish name layers
 - **Topographic metrics** — 5,402 Norwegian peaks with prominence, isolation, dominance ratio, mountain range, and parent peak data from Wikidata (P2660/P2659/P3137/P4552)

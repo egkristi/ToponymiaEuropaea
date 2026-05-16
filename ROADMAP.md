@@ -4,7 +4,7 @@ This roadmap tracks the project's development from initial framework to producti
 
 **Legend:** ✅ Done | 🔄 In Progress | ⬚ Not Started
 
-**Current status:** 4,221 tests passing, 0 warnings, CI green (lint + mypy strict + test py3.12/3.13 + ontology + databank validation). 9,692 records (12 countries × 3 sources). 201 language modules with auto-discovery registry. 15 perspective modules. Gold-standard kernel (8 records). Full 3-layer persistence (JSONL → PostgreSQL → Parquet). End-to-end: `toponymia analyze element nes --country NO` runs databank → segmentation → statistical test → results.
+**Current status:** 4,221 tests passing, 0 warnings, CI green (lint + mypy strict + test py3.12/3.13 + ontology + databank validation). 33,192 records (17 countries × 3 sources). 201 language modules with auto-discovery registry. 15 perspective modules. Gold-standard kernel (8 records). Full 3-layer persistence (JSONL → PostgreSQL → Parquet). End-to-end: `toponymia analyze element nes --country NO` runs databank → segmentation → statistical test → results.
 
 ---
 
@@ -329,7 +329,7 @@ The litmus test (May 2025) proved the pipeline works mechanically. Data populati
 **Milestone 11.4.3 COMPLETE** — Phonetic index field on all records.
 **Issues #10–13 closed** — mypy fixed, Danish/Swedish modules added, data populated.
 
-**Status: 4,221 tests passing (incl. 3,184 parametrized module tests), mypy strict clean, 9,692 databank records, 201 language modules with auto-discovery registry, 15 perspective modules, 8 gold-standard kernel records.**
+**Status: 4,221 tests passing (incl. 3,184 parametrized module tests), mypy strict clean, 33,192 databank records, 201 language modules with auto-discovery registry, 15 perspective modules, 8 gold-standard kernel records.**
 
 **Milestone 11.2 COMPLETE** — Full 3-layer persistence: JSONL kernel, PostgreSQL+PostGIS, Parquet/DuckDB, sync pipeline with checksums.
 **Milestone 11.6 (4/5) COMPLETE** — Coordinate resolution, license matrix, ODbL compliance. Only GDPR analysis remains.
@@ -432,7 +432,7 @@ Scale from 2,936 records (5 Nordic countries) to continental coverage. Prerequis
 | 14.3 | **EPNS volumes (England)** | ⬚ | HIGH | English Place-Name Society. County-by-county historical analysis. Issue #28. |
 | 14.4 | **UK/Ireland seed data** | ⬚ | HIGH | OS Names + Logainm.ie. Celtic substrate validation. Issue #29. |
 | 14.5 | **Iberian seed data** | ⬚ | HIGH | IGN Spain + Arabic/Mozarabic substrate layer. Issue #30. |
-| 14.6 | **Central European expansion** | ⬚ | MEDIUM | Germany (BKG), Poland (GUGiK), Czechia (ČÚZK). Slavic-Germanic contact zone. |
+| 14.6 | **Central European expansion** | ✅ | MEDIUM | DE (5,500), AT (4,500), CH (4,500), PL (5,000), CZ (4,000) from GeoNames. Issue #44. |
 | 14.7 | **Baltic states** | ✅ | MEDIUM | Estonia (47 cities), Lithuania (81 cities), Latvia (83 cities). Wikidata + OSM polygon geometry. Historical German/Polish/Swedish name layers. |
 | 14.8 | **Balkans & Southeast Europe** | ⬚ | LOW | Complex stratigraphy: Illyrian → Latin → Slavic → Ottoman → modern. |
 | 14.9 | **Historical attestation curation workflow** | ⬚ | **HIGH** | Web interface for contributors to add dated attestations. Issue #24. |
